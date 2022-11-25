@@ -1,4 +1,5 @@
 from typing import overload
+import math
 
 def calc_best_flee_vector(rel_predator_pos : list[tuple[float, float]]) -> tuple[float, float]:
     
@@ -10,12 +11,17 @@ def calc_best_flee_vector(rel_predator_pos : list[tuple[float, float]]) -> tuple
     
     return -x_avg_predators, -y_avg_predators
 
-@overload 
-def normalize_vector(vec_x : float, vec_y : float) -> tuple[float, float]:
-    divisor = abs(1 / vec_x)
-    return vec_x * divisor, vec_y * divisor
 
-@overload
 def normalize_vector(vec : tuple[float, float]) -> tuple[float, float]:
+    
+    # Keeps the shape of the vector, but makes it so that x will be 1 or -1.
+    
     x, y = vec
-    return normalize_vector(x, y)
+    divisor = abs(1 / x)
+    return x * divisor, y * divisor
+
+def maximize_vector(vec : tuple[float, float], max_range : float) -> tuple[float, float]:
+    x_val, y_val = vec
+    # TODO Test if the fast inverse square root algorithm can work here.
+    xy_modifier = ((x_val ** 2 + y_val ** 2) / max_range ** 2) ** -0.5
+    return (x_val * xy_modifier, y_val * xy_modifier)
