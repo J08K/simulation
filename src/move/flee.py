@@ -1,6 +1,6 @@
 from typing import overload
 
-def calc_best_flee_vector(rel_predator_pos : list[tuple[int, int]]) -> tuple[int, int]:
+def calc_best_flee_vector(rel_predator_pos : list[tuple[float, float]]) -> tuple[float, float]:
     
     total_predators = len(rel_predator_pos)
     
@@ -11,11 +11,11 @@ def calc_best_flee_vector(rel_predator_pos : list[tuple[int, int]]) -> tuple[int
     return -x_avg_predators, -y_avg_predators
 
 @overload 
-def normalize_vector(vec_x : int, vec_y : int) -> tuple[int, int]:
+def normalize_vector(vec_x : float, vec_y : float) -> tuple[float, float]:
     divisor = abs(1 / vec_x)
     return vec_x * divisor, vec_y * divisor
 
 @overload
-def normalize_vector(vec : tuple[int, int]) -> tuple[int, int]:
-    x, y = 
-    divisor = abs(1 / )
+def normalize_vector(vec : tuple[float, float]) -> tuple[float, float]:
+    x, y = vec
+    return normalize_vector(x, y)
