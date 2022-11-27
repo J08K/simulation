@@ -1,6 +1,3 @@
-from typing import overload
-import math
-
 def calc_best_flee_vector(rel_predator_pos : list[tuple[float, float]]) -> tuple[float, float]:
     
     total_predators = len(rel_predator_pos)
@@ -25,5 +22,3 @@ def maximize_vector(vec : tuple[float, float], max_range : float) -> tuple[float
     # TODO Test if the fast inverse square root algorithm can work here.
     xy_modifier = ((x_val ** 2 + y_val ** 2) / max_range ** 2) ** -0.5
     return (x_val * xy_modifier, y_val * xy_modifier)
-
-print(maximize_vector((1, 2), 6))
