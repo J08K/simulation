@@ -1,5 +1,6 @@
 import math
 
+import common
 
 def degrees_to_radians(degrees : float) -> float:
     return degrees * ( math.pi / 180 )
@@ -45,6 +46,8 @@ def in_view_circle(x : int, y : int, r : float, a : float) -> bool:
 
 def get_seeable_coord(entity_x : int, entity_y : int, view_range : float, view_fov_degrees : float, board_max_x : int, board_max_y : int, entity_rotation : int) -> list[tuple[int, int]]:
 
+    # TODO Implement this into a class, just like the RegionVision class.
+
     view_min_x, view_max_x, view_min_y, view_max_y = get_max_values(entity_x, entity_y, view_range, board_max_x, board_max_y)
 
     coords = []
@@ -60,3 +63,19 @@ def get_seeable_coord(entity_x : int, entity_y : int, view_range : float, view_f
             is_in_view = in_view_circle(x, y, view_range, cutoff_slope)
 
             # TODO Finish this... I don't really remember exactly what I was doing :P
+
+class RegionVision:
+    
+    __distance : float
+    
+    def __init__(self, view_distance : float) -> None:
+        self.__distance = view_distance
+        
+    def abs_in_view(self, cur_coords : tuple[float, float], target_coords : tuple[float, float]) -> bool:
+        cur_x, cur_y = cur_coords
+        target_x, target_y = target_coords
+        return common.calc_distance(cur_x, cur_y, target_x, target_y) <= self.__distance
+    
+    def rel_in_view(self, target_coords : tuple[float, float]) -> bool:
+        target_x, target_y = target_coords
+        return common.calc_distance(0.0, 0.0, target_x, target_y)
