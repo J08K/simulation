@@ -1,30 +1,16 @@
 import math
 
-import common
+import Common.Rotation
 
-def degrees_to_radians(degrees : float) -> float:
-    return degrees * ( math.pi / 180 )
-
-def radians_to_slope(radians : float) -> float:
-    return math.tan(radians)
-
-def degrees_to_slope(degrees : float) -> float:
-    return radians_to_slope(degrees_to_radians(degrees))
-
-
-def clamp(min_n : int, max_n : int, n : int) -> int:
-    n = max(n, min_n)
-    n = min(n, max_n)
-    return n
 
 def get_max_values(entity_x : int, entity_y : int, view_range : float, board_max_x : int, board_max_y : int) -> tuple[int, int, int, int]:
     # Optimizations, so that it doesn't have to check for every coord on the board.
     # TODO Cache this maybe?
-    view_max_x = clamp(0, board_max_x, entity_x + view_range)
-    view_min_x = clamp(0, board_max_x, entity_x - view_range)
+    view_max_x = Common.clamp(0, board_max_x, entity_x + view_range)
+    view_min_x = Common.clamp(0, board_max_x, entity_x - view_range)
 
-    view_max_y = clamp(0, board_max_y, entity_y + view_range)
-    view_min_y = clamp(0, board_max_y, entity_y - view_range)
+    view_max_y = Common.clamp(0, board_max_y, entity_y + view_range)
+    view_min_y = Common.clamp(0, board_max_y, entity_y - view_range)
     
     return view_min_x, view_max_x, view_min_y, view_max_y
 
@@ -52,7 +38,7 @@ def get_seeable_coord(entity_x : int, entity_y : int, view_range : float, view_f
 
     coords = []
     
-    cutoff_slope = degrees_to_slope(view_fov_degrees)
+    cutoff_slope = Common.Rotation.degrees_to_slope(view_fov_degrees)
     
     # TODO Add ability to rotate.
     
@@ -64,7 +50,7 @@ def get_seeable_coord(entity_x : int, entity_y : int, view_range : float, view_f
 
             # TODO Finish this... I don't really remember exactly what I was doing :P
 
-class RegionVision:
+class RangeVision:
     
     __distance : float
     
@@ -74,8 +60,8 @@ class RegionVision:
     def abs_in_view(self, cur_coords : tuple[float, float], target_coords : tuple[float, float]) -> bool:
         cur_x, cur_y = cur_coords
         target_x, target_y = target_coords
-        return common.calc_distance(cur_x, cur_y, target_x, target_y) <= self.__distance
+        return Common.calc_distance(cur_x, cur_y, target_x, target_y) <= self.__distance
     
     def rel_in_view(self, target_coords : tuple[float, float]) -> bool:
         target_x, target_y = target_coords
-        return common.calc_distance(0.0, 0.0, target_x, target_y)
+        return Common.calc_distance(0.0, 0.0, target_x, target_y)

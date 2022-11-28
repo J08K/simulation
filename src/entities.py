@@ -36,7 +36,7 @@ class Entity:
         self.__can_see = can_see
 
         self.__entity_type = entity_type
-        self.__uuid = uuid4
+        self.__uuid = uuid4()
         self.__day_born = cur_day
     
     def lifetime(self, current_day : int) -> int:
@@ -61,6 +61,9 @@ class Entity:
     @property
     def entity_type(self) -> EntityType:
         return self.__entity_type
+
+    def __repr__(self) -> str:
+        return f"Entity; uuid:{str(self.__uuid)}"
 
 class PlantEntity(Entity):
     
