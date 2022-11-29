@@ -1,6 +1,5 @@
 import math
-
-import Common.Rotation
+import Common
 
 
 def get_max_values(entity_x : int, entity_y : int, view_range : float, board_max_x : int, board_max_y : int) -> tuple[int, int, int, int]:

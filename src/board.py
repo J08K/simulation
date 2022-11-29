@@ -1,5 +1,5 @@
 from entities import Entity
-import common
+import Common
 
 class Board:
 
@@ -44,7 +44,7 @@ class Board:
             pos_x, pos_y = self.entities[entity]
             pos_x = round(pos_x)
             pos_y = round(pos_y)
-            lines[pos_y][pos_x] = common.fixed_size_string(str(entity.species), 2)
+            lines[pos_y][pos_x] = Common.fixed_size_string(str(entity.species), 2)
 
         for line in lines:
             output.append("|" + "".join(line) + "|\n")
@@ -54,7 +54,7 @@ class Board:
 
 import random
 
-test_board = Board(10, 10)
+test_board = Board(20, 20)
 test_entities = []
 for _ in range(20):
     test_pos = random.randint(0, test_board.max_x_coord), random.randint(0, test_board.max_x_coord)

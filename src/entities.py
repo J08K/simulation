@@ -1,20 +1,15 @@
 from enum import Enum
 from uuid import UUID, uuid4
 
-from common import Rotation
+import Common
 
 class EntityType(Enum):
     plant = 0
     animal = 1
 
-class EntitySpecies(Enum):
-    plant = 0
-    prey = 1
-    predator = 2
-
 class Entity:
     
-    species : EntitySpecies
+    species : Common.Species.BaseSpecie
     
     max_health : str
     health : int
@@ -27,7 +22,7 @@ class Entity:
     __can_move : bool
     __can_see : bool
     
-    def __init__(self, species: EntitySpecies, entity_type: EntityType, max_health : int, can_move : bool, can_see : bool, cur_day : int) -> None:
+    def __init__(self, species: Common.Species.BaseSpecie, entity_type: EntityType, max_health : int, can_move : bool, can_see : bool, cur_day : int) -> None:
         self.species = species
         self.max_health = max_health
         self.health = max_health
@@ -64,44 +59,6 @@ class Entity:
 
     def __repr__(self) -> str:
         return f"Entity; uuid:{str(self.__uuid)}"
-
-class PlantEntity(Entity):
     
-    def __init__(self, species: EntitySpecies, max_health : int, cur_day : int) -> None:
-        super().__init__(
-            species=species,
-            entity_type=EntityType.plant,
-            max_health=max_health,
-            can_move=False,
-            can_see=False,
-            cur_day=cur_day
-            )
-        
-
-class AnimalEntity(Entity):
-    
-    __can_eat : list[EntitySpecies]
-
-    rotation : Rotation
-    view_range : float
-    view_fov : float
-    
-    def __init__(self, species: EntitySpecies, max_health: int, cur_day : int, view_range : float, view_fov : float) -> None:
-        super().__init__(species, EntityType.animal, max_health, True, True, cur_day)
-        self.view_fov = view_fov
-        self.view_range
-        self.rotation = Rotation.NORTH
-        
-    def can_eat_entity(self, target_entity : Entity) -> bool:
-        """Returns whether this Entity can eat target_entity.
-
-        Args:
-            target_entity (Entity): Target entity
-
-        Returns:
-            bool: Whether the 'entity' can be eaten by this entity.
-        """
-        return target_entity.species in self.__can_eat
-    
-    def return_view(self, view : list[tuple[int, int, Entity]]) -> None:
-        ...
+    def __hash__(self) -> str:
+        return hash(str(self.__uuid))
