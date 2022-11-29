@@ -13,9 +13,9 @@ class Gene:
     name : str
     value : float
     mutability : float
-    
+
     __uuid : UUID
-    
+
     def __init__(self, name : str, start_value : float, mutability : float) -> None:
         self.name = name
         self.value = start_value 
@@ -33,7 +33,7 @@ class Gene:
         if do_mutate:
             new_value = calc_mutation(new_value, new_mutability, accuracy)
             new_mutability = calc_mutation(new_mutability, new_mutability, accuracy)
-        
+
         new_gene = Gene(
             name=self.name,
             start_value=new_value,
@@ -121,5 +121,3 @@ class Genome:
                 "gestation_period": dict(self.gestation_period),
             }
         }
-    
-print(calc_mutation(1.0, 0.1, 5))

@@ -49,11 +49,17 @@ def get_seeable_coord(entity_x : int, entity_y : int, view_range : float, view_f
 
             # TODO Finish this... I don't really remember exactly what I was doing :P
 
-class RangeVision:
+class Vision:
+    
+    def abs_in_view(self, cur_coords : tuple[float, float], target_coords : tuple[float, float]) -> bool:
+        ...
+
+class RangeVision(Vision):
     
     __distance : float
     
     def __init__(self, view_distance : float) -> None:
+        super().__init__()
         self.__distance = view_distance
         
     def abs_in_view(self, cur_coords : tuple[float, float], target_coords : tuple[float, float]) -> bool:

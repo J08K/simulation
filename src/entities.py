@@ -11,10 +11,10 @@ class Entity:
     
     species : Common.Species.BaseSpecie
     
-    max_health : str
-    health : int
+    is_alive : bool
 
-    __entity_type : EntityType
+    genome : Common.Genomes.Genome
+
     __day_born : int
     __uuid : UUID
     
@@ -22,19 +22,18 @@ class Entity:
     __can_move : bool
     __can_see : bool
     
-    def __init__(self, species: Common.Species.BaseSpecie, entity_type: EntityType, max_health : int, can_move : bool, can_see : bool, cur_day : int) -> None:
+    def __init__(self, species: Common.Species.BaseSpecie, max_health : int, can_move : bool, can_see : bool, cur_day : int) -> None:
         self.species = species
         self.max_health = max_health
         self.health = max_health
 
         self.__can_move = can_move
         self.__can_see = can_see
-
-        self.__entity_type = entity_type
-        self.__uuid = uuid4()
         self.__day_born = cur_day
+
+        self.__uuid = uuid4()
     
-    def lifetime(self, current_day : int) -> int:
+    def age(self, current_day : int) -> int:
         return current_day - self.__day_born
     
     @property
@@ -52,10 +51,6 @@ class Entity:
     @property
     def day_born(self) -> int:
         return self.__day_born
-
-    @property
-    def entity_type(self) -> EntityType:
-        return self.__entity_type
 
     def __repr__(self) -> str:
         return f"Entity; uuid:{str(self.__uuid)}"
