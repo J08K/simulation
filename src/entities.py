@@ -14,6 +14,7 @@ class Entity:
     is_alive : bool
 
     genome : Common.Genomes.Genome
+    vision : vision.RegionVision
 
     __day_born : int
     __uuid : UUID
