@@ -22,11 +22,15 @@ class BaseSpecie:
     __name : str
     __id : int
     __edible_entities : list[int]
+    __can_move : bool
+    __can_see : bool
     
-    def __init__(self, id : int, name : str, prey : list[int]) -> None:
+    def __init__(self, id : int, name : str, prey : list[int], can_move : bool, can_see : bool) -> None:
         self.__id = id
         self.__name = name
         self.__edible_entities = prey
+        self.__can_move = can_move
+        self.__can_see = can_see
     
     def identify_relationship(self, entity_specie : "BaseSpecie") -> SpecieRelationship:
         if self.id in entity_specie.prey:
@@ -49,3 +53,11 @@ class BaseSpecie:
     @property
     def prey(self) -> list[int]:
         return self.__edible_entities
+
+    @property
+    def can_move(self) -> bool:
+        return self.__can_move
+
+    @property
+    def can_see(self) -> bool:
+        return self.__can_see

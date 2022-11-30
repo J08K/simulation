@@ -5,27 +5,27 @@ import vision
 
 class Entity:
     
-    species : Common.Species.BaseSpecie
-    
-    is_alive : bool
-
+    # What the entity is:
+    specie : Common.Species.BaseSpecie
     genome : Common.Genomes.Genome
-    vision : vision.Vision
+    
+    # How the entity acts:
+    eyes : vision.Vision
 
+    # State
+    __is_alive : bool
     __day_born : int
+
+    # Metadata
     __uuid : UUID
     
-    # Abilities
-    __can_move : bool
-    __can_see : bool
-    
-    def __init__(self, species: Common.Species.BaseSpecie, max_health : int, can_move : bool, can_see : bool, cur_day : int) -> None:
-        self.species = species
-        self.max_health = max_health
-        self.health = max_health
+    def __init__(self, specie: Common.Species.BaseSpecie, genome : Common.Genomes.Genome, cur_day : int) -> None:
+        self.specie = specie
+        self.genome = genome
 
-        self.__can_move = can_move
-        self.__can_see = can_see
+        self.eyes = vision.Vision(self.genome.vision_range)
+
+        self.__is_alive = True
         self.__day_born = cur_day
 
         self.__uuid = uuid4()
@@ -39,15 +39,19 @@ class Entity:
     
     @property
     def can_move(self) -> bool:
-        return self.__can_move
+        return self.specie.can_move
     
     @property
     def can_see(self) -> bool:
-        return self.__can_see
+        return self.specie.can_see
     
     @property
     def day_born(self) -> int:
         return self.__day_born
+
+    @property
+    def is_alive(self) -> bool:
+        return self.__is_alive
 
     def __repr__(self) -> str:
         return f"Entity; uuid:{str(self.__uuid)}"

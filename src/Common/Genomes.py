@@ -63,7 +63,6 @@ class Genome:
     hunger_rate : Gene
     max_hunger : Gene
     vision_range : Gene
-    vision_fov : Gene
     gestation_period : Gene
     
     __uuid : UUID
@@ -73,14 +72,12 @@ class Genome:
                  hunger_rate_gene : Gene, 
                  max_hunger_gene : Gene,
                  vision_range_gene : Gene,
-                 vision_fov : Gene,
                  gestation_period_gene : Gene,
                  ) -> None:
         self.speed = speed_gene
         self.hunger_rate = hunger_rate_gene
         self.max_hunger = max_hunger_gene
         self.vision_range = vision_range_gene
-        self.vision_fov = vision_fov
         self.gestation_period = gestation_period_gene
         
         self.__uuid = uuid4()
@@ -90,7 +87,7 @@ class Genome:
         new_hunger_rate = self.hunger_rate.combine(other.hunger_rate, do_mutate, accuracy)
         new_max_hunger = self.max_hunger.combine(other.max_hunger, do_mutate, accuracy)
         new_vision_range = self.vision_range.combine(other.vision_range, do_mutate, accuracy)
-        new_vision_fov = self.vision_fov.combine(other.vision_fov, do_mutate, accuracy)
+
         new_gestation_period = self.gestation_period.combine(other.gestation_period, do_mutate, accuracy)
         
         new_genome = Genome(
@@ -98,7 +95,6 @@ class Genome:
             hunger_rate_gene=new_hunger_rate,
             max_hunger_gene=new_max_hunger,
             vision_range_gene=new_vision_range,
-            vision_fov=new_vision_fov,
             gestation_period_gene=new_gestation_period,
         )
         
@@ -117,7 +113,6 @@ class Genome:
                 "hunger_rate": dict(self.hunger_rate),
                 "max_hunger": dict(self.max_hunger),
                 "vision_range": dict(self.vision_range),
-                "vision_fov": dict(self.vision_fov),
                 "gestation_period": dict(self.gestation_period),
             }
         }
