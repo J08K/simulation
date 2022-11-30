@@ -35,7 +35,7 @@ class Board:
         return len(self.entities)
 
     def __repr__(self) -> str:
-        output = []
+        output : list[str] = []
         output.append("+" + "-" * (self.__width * 2) + "+\n")
         
         lines = [["  " for _ in range(self.__width)] for _ in range(self.__height)]
@@ -59,8 +59,7 @@ test_entities = []
 for _ in range(20):
     test_pos = random.randint(0, test_board.max_x_coord), random.randint(0, test_board.max_x_coord)
     test_board.add_entity(Entity(
-        species=random.randint(0, 2),
-        entity_type=random.randint(0, 1),
+        species=Common.Species.BaseSpecie(0, "test", [1, 2, 3]),
         max_health=random.randint(0, 100),
         can_move=True,
         can_see=True,

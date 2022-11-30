@@ -46,7 +46,7 @@ class Gene:
     def uuid(self) -> str:
         return str(self.__uuid)
     
-    def __dict__(self) -> dict:
+    def __dict__(self) -> dict[str, str | dict[str, str | float]]:
         return {
             "type" : "Gene",
             "uuid" : self.uuid,
@@ -121,3 +121,4 @@ class Genome:
                 "gestation_period": dict(self.gestation_period),
             }
         }
+        

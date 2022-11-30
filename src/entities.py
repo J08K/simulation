@@ -1,11 +1,7 @@
-from enum import Enum
 from uuid import UUID, uuid4
 
 import Common
-
-class EntityType(Enum):
-    plant = 0
-    animal = 1
+import vision
 
 class Entity:
     
@@ -14,7 +10,7 @@ class Entity:
     is_alive : bool
 
     genome : Common.Genomes.Genome
-    vision : vision.RegionVision
+    vision : vision.Vision
 
     __day_born : int
     __uuid : UUID
@@ -56,5 +52,5 @@ class Entity:
     def __repr__(self) -> str:
         return f"Entity; uuid:{str(self.__uuid)}"
     
-    def __hash__(self) -> str:
+    def __hash__(self) -> int:
         return hash(str(self.__uuid))
