@@ -30,6 +30,9 @@ class Entity:
 
         self.__uuid = uuid4()
     
+    def do_action(self, cur_location : tuple[float, float], surroundings : dict["Entity", tuple[float, float]]):
+        ...
+    
     def age(self, current_day : int) -> int:
         return current_day - self.__day_born
     

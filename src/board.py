@@ -17,11 +17,15 @@ class Board:
         # * This requires looping over every entity...
         # ! Not very efficient.
 
-    def add_entity(self, entity : Entity, location : tuple[float, float]) -> None:
-        x_pos, y_pos = location
-        if x_pos > self.max_x_coord or y_pos > self.max_y_coord:
+    def set_entity(self, entity : Entity, location : tuple[float, float]) -> None:
+        if not self.in_bounds(location):
+            x_pos, y_pos = location
             raise ValueError(f"Location ({x_pos}, {y_pos}) is out of bounds!")
         self.entities[entity] = location
+
+    def in_bounds(self, location : tuple[float, float]) -> bool:
+        x_pos, y_pos = location
+        return 0 <= x_pos < self.max_x_coord and 0 <= y_pos < self.max_y_coord
 
     @property
     def max_x_coord(self) -> int:
