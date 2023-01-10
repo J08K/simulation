@@ -25,7 +25,7 @@ class Board:
 
     def in_bounds(self, location : tuple[float, float]) -> bool:
         x_pos, y_pos = location
-        return 0 <= x_pos < self.max_x_coord and 0 <= y_pos < self.max_y_coord
+        return 0 <= x_pos <= self.max_x_coord and 0 <= y_pos <= self.max_y_coord
 
     @property
     def max_x_coord(self) -> int:
@@ -48,7 +48,7 @@ class Board:
             pos_x, pos_y = self.entities[entity]
             pos_x = round(pos_x)
             pos_y = round(pos_y)
-            lines[pos_y][pos_x] = Common.fixed_size_string(str(entity.species), 2)
+            lines[pos_y][pos_x] = Common.fixed_size_string(str(entity.specie.id), 2)
 
         for line in lines:
             output.append("|" + "".join(line) + "|\n")
@@ -62,11 +62,15 @@ test_board = Board(20, 20)
 test_entities = []
 for _ in range(20):
     test_pos = random.randint(0, test_board.max_x_coord), random.randint(0, test_board.max_x_coord)
-    test_board.add_entity(Entity(
-        species=Common.Species.BaseSpecie(0, "test", [1, 2, 3]),
-        max_health=random.randint(0, 100),
-        can_move=True,
-        can_see=True,
+    test_board.set_entity(Entity(
+        specie=Common.Species.BaseSpecie(random.randint(0, 3), "test", [1, 2, 3], True, True),
+        genome=Common.Genomes.Genome(
+            speed_gene=Common.Genomes.Gene("speed", 0.5, 0.2),
+            hunger_rate_gene=Common.Genomes.Gene("hunger_rate", 0.5, 0.2),
+            max_hunger_gene=Common.Genomes.Gene("max_hunger", 0.5, 0.2),
+            vision_range_gene=Common.Genomes.Gene("vision_range", 0.5, 0.2),
+            gestation_period_gene=Common.Genomes.Gene("gestation_period", 0.5, 0.2),
+        ),
         cur_day=0
     ), test_pos)
 print(test_board.entities)
