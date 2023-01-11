@@ -59,7 +59,6 @@ class Board:
 import random
 
 test_board = Board(20, 20)
-test_entities = []
 for _ in range(20):
     test_pos = random.randint(0, test_board.max_x_coord), random.randint(0, test_board.max_x_coord)
     test_board.set_entity(Entity(
