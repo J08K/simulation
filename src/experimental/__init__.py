@@ -2,6 +2,8 @@ import threading
 import queue
 import datetime
 
+__version__ = "0.0.1"
+
 class Logger:
     
     writer_thread : threading.Thread
