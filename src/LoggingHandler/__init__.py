@@ -4,41 +4,45 @@ import datetime
 import pathlib
 import os
 import io
+import tempfile
 
 from LoggingHandler import LogTypes
 from LoggingHandler.LogTypes import CommandType, LogLevel
-
+# TODO ADD Message and Command to the top import as well.
 __version__ = "0.0.1"
 
 class Logger:
     
     writer_thread : threading.Thread
-    run_thread : bool
-
+    
+    __run_thread : bool
     __queue : queue.Queue[LogTypes.Message | LogTypes.Command]
     __verbosity : int
     __output_file_path : pathlib.Path | None
+    __is_temp_dir : bool
+    __file_obj : io.TextIOWrapper
     
     def __writer(self) -> None:
-        
-        self.__verbosity = 0
-        self.__output_file_path = None
 
-        file_obj : io.TextIOWrapper = None # TODO Make sure that this is checked, and or make it so that this is put in a temp folder.
+        self.__verbosity = 0
+
+        self.__output_file_path = None
+        self.__is_temp_dir = True
+        self.__file_obj : io.TextIOWrapper = tempfile.TemporaryFile() # TODO Make sure that this is checked, and or make it so that this is put in a temp folder.
 
         # * The only thing this function needs to do is to handle the outputting of WELL STRUCTURED inputs.
         # TODO Let this thread do more computing, to take the load of the main thread.
-        
+
+
         def create_new_file(file_path : pathlib.Path) -> pathlib.Path:
             idx = 1
             extension = file_path.suffix
             new_file_path = str(file_path.absolute())[:-len(extension)] # Gets absolute path without file extension.
-            
             if os.path.exists(new_file_path + extension):
                 while os.path.exists(new_file_path + "_" + str(idx) + extension):
                     idx += 1
-                new_file_path = new_file_path + "_" + str(idx) + extension
-            return pathlib.Path(new_file_path)
+                new_file_path = new_file_path + "_" + str(idx)
+            return pathlib.Path(new_file_path + extension)
 
         def open_new_path(dir_path : pathlib.Path) -> pathlib.Path:
             selected_path = None
@@ -48,26 +52,38 @@ class Logger:
                 file_name = datetime.datetime.now().strftime("%Y_%m_%d") + ".log"
                 selected_path = create_new_file(dir_path / file_name)
             
-            file_obj = open(selected_path, "w+")
+            self.__output_file_path = selected_path
+            if self.__is_temp_dir:
+                temp_file = self.__file_obj
+                self.__file_obj = open(selected_path, "w+b")
+                temp_file.seek(0) # TODO Find out WTF seek is! (01-Feb-2023)
+                for line in temp_file.readlines():
+                    self.__file_obj.write(line)
+                temp_file.close()
+                self.__is_temp_dir = False
+            else:
+                self.__file_obj.close()
+                self.__file_obj = open(selected_path, "w+b")
 
             return selected_path
 
         def handle_message(msg : LogTypes.Message) -> None:
             # TODO Handle messages properly, like store them.
             # TODO Add message exporting, like sending them to a database or server.
-            print(f"[{datetime.datetime.now()}]: {msg}")
+            if msg.level.value >= self.__verbosity:
+                self.__file_obj.write(bytes(f"\n[{str(msg.creation)}][{msg.level.name}][{msg.source}]:{str(msg.data)}", encoding="UTF-8"))
         
         def handle_command(cmd : LogTypes.Command) -> None:
             match cmd.command_type:
                 case CommandType.FILE_CHANGE:
-                    new_output_dir = open_new_path(pathlib.Path(cmd.command_type))
+                    new_output_dir = open_new_path(pathlib.Path(cmd.command_data))
                     handle_message(LogTypes.Message(
                         source="logger",
                         level=LogLevel.INFO,
                         data=f"Changing log file location to '{str(new_output_dir)}'",
                     ))
                 case CommandType.END_LOG:
-                    self.run_thread = False
+                    self.__run_thread = False
                     for message in self.__queue.queue:
                         handle_message(message)
 
@@ -76,7 +92,7 @@ class Logger:
                         level=LogLevel.INFO,
                         data=f"End of log. {str(cmd.command_data)}",
                     ))
-                    file_obj.close()
+                    self.__file_obj.close()
 
                 case CommandType.CHANGE_VERBOSITY:
                     self.__verbosity = cmd.command_data
@@ -94,7 +110,7 @@ class Logger:
                 case _:
                     raise TypeError(f"Unknown command type: {str(cmd)}")
 
-        while self.run_thread:
+        while self.__run_thread:
             message = self.__queue.get()
             if message:
                 if isinstance(message, LogTypes.Command):
@@ -105,18 +121,34 @@ class Logger:
     def __init__(self) -> None:
         self.writer_thread = threading.Thread(target=self.__writer)
         self.__queue = queue.Queue()
-        self.run_thread = True
+        self.__run_thread = True
+
         self.writer_thread.start()
     
-    def new_message(self, message : str) -> None:
-        if self.run_thread:
+    def new_message(self, message : LogTypes.Message) -> None:
+        if self.__run_thread:
             self.__queue.put(message)
         else:
             ... # TODO Probably add some kind of exception when trying to add logs to a stopped logger?
-        
+
+    def new_command(self, cmd : LogTypes.Command) -> None:
+        if self.__run_thread:
+            self.__queue.put(cmd)
+        else:
+            ... # TODO Probably add some kind of exception when trying to add logs to a stopped logger?
+
+    def change_output_dir(self, new_path : str | pathlib.Path) -> None:
+        new_path = pathlib.Path(new_path)
+        self.new_command(LogTypes.Command(
+            CommandType.FILE_CHANGE,
+            str(new_path.absolute())
+        ))
+
     def stop(self) -> None:
-        self.run_thread = False
         self.__queue.put(LogTypes.Command(
             LogTypes.CommandType.END_LOG,
             "ENDED LOG"
         ))
+    
+    def is_running(self) -> bool:
+        return self.__run_thread
