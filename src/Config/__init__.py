@@ -11,9 +11,6 @@ class NoWritePermission(Exception):
     def __init__(self, *args: object) -> None:
         super().__init__(*args) # TODO Add some stuff to this, so that it makes sense for this exception class to be here.
 
-def is_windows() -> bool:
-    return os.name == "nt"
-
 class ProjectConfigHandler:
     
     PROJECT_OWNER = "J08K"
