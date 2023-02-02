@@ -26,3 +26,10 @@ def clamp(min_n : int, max_n : int, n : int) -> int:
 
 def calc_time_delta(time_scale : float):
     ...
+    
+def cycle_time(num_steps : int, t_delta : float) -> None:
+    t_current = 0.0
+    for _ in range(num_steps):
+        yield t_current
+        t_current += t_delta
+    yield t_current # TODO Maybe delete this? Don't know if this is needed.

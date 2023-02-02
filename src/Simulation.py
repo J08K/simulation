@@ -1,5 +1,6 @@
 import board
 import random
+import Common
 
 from entities import Entity
 from Common import Species, Genomes
@@ -11,8 +12,6 @@ def create_new_board(size : tuple[int, int], entities : dict[Species.BaseSpecie,
     
     for target_species, num in zip(entities.keys(), entities.values()):
         for _ in range(num):
-            
-            
             new_board.set_entity(entity=Entity(
                 specie=target_species,
                 genome=Genomes.Genome(
@@ -33,22 +32,33 @@ class Simulation:
     
     entity_board : board.Board
     
-    time : float
+    time_created : float
     time_delta : float
+    global_time : float
     
     def __init__(self, entity_board : board.Board, cur_time : float, time_delta : float) -> None:
         self.entity_board = entity_board
-        self.time = cur_time
+        self.time_created = cur_time
         self.time_delta = time_delta
     
     def adjust_time_delta(self, new_td : float) -> None:
         self.time_delta = new_td
     
-    def run(self, num_cycles : int) -> None:
-        for cycle_idx in range(num_cycles):
-            
+    def run(self, num_steps : int) -> None:
+        for current_time in Common.cycle_time(num_steps, self.time_delta):
+
+            # TODO Phase 1
+            # First loop should let all of the entities on the board observe.
+            # Entities in this phase should also do a risk assesment of every action.
+            # All observations and risk assesments should be output to the log using Log Level DATA.
             for entity in self.entity_board.entities:
                 ...
             
+            # TODO Phase 2
+            # Second loop should let every entity decide what action to commit.
+            # The actions are then done.
+            # The new position and commited actions should be output to the log using Log Level DATA.
+            for entity in self.entity_board.entities:
+                ...
             
             self.time += self.time_delta
