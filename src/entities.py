@@ -2,6 +2,7 @@ from uuid import UUID, uuid4
 
 import Common
 import vision
+import Memory
 
 class Entity:
     
@@ -11,6 +12,7 @@ class Entity:
     
     # How the entity acts:
     eyes : vision.Vision
+    memory : Memory.Memory
 
     # State
     __is_alive : bool
@@ -24,6 +26,7 @@ class Entity:
         self.genome = genome
 
         self.eyes = vision.Vision(self.genome.vision_range)
+        self.memory = Memory.Memory()
 
         self.__is_alive = True
         self.__day_born = cur_day

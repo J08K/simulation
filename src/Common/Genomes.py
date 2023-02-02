@@ -65,6 +65,8 @@ class Genome:
     vision_range : Gene
     gestation_period : Gene
     
+    # TODO Add gender
+    
     __uuid : UUID
     
     def __init__(self, 

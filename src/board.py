@@ -14,8 +14,9 @@ class Board:
         self.entities = dict()
 
         # * For now just storing all entities and their locations.
-        # * This requires looping over every entity...
-        # ! Not very efficient.
+        # * This requires looping over every entity for every entity, so O(n^2) every time.
+        # TODO Might want to make it so that it's split up in districts.
+        # * This would make it so that there is only a need to check for in an enities current district and neightbouring districts.
 
     def set_entity(self, entity : Entity, location : tuple[float, float]) -> None:
         if not self.in_bounds(location):
@@ -56,22 +57,23 @@ class Board:
         output.append("+" + "-" * (self.__width * 2) + "+")
         return "".join(output)
 
-import random
+if __name__ == "__main__":
+    import random
 
-test_board = Board(20, 20)
-for _ in range(20):
-    test_pos = random.randint(0, test_board.max_x_coord), random.randint(0, test_board.max_x_coord)
-    test_board.set_entity(Entity(
-        specie=Common.Species.BaseSpecie(random.randint(0, 3), "test", [1, 2, 3], True, True),
-        genome=Common.Genomes.Genome(
-            speed_gene=Common.Genomes.Gene("speed", 0.5, 0.2),
-            hunger_rate_gene=Common.Genomes.Gene("hunger_rate", 0.5, 0.2),
-            max_hunger_gene=Common.Genomes.Gene("max_hunger", 0.5, 0.2),
-            vision_range_gene=Common.Genomes.Gene("vision_range", 0.5, 0.2),
-            gestation_period_gene=Common.Genomes.Gene("gestation_period", 0.5, 0.2),
-        ),
-        cur_day=0
-    ), test_pos)
-print(test_board.entities)
-print(len(test_board))
-print(test_board)
+    test_board = Board(20, 20)
+    for _ in range(20):
+        test_pos = random.randint(0, test_board.max_x_coord), random.randint(0, test_board.max_x_coord)
+        test_board.set_entity(Entity(
+            specie=Common.Species.BaseSpecie(random.randint(0, 3), "test", [1, 2, 3], True, True),
+            genome=Common.Genomes.Genome(
+                speed_gene=Common.Genomes.Gene("speed", 0.5, 0.2),
+                hunger_rate_gene=Common.Genomes.Gene("hunger_rate", 0.5, 0.2),
+                max_hunger_gene=Common.Genomes.Gene("max_hunger", 0.5, 0.2),
+                vision_range_gene=Common.Genomes.Gene("vision_range", 0.5, 0.2),
+                gestation_period_gene=Common.Genomes.Gene("gestation_period", 0.5, 0.2),
+            ),
+            cur_day=0
+        ), test_pos)
+    print(test_board.entities)
+    print(len(test_board))
+    print(test_board)
