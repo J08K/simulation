@@ -31,15 +31,20 @@ class Message:
     source : str
     level : LogLevel
     creation : datetime.datetime
-    data : str
+    __data : str
+    __parser : function
     
-    def __init__(self, source : str, level : LogLevel, data : str) -> None:
+    def __init__(self, source : str, level : LogLevel, data : str, parser : function = str) -> None:
         self.creation = datetime.datetime.now()
         self.source = source.upper()
         self.level = level
-        self.data = data
+        self.__data = data
+        self.__parser = parser
 
+    def get_data(self) -> str:
+        return self.__parser(self.__data)
 
+# TODO for data, add a function to parse it into a string. This makes it so that the computing is done on the Logging thread.
 class ObservationPhaseMessage(Message):
     
     def __init__(self) -> None:

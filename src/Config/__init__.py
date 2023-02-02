@@ -6,6 +6,12 @@ from Config import defaults as ConfigDefaults
 
 __version__ = "0.0.1"
 
+PROJECT_OWNER = "J08K"
+PROJECT_NAME = "PWS"
+
+def get_default_config_dir() -> pathlib.Path:
+    return pathlib.Path(f"C:\\Users\\{os.getlogin()}\\AppData\\Local\\{PROJECT_OWNER}\\{PROJECT_NAME}")
+
 class NoWritePermission(Exception):
     
     def __init__(self, *args: object) -> None:
@@ -13,8 +19,8 @@ class NoWritePermission(Exception):
 
 class ProjectConfigHandler:
     
-    PROJECT_OWNER = "J08K"
-    PROJECT_NAME = "PWS"
+    PROJECT_OWNER = PROJECT_OWNER
+    PROJECT_NAME = PROJECT_NAME
     
     config_root : pathlib.Path
     config_file_path : pathlib.Path
@@ -25,10 +31,10 @@ class ProjectConfigHandler:
     def __init__(self, config_path : str = "") -> None:
         self.config = None
         
-        if config_path == "":
-            self.config_root = pathlib.Path(f"C:\\Users\\{os.getlogin()}\\AppData\\Local\\{self.PROJECT_OWNER}\\{self.PROJECT_NAME}")
+        if config_path:
+            self.config_root = config_path
         else:
-            self.config_root = config_path   
+            self.config_root = get_default_config_dir()
         self.config_file_path = self.config_root / "config.toml"
         self.integrity_check()
         self.read_config()
@@ -44,13 +50,13 @@ class ProjectConfigHandler:
             toml.dump(default_config.export(), config_fp)
     
     def integrity_check(self) -> None:
-        if not os.access(self.config_root.parent.parent, os.W_OK):
+        if not os.access(self.config_root.parent.parent, os.W_OK): # Check if the process has write access to the directory.
             raise NoWritePermission("Directory: ")
-        if not os.path.isdir(self.config_root.parent):
+        if not os.path.isdir(self.config_root.parent): # Check if the PROJECT_OWNER directory exists.
             os.mkdir(self.config_root.parent)
-        if not os.path.isdir(self.config_root):
+        if not os.path.isdir(self.config_root): # Check if the PROJECT_NAME folder exists.
             os.mkdir(self.config_root)
-        if not os.path.exists(self.config_file_path):
+        if not os.path.exists(self.config_file_path): # Check if the main config file exists.
             self.create_default_config(self.config_file_path)
         
     def export(self) -> dict:
