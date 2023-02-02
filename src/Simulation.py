@@ -1,6 +1,5 @@
 import board
 import random
-import Common
 
 from entities import Entity
 from Common import Species, Genomes
@@ -45,8 +44,7 @@ class Simulation:
         self.time_delta = new_td
     
     def run(self, num_steps : int) -> None:
-        for current_time in Common.cycle_time(num_steps, self.time_delta):
-
+        for _ in range(num_steps):
             # TODO Phase 1
             # First loop should let all of the entities on the board observe.
             # Entities in this phase should also do a risk assesment of every action.
@@ -61,4 +59,4 @@ class Simulation:
             for entity in self.entity_board.entities:
                 ...
             
-            self.time += self.time_delta
+            self.global_time += self.time_delta
