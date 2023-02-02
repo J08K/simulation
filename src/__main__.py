@@ -12,7 +12,7 @@ if __name__ == "__main__":
         data="This should be in a temp directory."
     ))
 
-    logger.change_output_dir("C:\\Users\\jobko\\Test")
+    logger.change_output_dir(config.config_root)
 
     logger.new_message(LoggingHandler.LogTypes.Message(
         source="the outside again",

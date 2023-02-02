@@ -68,11 +68,10 @@ class Logger:
             return selected_path
 
         def handle_message(msg : LogTypes.Message) -> None:
-            # TODO Handle messages properly, like store them.
             # TODO Add message exporting, like sending them to a database or server.
             if msg.level == LogLevel.DATA:
                 ... # TODO Store DATA in a different file.
-            if msg.level.value >= self.__verbosity:
+            elif msg.level.value >= self.__verbosity:
                 self.__file_obj.write(bytes(f"\n[{str(msg.creation)}][{msg.level.name}][{msg.source}]:{msg.get_data()}", encoding="UTF-8"))
         
         def handle_command(cmd : LogTypes.Command) -> None:

@@ -1,6 +1,6 @@
 import os
 import pathlib
-import toml # TODO ADD TOML import
+import toml
 from Config import data as ConfigData
 from Config import defaults as ConfigDefaults
 

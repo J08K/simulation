@@ -1,6 +1,7 @@
 import datetime
 import enum
 
+from typing import Callable, Any
 
 class CommandType(enum.Enum):
     FILE_CHANGE = 0         # * - Changes to the output file / directory. Data is new path.
@@ -32,9 +33,9 @@ class Message:
     level : LogLevel
     creation : datetime.datetime
     __data : str
-    __parser : function
+    __parser : Callable[[Any], str]
     
-    def __init__(self, source : str, level : LogLevel, data : str, parser : function = str) -> None:
+    def __init__(self, source : str, level : LogLevel, data : str, parser : Callable[[Any], str] = str) -> None:
         self.creation = datetime.datetime.now()
         self.source = source.upper()
         self.level = level
