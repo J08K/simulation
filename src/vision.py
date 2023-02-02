@@ -14,11 +14,13 @@ class Vision:
         self.__distance = view_distance
     
     def abs_in_view(self, cur_coords : tuple[float, float], target_coords : tuple[float, float]) -> bool:
+        """Tests whether the absolute target coordinates are in view of the entity."""
         cur_x, cur_y = cur_coords
         target_x, target_y = target_coords
         return bool(Common.calc_distance(cur_x, cur_y, target_x, target_y) <= self.__distance)
         
     def rel_in_view(self, target_coords : tuple[float, float]) -> bool:
+        """Tests whether the relative target coordinates are in view of the entity."""
         return self.abs_in_view((0.0, 0.0), target_coords)
 
     def iter_visible_entities(self, cur_coords : tuple[float, float], entities : dict) -> Generator[tuple[Any, tuple[float, float]], None, None]:

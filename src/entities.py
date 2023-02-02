@@ -36,6 +36,17 @@ class Entity:
     def do_action(self, cur_location : tuple[float, float], surroundings : dict["Entity", tuple[float, float]]):
         ...
     
+    def identify_relationship(self, other_entities : list["Entity"]) -> dict[Common.Species.SpecieRelationship, list["Entity"]]:
+        identified = {
+            Common.Species.SpecieRelationship.PREDATOR : [],
+            Common.Species.SpecieRelationship.NEUTRAL : [],
+            Common.Species.SpecieRelationship.PREY : [],
+            Common.Species.SpecieRelationship.CONGENER : [],
+        }
+        for other in other_entities:
+            identified[self.specie.identify_relationship(other.specie)].append(other)
+        return identified
+
     def age(self, current_day : int) -> int:
         return current_day - self.__day_born
     

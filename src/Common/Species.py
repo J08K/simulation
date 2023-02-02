@@ -41,7 +41,7 @@ class BaseSpecie:
             return SpecieRelationship.CONGENER
         else:
             return SpecieRelationship.NEUTRAL
-    
+
     @property
     def name(self) -> str:
         return self.__name

@@ -28,6 +28,20 @@ class Board:
         x_pos, y_pos = location
         return 0 <= x_pos <= self.max_x_coord and 0 <= y_pos <= self.max_y_coord
 
+    def get_all_in_view(self, current_entity : Entity) -> list[Entity]:
+        """Returns a generator that gets all entities in view of current_entity's vision."""
+        current_coords = self.entities[current_entity]
+        for target_entity, target_coords in self.entities.items():
+            if target_entity != current_entity:
+                if current_entity.eyes.abs_in_view(cur_coords=current_coords, target_coords=target_coords):
+                    yield target_entity
+
+    def get_entity_location(self, entity : Entity) -> tuple[float, float]:
+        if entity in self.entities:
+            return self.entities[entity]
+        else:
+            raise ValueError(f"Entity was not found! [{str(entity)}]") # TODO Output this to logger.
+
     @property
     def max_x_coord(self) -> int:
         return self.__width - 1

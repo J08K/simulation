@@ -23,6 +23,3 @@ def clamp(min_n : int, max_n : int, n : int) -> int:
     n = max(n, min_n)
     n = min(n, max_n)
     return n
-
-def calc_time_delta(time_scale : float):
-    ...

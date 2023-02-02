@@ -50,7 +50,9 @@ class Simulation:
             # Entities in this phase should also do a risk assesment of every action.
             # All observations and risk assesments should be output to the log using Log Level DATA.
             for entity in self.entity_board.entities:
-                ...
+                observation = self.entity_board.get_all_in_view(entity)
+                identified = entity.identify_multiple_relationships(observation)
+                
             
             # TODO Phase 2
             # Second loop should let every entity decide what action to commit.

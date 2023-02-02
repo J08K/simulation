@@ -14,3 +14,4 @@ def best_food_target(targets : list[tuple[float, float, int]]) -> tuple[float, f
             best_target = (x, y)
     return best_target
 
+# TODO Add algorythm that calculates entities best option.
