@@ -1,8 +1,9 @@
 import LoggingHandler
 import Config
+import scoring
 
 if __name__ == "__main__":
-    config = Config.ProjectConfigHandler()
+    """ config = Config.ProjectConfigHandler()
     logger = LoggingHandler.Logger()
     print(f"Logger status is: {logger.is_running()}")
 
@@ -22,4 +23,11 @@ if __name__ == "__main__":
 
     logger.stop()
 
-    print("Logger has stopped!")
+    print("Logger has stopped!") """
+    
+    print(scoring.max_delta_distance([
+        (-9.0, 7.0),
+        (-5.0, 5.0),
+        (-10.0, 2.0),
+        (-4.0, 0.0)
+    ]))
