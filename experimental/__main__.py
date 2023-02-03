@@ -5,8 +5,8 @@ from uuid import uuid4
 if __name__ == "__main__":
     brd = new_board.Board(16.0, 10.0, 3.0)
     
-    for row_idx in range(len(brd.sub_grids[0])):
-        print(" ".join(repr(col[::-1][row_idx]) for col in brd.sub_grids))
+    # for row_idx in range(len(brd.sub_grids[0])):
+    #     print(" ".join(repr(col[::-1][row_idx]) for col in brd.sub_grids))
     
     print()
     
@@ -26,5 +26,10 @@ if __name__ == "__main__":
     for x, y in locations:
         brd.add_entity(uuid4(), x, y)
     
-    for row_idx in range(len(brd.sub_grids[0])):
-        print(" ".join(repr(col[::-1][row_idx]) for col in brd.sub_grids))
+    # for row_idx in range(len(brd.sub_grids[0])):
+        # print(" ".join(repr(col[::-1][row_idx]) for col in brd.sub_grids))
+
+    for entity in brd.all_entities:
+        print(f"{brd.get_entity_location(entity)} -> {str(brd.get_entities_nearby(entity))}")
+
+    print(brd.num_entities)

@@ -36,7 +36,7 @@ class Entity:
     def do_action(self, cur_location : tuple[float, float], surroundings : dict["Entity", tuple[float, float]]):
         ...
     
-    def identify_relationship(self, other_entities : list["Entity"]) -> dict[Common.Species.SpecieRelationship, list["Entity"]]:
+    def identify_multiple_relationships(self, other_entities : list["Entity"]) -> dict[Common.Species.SpecieRelationship, list["Entity"]]:
         identified = {
             Common.Species.SpecieRelationship.PREDATOR : [],
             Common.Species.SpecieRelationship.NEUTRAL : [],
