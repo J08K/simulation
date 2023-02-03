@@ -11,6 +11,7 @@ if __name__ == "__main__":
     print()
     
     locations = [
+        (3.0, 3.0), # TODO Test if this does not freak out (since it's on the border).
         (1.5, 1.5),
         (3.5, 2.3),
         (8.3, 0.8),

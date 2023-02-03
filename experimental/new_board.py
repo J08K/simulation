@@ -188,15 +188,39 @@ class Board:
     @property
     def num_entities(self) -> int:
         return sum([sub_grid.count for sub_grid, _ in self.iter_grids()])
-    
+
+
     @property
     def width(self) -> float:
         return self.__width
-    
+
+
     @property
     def height(self) -> float:
         return self.__height
-    
+
+
     @property
     def max_view_distance(self) -> float:
         return self.__max_view_distance
+
+
+    @property
+    def max_x_coord(self) -> float:
+        return self.width
+
+
+    @property
+    def max_y_coord(self) -> float:
+        return self.height
+
+
+    @property
+    def __len__(self) -> int:
+        return self.num_entities
+
+
+    # TODO __repr__() -> new implementation
+    # TODO get_all_in_view()
+    # TODO in_bounds()
+    # TODO set_entity()
