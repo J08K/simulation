@@ -11,6 +11,11 @@ class OutOfBoundsError(Exception):
     def __init__(self, *args: object) -> None:
         super().__init__(*args)
 
+class GridError(Exception):
+
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
+
 class SubGrid:
     
     __width : float
@@ -45,9 +50,9 @@ class Board:
 
     # A board contains many sub-grids, this should help more efficiently looping over entities.
     
-    __width : float # TODO Add property
-    __height : float # TODO Add property
-    __max_view_distance : float # TODO Add property
+    __width : float
+    __height : float
+    __max_view_distance : float
     
     sub_grids : list[list[SubGrid]] # Stores grids, by their (x, y) location.
     
@@ -63,18 +68,22 @@ class Board:
         self.new_sub_grids(transfer_data=False)
     
     def new_sub_grids(self, transfer_data : bool) -> None:
-        # TODO if need for recalculating grids, transfer the data from the old grids to the new grids.
-        
+        cached_entities = {}
+        if transfer_data:
+            cached_entities = {entity: self.get_entity_location(entity) for entity in self.all_entities}
+
+        self.entity_registry = {}
+
         num_width_full_grids = int(self.__width // self.__max_view_distance) # Amount of full-sized grids in the x direction.
         num_height_full_grids = int(self.__height // self.__max_view_distance) # Amount of full-sized grids in the y direction.
 
         width_column_partial_grids = self.__width % self.__max_view_distance # Width of column of leftover grid size.
         height_row_partial_grids = self.__height % self.__max_view_distance # Height of row of leftover grid size.
-        
+
         sub_grids : list[list[SubGrid]] = []
-        for column_idx in range(num_width_full_grids): # Starting in the x direction
+        for _ in range(num_width_full_grids): # Starting in the x direction
             column_sub_grids : list[SubGrid] = []
-            for row_idx in range(num_height_full_grids):
+            for _ in range(num_height_full_grids):
                 column_sub_grids.append(SubGrid(
                     width=self.__max_view_distance,
                     height=self.__max_view_distance,
@@ -103,13 +112,26 @@ class Board:
             ))
         self.sub_grids = sub_grids
 
+        if transfer_data:
+            for entity, (x, y) in cached_entities.items():
+                self.add_entity(
+                    entity=entity,
+                    x=x,
+                    y=y
+                )
+
 
     def get_neighbour_grids(self, grid_x : int, grid_y : int) -> list[tuple[int, int]]:
         neighbours = []
         for idx in range(8):
             neighbour_x = grid_x + round(math.cos(0.25 * idx * math.pi))
             neighbour_y = grid_y + round(math.sin(0.25 * idx * math.pi))
-            # TODO What happens if there is not grid at index 0?
+
+            if len(self.sub_grids) == 0:
+                raise GridError("There are no grids on this board.")
+            if len(self.sub_grids[0]) == 0:
+                raise GridError("This board is invalid! Did you touch 'sub_grids'?")
+
             if neighbour_x >= 0 and neighbour_y >= 0 and neighbour_x < len(self.sub_grids) and neighbour_y < len(self.sub_grids[0]):
                 neighbours.append((neighbour_x, neighbour_y))
         return neighbours
@@ -166,3 +188,15 @@ class Board:
     @property
     def num_entities(self) -> int:
         return sum([sub_grid.count for sub_grid, _ in self.iter_grids()])
+    
+    @property
+    def width(self) -> float:
+        return self.__width
+    
+    @property
+    def height(self) -> float:
+        return self.__height
+    
+    @property
+    def max_view_distance(self) -> float:
+        return self.__max_view_distance
