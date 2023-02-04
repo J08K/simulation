@@ -11,7 +11,14 @@ class OutOfBoundsError(Exception):
     def __init__(self, *args: object) -> None:
         super().__init__(*args)
 
+
 class GridError(Exception):
+
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
+
+
+class EntityNotFoundError(Exception):
 
     def __init__(self, *args: object) -> None:
         super().__init__(*args)
@@ -36,6 +43,12 @@ class SubGrid:
             return self.grid_entities[entity]
         return None
     
+    def pop_entity(self, entity : UUID) -> tuple[float, float]:
+        if entity not in self.grid_entities:
+            raise EntityNotFoundError(f"Entity '{str(entity)}' is not in grid!")
+        
+        return self.grid_entities.pop(entity)
+
     def get_all_entities(self) -> list[tuple[UUID, float, float]]:
         return [(entity, *location) for entity, location in self.grid_entities.items()]
 
@@ -45,6 +58,7 @@ class SubGrid:
     @property
     def count(self) -> int:
         return len(self.grid_entities)
+
 
 class Board:
 
@@ -121,6 +135,10 @@ class Board:
                 )
 
 
+    def in_bounds(self, x : float, y : float) -> bool:
+        return 0 <= x <= self.width and 0 <= y <= self.height
+
+
     def get_neighbour_grids(self, grid_x : int, grid_y : int) -> list[tuple[int, int]]:
         neighbours = []
         for idx in range(8):
@@ -145,8 +163,11 @@ class Board:
         for x, column in enumerate(self.sub_grids):
             for y, grid in enumerate(column):
                 yield grid, (x, y)
-    
+
+
     def grid_from_entity_loc(self, entity_x : float, entity_y : float) -> tuple[int, int]:
+        """Calculate what grid an entity should be in by its x and y coordinates."""
+        # TODO Change naming of this, might not just be used for entity locations, but also just for finding out what location a grid contains.
         if entity_x > self.__width or entity_y > self.__height:
             raise OutOfBoundsError(f"Location ({entity_x}, {entity_y}) is out of bounds! Maximum is ({self.__width}, {self.__height})!")
         
@@ -154,7 +175,8 @@ class Board:
 
 
     def add_entity(self, entity : UUID, x : float, y : float) -> None:
-        if x > self.__width or y > self.__height:
+        """For an entity to be added to the grid. If you want to edit entity location, use 'set_entity_location()'"""
+        if not self.in_bounds(x, y):
             raise OutOfBoundsError(f"Location ({x}, {y}) is out of bounds! Maximum is ({self.__width}, {self.__height})!")
         
         grid_location = self.grid_from_entity_loc(x, y)
@@ -163,9 +185,28 @@ class Board:
         target_grid.change_entity_data(entity, x, y)
 
 
+    def set_entity_location(self, entity : UUID, x : float, y : float) -> None:
+        """Change the location of an entity."""
+        if not self.in_bounds(x, y):
+            raise OutOfBoundsError(f"Location ({x}, {y}) is out of bounds! Maximum is ({self.__width}, {self.__height})!")
+        
+        if entity not in self.entity_registry:
+            raise EntityNotFoundError(f"Entity '{str(entity)}' is not present in the registry.")
+
+        entity_current_grid = self.entity_registry[entity]
+        entity_new_grid = self.grid_from_entity_loc(x, y)
+        new_grid = self.get_grid(*entity_new_grid)
+        if entity_current_grid != entity_new_grid:
+            # If grid has changed, remove the entity from the old grid, and change their grid in the registry.
+            self.get_grid(*entity_current_grid).pop_entity(entity)
+            self.entity_registry[entity] = new_grid
+        new_grid.change_entity_data(entity, x, y)
+
+
     def get_entities_nearby(self, entity : UUID) -> None:
         if entity not in self.entity_registry:
-            raise ValueError("Entity not found on board!")
+            raise EntityNotFoundError(f"Entity '{str(entity)}' is not present in the registry.")
+        
         current_grid_coords = self.entity_registry[entity]
         found_entities = [(new_entity, x, y)for new_entity, x, y in self.get_grid(*current_grid_coords).get_all_entities() if new_entity != entity]
         for neighbour in self.get_neighbour_grids(*current_grid_coords):
@@ -175,7 +216,7 @@ class Board:
 
     def get_entity_location(self, entity : UUID) -> tuple[float, float]:
         if entity not in self.entity_registry:
-            raise ValueError("Entity not found on board!")
+            raise EntityNotFoundError(f"Entity '{str(entity)}' is not present in the registry.")
         grid_x, grid_y = self.entity_registry[entity]
         return self.sub_grids[grid_x][grid_y].get_entity_location(entity)
 
@@ -219,8 +260,4 @@ class Board:
     def __len__(self) -> int:
         return self.num_entities
 
-
-    # TODO __repr__() -> new implementation
     # TODO get_all_in_view()
-    # TODO in_bounds()
-    # TODO set_entity()
