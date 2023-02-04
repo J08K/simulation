@@ -7,7 +7,7 @@ from Common import Species, Genomes
 
 def create_new_board(size: tuple[int, int], entities: dict[Species.BaseSpecie, int]) -> board.Board:
     width, height = size
-    new_board = board.Board(width, height)
+    new_board = board.Board(width, height, 5)
 
     for target_species, num in zip(entities.keys(), entities.values()):
         for _ in range(num):
