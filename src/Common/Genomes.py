@@ -1,4 +1,5 @@
 import random
+import enum
 
 from uuid import UUID, uuid4
 
@@ -7,7 +8,14 @@ def calc_mutation(value : float, mutability : float, accuracy : int) -> float:
     max_change = int(mutability * div)
     change = random.randrange( -max_change, max_change, 1) / div
     return round(value * (1 + change), accuracy)
-    
+
+
+class Gender(enum.Enum):
+    # Controversial, but for simplicity only having 2 genders.
+    MALE = 0
+    FEMALE = 1
+
+
 class Gene:
 
     name : str
@@ -65,7 +73,7 @@ class Genome:
     vision_range : Gene
     gestation_period : Gene
     
-    # TODO Add gender
+    gender : Gender
     
     __uuid : UUID
     
@@ -75,12 +83,14 @@ class Genome:
                  max_hunger_gene : Gene,
                  vision_range_gene : Gene,
                  gestation_period_gene : Gene,
+                 gender : Gender
                  ) -> None:
         self.speed = speed_gene
         self.hunger_rate = hunger_rate_gene
         self.max_hunger = max_hunger_gene
         self.vision_range = vision_range_gene
         self.gestation_period = gestation_period_gene
+        self.gender = gender
         
         self.__uuid = uuid4()
         
@@ -92,12 +102,15 @@ class Genome:
 
         new_gestation_period = self.gestation_period.combine(other.gestation_period, do_mutate, accuracy)
         
+        new_gender = random.choice([Gender.FEMALE, Gender.MALE]) # TODO Research if there are other factors affecting gender.
+        
         new_genome = Genome(
             speed_gene=new_speed,
             hunger_rate_gene=new_hunger_rate,
             max_hunger_gene=new_max_hunger,
             vision_range_gene=new_vision_range,
             gestation_period_gene=new_gestation_period,
+            gender=new_gender
         )
         
         return new_genome
@@ -116,6 +129,7 @@ class Genome:
                 "max_hunger": dict(self.max_hunger),
                 "vision_range": dict(self.vision_range),
                 "gestation_period": dict(self.gestation_period),
+                "gender": self.gender.name
             }
         }
         
