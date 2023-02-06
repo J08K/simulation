@@ -1,9 +1,9 @@
 """New board design, to make looping over entities more efficient."""
 
-import Common
 import math
 
-from entities import Entity
+from uuid import UUID
+
 
 
 class OutOfBoundsError(Exception):
@@ -28,28 +28,28 @@ class SubGrid:
     __width : float
     __height : float
     
-    grid_entities : dict[Entity, tuple[float, float]]
+    grid_entities : dict[UUID, tuple[float, float]]
     
     def __init__(self, width : float, height : float) -> None:
         self.__width = width
         self.__height = height
         self.grid_entities = dict()
     
-    def change_entity_data(self, entity : Entity, x : float, y : float) -> None:
+    def change_entity_data(self, entity : UUID, x : float, y : float) -> None:
         self.grid_entities[entity] = (x, y)
     
-    def get_entity_location(self, entity : Entity) -> tuple[float, float] | None:
+    def get_entity_location(self, entity : UUID) -> tuple[float, float] | None:
         if entity in self.grid_entities:
             return self.grid_entities[entity]
         return None
     
-    def pop_entity(self, entity : Entity) -> tuple[float, float]:
+    def pop_entity(self, entity : UUID) -> tuple[float, float]:
         if entity not in self.grid_entities:
             raise EntityNotFoundError(f"Entity '{str(entity)}' is not in grid!")
         
         return self.grid_entities.pop(entity)
 
-    def get_all_entities(self) -> list[tuple[Entity, float, float]]:
+    def get_all_entities(self) -> list[tuple[UUID, float, float]]:
         return [(entity, *location) for entity, location in self.grid_entities.items()]
 
     def __repr__(self) -> str:
@@ -66,16 +66,16 @@ class Board:
     
     __width : float
     __height : float
-    __grid_size : float
+    __max_view_distance : float
     
     sub_grids : list[list[SubGrid]] # Stores grids, by their (x, y) location.
     
-    entity_registry : dict[Entity, tuple[int, int]] # Stores each entity's current grid. Quick and dirty lookup basically.
+    entity_registry : dict[UUID, tuple[int, int]] # Stores each entity's current grid. Quick and dirty lookup basically.
     
-    def __init__(self, width : float, height : float, grid_size : float) -> None:
+    def __init__(self, width : float, height : float, max_view_distance : float) -> None:
         self.__width = width
         self.__height = height
-        self.__grid_size = grid_size
+        self.__max_view_distance = max_view_distance
         self.entity_registry = {}
         self.sub_grids = []
         
@@ -88,24 +88,24 @@ class Board:
 
         self.entity_registry = {}
 
-        num_width_full_grids = int(self.__width // self.__grid_size) # Amount of full-sized grids in the x direction.
-        num_height_full_grids = int(self.__height // self.__grid_size) # Amount of full-sized grids in the y direction.
+        num_width_full_grids = int(self.__width // self.__max_view_distance) # Amount of full-sized grids in the x direction.
+        num_height_full_grids = int(self.__height // self.__max_view_distance) # Amount of full-sized grids in the y direction.
 
-        width_column_partial_grids = self.__width % self.__grid_size # Width of column of leftover grid size.
-        height_row_partial_grids = self.__height % self.__grid_size # Height of row of leftover grid size.
+        width_column_partial_grids = self.__width % self.__max_view_distance # Width of column of leftover grid size.
+        height_row_partial_grids = self.__height % self.__max_view_distance # Height of row of leftover grid size.
 
         sub_grids : list[list[SubGrid]] = []
         for _ in range(num_width_full_grids): # Starting in the x direction
             column_sub_grids : list[SubGrid] = []
             for _ in range(num_height_full_grids):
                 column_sub_grids.append(SubGrid(
-                    width=self.__grid_size,
-                    height=self.__grid_size,
+                    width=self.__max_view_distance,
+                    height=self.__max_view_distance,
                 ))
             
             if height_row_partial_grids:
                 column_sub_grids.append(SubGrid(
-                    width=self.__grid_size,
+                    width=self.__max_view_distance,
                     height=height_row_partial_grids
                 ))
             
@@ -115,7 +115,7 @@ class Board:
             sub_grids.append([
                     SubGrid(
                         width=width_column_partial_grids, # Honestly kind of hate this formatting :P
-                        height=self.__grid_size,
+                        height=self.__max_view_distance,
                     ) for _ in range(num_height_full_grids)
                 ])
         
@@ -171,10 +171,10 @@ class Board:
         if entity_x > self.__width or entity_y > self.__height:
             raise OutOfBoundsError(f"Location ({entity_x}, {entity_y}) is out of bounds! Maximum is ({self.__width}, {self.__height})!")
         
-        return int(entity_x // self.__grid_size), int(entity_y // self.__grid_size)
+        return int(entity_x // self.__max_view_distance), int(entity_y // self.__max_view_distance)
 
 
-    def add_entity(self, entity : Entity, x : float, y : float) -> None:
+    def add_entity(self, entity : UUID, x : float, y : float) -> None:
         """For an entity to be added to the grid. If you want to edit entity location, use 'set_entity_location()'"""
         if not self.in_bounds(x, y):
             raise OutOfBoundsError(f"Location ({x}, {y}) is out of bounds! Maximum is ({self.__width}, {self.__height})!")
@@ -185,7 +185,7 @@ class Board:
         target_grid.change_entity_data(entity, x, y)
 
 
-    def set_entity_location(self, entity : Entity, x : float, y : float) -> None:
+    def set_entity_location(self, entity : UUID, x : float, y : float) -> None:
         """Change the location of an entity."""
         if not self.in_bounds(x, y):
             raise OutOfBoundsError(f"Location ({x}, {y}) is out of bounds! Maximum is ({self.__width}, {self.__height})!")
@@ -203,7 +203,7 @@ class Board:
         new_grid.change_entity_data(entity, x, y)
 
 
-    def get_entities_nearby(self, entity : Entity) -> None:
+    def get_entities_nearby(self, entity : UUID) -> None:
         if entity not in self.entity_registry:
             raise EntityNotFoundError(f"Entity '{str(entity)}' is not present in the registry.")
         
@@ -214,7 +214,7 @@ class Board:
         return found_entities
 
 
-    def get_entity_location(self, entity : Entity) -> tuple[float, float]:
+    def get_entity_location(self, entity : UUID) -> tuple[float, float]:
         if entity not in self.entity_registry:
             raise EntityNotFoundError(f"Entity '{str(entity)}' is not present in the registry.")
         grid_x, grid_y = self.entity_registry[entity]
@@ -222,7 +222,7 @@ class Board:
 
 
     @property
-    def all_entities(self) -> list[Entity]:
+    def all_entities(self) -> list[UUID]:
         return [entity for entity in self.entity_registry.keys()]
 
 
@@ -243,7 +243,7 @@ class Board:
 
     @property
     def max_view_distance(self) -> float:
-        return self.__grid_size
+        return self.__max_view_distance
 
 
     @property
