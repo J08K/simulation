@@ -1,0 +1,20 @@
+
+$background_color_1: #00ff00;
+$background_color_2: #007700;
+
+.board {
+    border: 1px solid black;
+    width: 100%;
+
+    overflow: hidden;
+}
+
+.base_grid {
+    background-color: $background_color_1;
+    
+    opacity: 0.8;
+    background-image:  repeating-linear-gradient(45deg, $background_color_2 25%, transparent 25%, transparent 75%, $background_color_2 75%, $background_color_2), repeating-linear-gradient(45deg, $background_color_2 25%, $background_color_1 25%, $background_color_1 75%, $background_color_2 75%, $background_color_2);
+    background-position: 0 0, 10px 10px;
+    background-size: 20px 20px;
+    width: 100%;
+}
