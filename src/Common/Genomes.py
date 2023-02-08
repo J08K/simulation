@@ -11,7 +11,7 @@ def calc_mutation(value : float, mutability : float, accuracy : int) -> float:
 
 
 class Gender(enum.Enum):
-    # Controversial, but for simplicity only having 2 genders.
+    # Controversial, but for simplicity only having 2 genders. :)
     MALE = 0
     FEMALE = 1
 
