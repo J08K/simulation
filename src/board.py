@@ -203,7 +203,7 @@ class Board:
         new_grid.change_entity_data(entity, x, y)
 
 
-    def get_entities_nearby(self, entity : Entity) -> None:
+    def get_entities_nearby(self, entity : Entity) -> list[tuple[Entity. float, float]]:
         if entity not in self.entity_registry:
             raise EntityNotFoundError(f"Entity '{str(entity)}' is not present in the registry.")
         
@@ -220,6 +220,18 @@ class Board:
         grid_x, grid_y = self.entity_registry[entity]
         return self.sub_grids[grid_x][grid_y].get_entity_location(entity)
 
+
+    def get_all_in_view(self, entity : Entity) -> dict[Entity, tuple[float, float]]:
+        targets = self.get_entities_nearby(entity)
+        cur_x, cur_y = self.get_entity_location(entity)
+        
+        visible = {}
+        
+        for other, target_x, target_y in targets:
+            if Common.calc_distance(target_x, target_y, cur_x, cur_y) <= entity.eyes.view_distance:
+                visible[other] = (target_x, target_y)
+
+        return visible
 
     @property
     def all_entities(self) -> list[Entity]:

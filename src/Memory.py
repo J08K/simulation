@@ -9,8 +9,8 @@ class ShortTermMemory:
     def __init__(self) -> None:
         self.entity_locations = dict()
 
-    def add_entity(self, entity_uuid : UUID, location : tuple[float, float]) -> None:
-        self.entity_locations[entity_uuid] = location
+    def add_entity(self, entity_uuid: UUID, x: float, y: float) -> None:
+        self.entity_locations[entity_uuid] = (x, y)
 
 class LongTermMemory:
 
@@ -21,8 +21,8 @@ class LongTermMemory:
     def __init__(self) -> None:
         self.static_food_locations = []
 
-    def add_food(self, location : tuple[float, float]) -> None:
-        self.static_food_locations.append(location)
+    def add_food(self, x: float, y: float) -> None:
+        self.static_food_locations.append((x, y))
 
 class Memory:
     
@@ -30,7 +30,7 @@ class Memory:
     
     __current_time : float
 
-    register : dict[float, list[ShortTermMemory, LongTermMemory]]
+    register : dict[float, list[ShortTermMemory | LongTermMemory]]
     
     def __init__(self, memory_len : float) -> None:
         self.memory_len = memory_len
@@ -56,8 +56,8 @@ class Memory:
         if self.__current_time not in self.times:
             self.register[self.__current_time] = [ShortTermMemory(), LongTermMemory()]
 
-    def remember_entity_location(self, entity_uuid : UUID, location : tuple[float, float]) -> None:
-        self.register[self.__current_time][0].add_entity(entity_uuid, location)
+    def remember_entity_location(self, entity_uuid : UUID, x: float, y: float) -> None:
+        self.register[self.__current_time][0].add_entity(entity_uuid, x, y)
 
-    def remember_food_location(self, location : tuple[float, float]) -> None:
-        self.register[self.__current_time][1].add_food(location)
+    def remember_food_location(self, x: float, y: float) -> None:
+        self.register[self.__current_time][1].add_food(x, y)

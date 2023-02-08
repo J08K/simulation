@@ -17,7 +17,7 @@ class Vision:
         """Tests whether the absolute target coordinates are in view of the entity."""
         cur_x, cur_y = cur_coords
         target_x, target_y = target_coords
-        return bool(Common.calc_distance(cur_x, cur_y, target_x, target_y) <= self.__distance)
+        return Common.calc_distance(cur_x, cur_y, target_x, target_y) <= self.__distance
         
     def rel_in_view(self, target_coords : tuple[float, float]) -> bool:
         """Tests whether the relative target coordinates are in view of the entity."""
