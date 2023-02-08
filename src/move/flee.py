@@ -10,8 +10,7 @@ def calc_best_flee_vector(rel_predator_pos : list[tuple[float, float]]) -> tuple
 
 
 def normalize_vector(vec : tuple[float, float]) -> tuple[float, float]:
-    
-    # Keeps the shape of the vector, but makes it so that x will be 1 or -1.
+    """Keeps the shape of the vector, but makes it so that x will be 1 or -1."""
     
     x, y = vec
     divisor = abs(1 / x)

@@ -2,7 +2,7 @@ import board
 import random
 
 from entities import Entity
-from Common import Species, Genomes
+from Common import Species, Genomes, calc_distance
 
 
 def create_new_board(size: tuple[int, int], entities: dict[Species.BaseSpecie, int]) -> board.Board:
@@ -54,10 +54,12 @@ class Simulation:
             # First loop should let all of the entities on the board observe.
             # Entities in this phase should also do a risk assesment of every action.
             # All observations and risk assesments should be output to the log using Log Level DATA.
-            for entity in self.entity_board.entities:
+            for entity in self.entity_board.all_entities:
                 if (entity.specie.can_see):  # If an entity cannot see, then it cannot do any actions anyway.
+                    cur_x, cur_y = self.entity_board.get_entity_location(entity)
                     observation = self.entity_board.get_all_in_view(entity)
-                    identified = entity.identify_multiple_relationships(observation)
+                    identified = entity.identify_multiple_relationships(list(observation.keys()))
+                    distances = {target: calc_distance(x, y, cur_x, cur_y) for target, x, y in observation.items()}
 
             # TODO Phase 2
             # Second loop should let every entity decide what action to commit.
