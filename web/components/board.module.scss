@@ -1,11 +1,11 @@
 $main-grid-background: red;
-$sub-grid-color-1: var(--accent-key-color);
-$sub-grid-color-2: var(--accent-variant-color);
-$sub-grid-border-color: var(--accent-variant-color-dark);
+$sub-grid-color-1: var(--primary-color);
+$sub-grid-color-2: var(--primary-color-light);
+$sub-grid-border-color: var(--primary-color-dark);
 $sub-grid-hover-opacity: 80%;
 
 .board {
-    border: 1px solid $sub-grid-border-color;
+    border: none;
     width: 100%;
 
     overflow: hidden;

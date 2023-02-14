@@ -1,0 +1,73 @@
+$neutral-color: var(--neutral-color);
+$neutral-color-variant: var(--neutral-color-variant);
+$text-secondary-color: var(--text-secondary-color);
+
+$warning-color: var(--warning-color);
+$warning-color-light: var(--warning-color-light);
+$warning-color-dark: var(--warning-color-dark);
+
+$primary-color : var(--primary-color);
+$primary-color-light : var(--primary-color-light);
+$primary-color-dark : var(--primary-color-dark);
+
+$secondary-color : var(--secondary-color);
+$secondary-color-light : var(--secondary-color-light);
+$secondary-color-dark : var(--secondary-color-dark);
+
+.ControlPanel {
+    box-sizing: border-box;
+    background-color: $neutral-color-variant;
+    width: 100%;
+    padding: 0.5em;
+
+    display: grid;
+    grid-template-columns: 30% 70%;
+
+    > .Status {
+        width: auto;
+    }
+
+    > .Buttons {
+        width: auto;
+        text-align: right;
+
+        & > form * {
+            max-width: 25%;
+            box-sizing: border-box;
+            
+            &:focus {
+                outline: none;
+            }
+
+            &.InvalidNumber {
+                box-sizing: border-box;
+                background: $warning-color-light;
+                border: solid 1px $warning-color-dark;
+            }
+        }
+
+        
+    }
+}
+
+.List {
+    box-sizing: border-box;
+}
+
+.EntityItem {
+    background-color: $neutral-color;
+    box-sizing: border-box;
+    padding: 0.5em;
+
+    border-bottom: solid 1px $neutral-color-variant;
+
+    display: grid;
+    grid-template-columns: 70% 15% 15%;
+
+    color: $primary-color-light;
+
+    span {
+        color: $secondary-color;
+    }
+}
+

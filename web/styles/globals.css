@@ -1,14 +1,25 @@
-
+@import url("https://fonts.googleapis.com/css2?family=Roboto");
 
 :root {
-  --neutral-key-color: #1b1c18;
-  --neutral-variant-color: #42433e;
+  --neutral-color: #1b1c18;
+  --neutral-color-variant: #42433e;
 
-  --accent-key-color: #388e3c;
-  --accent-variant-color: #6abf69;
-  --accent-variant-color-dark: #00600f;
+  --primary-color: #388e3c;
+  --primary-color-light: #6abf69;
+  --primary-color-dark: #00600f;
 
-  --text-key-color: #ffffff;
+  --secondary-color: #6d4c41;
+  --secondary-color-light: #9c786c;
+  --secondary-color-dark: #40241a;
+
+  --text-primary-color: #000000;
+  --text-secondary-color: #ffffff;
+
+  --font-family-primary: "Roboto";
+
+  --warning-color: #e53935;
+  --warning-color-light: #ff6f60;
+  --warning-color-dark: #ab000d;
 }
 
 body {
@@ -20,8 +31,9 @@ body {
 
   min-height: 100vh;
 
-  background-color: var(--neutral-key-color);
-  color: var(--text-key-color);
+  background-color: var(--neutral-color);
+  color: var(--text-secondary-color);
+  font-family: "Roboto";
 }
 
 main {

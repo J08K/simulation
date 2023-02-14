@@ -1,5 +1,7 @@
+import { Dispatch, SetStateAction } from "react"
+
 export type Entity = {
-    id : number
+    id : number,
 }
 
 export type EntityLocation = {
@@ -9,12 +11,13 @@ export type EntityLocation = {
 }
 
 export type BoardProps = {
-    width : number;
-    height : number;
-    grid_size : number;
-    entity_locations : Array<EntityLocation>
+    width : number,
+    height : number,
+    grid_size : number,
+    entity_locations : Array<EntityLocation>,
 }
 
 export type EntityListProps = {
-    
+    entity_locations : Array<EntityLocation>,
+    setEntityLocations : Dispatch<SetStateAction<EntityLocation[]>>,
 }
