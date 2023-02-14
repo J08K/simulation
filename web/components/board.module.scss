@@ -4,6 +4,10 @@ $sub-grid-color-2: var(--primary-color-light);
 $sub-grid-border-color: var(--primary-color-dark);
 $sub-grid-hover-opacity: 80%;
 
+$text-primary-color: var(--text-primary-color);
+$text-secondary-color: var(--text-secondary-color);
+
+
 .board {
     border: none;
     width: 100%;
@@ -76,7 +80,20 @@ $sub-grid-hover-opacity: 80%;
 
         
     }
+}
 
-    
+.Entities {
 
+    > * {
+        position: absolute;
+
+        background-color: yellow;
+        color: $text-primary-color;
+
+        height: 1.1em;
+        width: 1.1em;
+        
+        text-align: center;
+        border-radius: 50%;
+    }
 }

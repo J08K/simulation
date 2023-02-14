@@ -1,3 +1,4 @@
+import { useEffect, useReducer, useState } from "react";
 import styles from "./board.module.scss";
 
 import { BoardProps } from "@/utils/types";
@@ -56,7 +57,7 @@ function genGrids(width: number, height: number, grid_size: number) {
             grid_num++;
         }
         sub_grids.push(
-            <thead style={{height: idx === 0 ? first_row_height : "auto"}}key={grid_num.toString() + "-" + row_num.toString()}><tr>{...row}</tr></thead>
+            <thead style={{height: idx === 0 ? first_row_height : "auto"}} key={grid_num.toString() + "-" + row_num.toString()}><tr>{...row}</tr></thead>
         )
         row_num++;
 
@@ -67,11 +68,43 @@ function genGrids(width: number, height: number, grid_size: number) {
 
 const Board = (props : BoardProps) => {
 
+    let [entity_elements, setEntityElements] = useState<JSX.Element[]>([]);
+
+    function renderEntities() {
+        let times_run = 0;
+        let reference_grid = document.getElementById("sub_grids");
+
+        if (!reference_grid) {
+            throw "Sub grids not found!"
+        }
+        let reference_width = reference_grid.scrollWidth;
+        let reference_height = reference_grid.scrollHeight;
+
+        setEntityElements(
+            props.entity_locations.map((entity) => {
+                console.log(times_run);
+                let top_offset = reference_height - ((reference_height / props.height) * entity.y);
+                let left_offset = (reference_width / props.width) * entity.x;
+                return <div style={{left: left_offset.toString() + "px", top: top_offset.toString() + "px"}}>{entity.entity.id}</div>
+            })
+        )
+    }
+
+    useReducer((state : {count: number}, action : ) => {}, { // TODO Implemnent it to render each state change of props.entity_locations
+        status: "stopped",
+    })
+
+    useEffect(() => {
+        window.addEventListener("resize", renderEntities);
+    })
+        
+
     return (
         <div className={styles.board}>
             <div className={styles.base_grid} style={{"aspectRatio" : `${props.width}/${props.height}`}}>
                 <table id="sub_grids"> { ...genGrids(props.width, props.height, props.grid_size) } </table>
-                <div id="entities"></div>
+                <div id="entities" className={styles.Entities}>{...entity_elements}</div>
+                <div>{props.entity_locations.length}</div>
             </div>
         </div>
     );

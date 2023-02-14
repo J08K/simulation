@@ -64,10 +64,10 @@ $secondary-color-dark : var(--secondary-color-dark);
     display: grid;
     grid-template-columns: 70% 15% 15%;
 
-    color: $primary-color-light;
+    color: $text-secondary-color;
 
     span {
-        color: $secondary-color;
+        color: $primary-color-light;
     }
 }
 

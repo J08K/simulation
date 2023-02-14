@@ -8,13 +8,13 @@ function isNumeric(txt : string) {
     return !isNaN(+txt);
 }
 
-const EntityItem = (props : { entity_location : EntityLocation }) => {
+const EntityItem = (props : { onDelete : Function, entity_location : EntityLocation }) => {
     
     return (
         <div className={styles.EntityItem}>
-            <div><span>Entity ID: </span>{props.entity_location.entity.id}</div>
-            <div><span>X: </span>{props.entity_location.x}</div>
-            <div><span>Y: </span>{props.entity_location.y}</div>
+            <div>Entity ID: <span>{props.entity_location.entity.id}</span></div>
+            <div>X: <span>{props.entity_location.x.toFixed(2)}</span></div>
+            <div>Y: <span>{props.entity_location.y.toFixed(2)}</span></div>
         </div>
     )
 }
@@ -73,7 +73,7 @@ const EntityList = (props : EntityListProps) => {
                 </div>
             </div>
             <div className={styles.List}>
-                {props.entity_locations.map((entity, index) => <EntityItem key={index} entity_location={entity}/>)}
+                {props.entity_locations.map((entity, index) => <EntityItem key={index} entity_location={entity} onDelete={() => {} /* TODO Add on delete*/}/>)}
             </div>
         </>
     )
