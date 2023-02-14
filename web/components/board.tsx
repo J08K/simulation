@@ -2,7 +2,7 @@ import styles from "./board.module.scss";
 
 import { BoardProps } from "../utils/types";
 
-function Grids(width: number, height: number, grid_size: number) {
+function genGrids(width: number, height: number, grid_size: number) {
     let num_width_full_grids = Math.floor(width / grid_size);
     let num_height_full_grids = Math.floor(height / grid_size);
 
@@ -11,6 +11,7 @@ function Grids(width: number, height: number, grid_size: number) {
 
     let sub_grids: Array<JSX.Element> = [];
     let grid_num = 0;
+    let row_num = 0;
 
     if (height_row_partial_grids > 0) {
         let row: Array<JSX.Element> = [];
@@ -29,9 +30,10 @@ function Grids(width: number, height: number, grid_size: number) {
         }
 
         sub_grids.push(
-            <tr>{...row}</tr>
+            <tr key={grid_num.toString() + "-" + row_num.toString()}>{...row}</tr>
         );
         grid_num++;
+        row_num++;
     }
 
     for (let idx = 0; idx < num_height_full_grids; idx++) {
@@ -50,8 +52,10 @@ function Grids(width: number, height: number, grid_size: number) {
             grid_num++;
         }
         sub_grids.push(
-            <tr>{...row}</tr>
+            <tr key={grid_num.toString() + "-" + row_num.toString()}>{...row}</tr>
         )
+        row_num++;
+
     }
 
     return sub_grids;
@@ -59,14 +63,10 @@ function Grids(width: number, height: number, grid_size: number) {
 
 const Board = (props : BoardProps) => {
 
-    
-
     return (
         <div className={styles.board}>
             <div className={styles.base_grid} style={{"aspectRatio" : `${props.width}/${props.height}`}}>
-                <table id="sub_grids">
-                    { Grids(props.width, props.height, props.grid_size) }
-                </table>
+                <table id="sub_grids"> { genGrids(props.width, props.height, props.grid_size) } </table>
             </div>
         </div>
     );
