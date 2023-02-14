@@ -1,8 +1,13 @@
 import Head from 'next/head';
 import Board from "components/board";
 import styles from "../styles/index.module.scss";
+import { useState } from 'react';
+import { EntityLocation } from '@/utils/types';
 
 export default function Home() {
+
+  let [entity_locations, update_locations] = useState([]);
+
   return (
     <>
       <Head>
@@ -14,7 +19,10 @@ export default function Home() {
       <main>
         <div className={styles.interface}>
           <div></div>
-          <Board width={1800} height={1200} grid_size={30}/>
+          <div className='main'>
+            <Board width={16} height={10} grid_size={3} entity_locations={entity_locations}/>
+            
+          </div>
           <div></div>
         </div>
       </main>

@@ -1,6 +1,10 @@
 .interface {
     display: grid;
 
+    height: 100%;
     width: 100%;
     grid-template-columns: 20% auto 20%;
+
+    background-color: var(--neutral-key-color);
+    color: var(--text-key-color)
 }

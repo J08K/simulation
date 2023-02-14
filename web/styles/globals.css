@@ -1,3 +1,16 @@
+
+
+:root {
+  --neutral-key-color: #1b1c18;
+  --neutral-variant-color: #42433e;
+
+  --accent-key-color: #388e3c;
+  --accent-variant-color: #6abf69;
+  --accent-variant-color-dark: #00600f;
+
+  --text-key-color: #ffffff;
+}
+
 body {
   max-width: 100vw;
   overflow-x: hidden;
@@ -5,4 +18,12 @@ body {
   margin: 0;
   padding: 0;
 
+  min-height: 100vh;
+
+  background-color: var(--neutral-key-color);
+  color: var(--text-key-color);
+}
+
+main {
+  min-height: 100vh;
 }

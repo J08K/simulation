@@ -1,6 +1,6 @@
 import styles from "./board.module.scss";
 
-import { BoardProps } from "../utils/types";
+import { BoardProps } from "@/utils/types";
 
 function genGrids(width: number, height: number, grid_size: number) {
     let num_width_full_grids = Math.floor(width / grid_size);
@@ -70,7 +70,7 @@ const Board = (props : BoardProps) => {
     return (
         <div className={styles.board}>
             <div className={styles.base_grid} style={{"aspectRatio" : `${props.width}/${props.height}`}}>
-                <table id="sub_grids"> { genGrids(props.width, props.height, props.grid_size) } </table>
+                <table id="sub_grids"> { ...genGrids(props.width, props.height, props.grid_size) } </table>
                 <div id="entities"></div>
             </div>
         </div>
