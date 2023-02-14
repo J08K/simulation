@@ -14,7 +14,7 @@ export default function Home() {
       <main>
         <div className={styles.interface}>
           <div></div>
-          <Board width={16} height={10} grid_size={3}/>
+          <Board width={1800} height={1200} grid_size={30}/>
           <div></div>
         </div>
       </main>
