@@ -50,22 +50,22 @@ class Gene:
         
         return new_gene
 
+    def export_dict(self) -> dict:
+        return {
+            "uuid": self.uuid,
+            "name": self.name,
+            "value": self.value,
+            "mutability": self.mutability,
+        }
+
     @property
     def uuid(self) -> str:
         return str(self.__uuid)
-    
-    def __dict__(self) -> dict[str, str | dict[str, str | float]]:
-        return {
-            "type" : "Gene",
-            "uuid" : self.uuid,
-            "data" : {
-                "name" : self.name,
-                "value" : self.value,
-                "mutability" : self.mutability,
-            }
-        }
+
 
 class Genome:
+    
+    # TODO Might want to add memory length.
     
     speed : Gene
     hunger_rate : Gene
@@ -119,17 +119,16 @@ class Genome:
     def uuid(self) -> str:
         return str(self.__uuid)
     
-    def __dict__(self) -> dict:
+    def export_dict(self) -> dict:
         return {
-            "type": "Genome",
             "uuid": self.uuid,
-            "data": {
-                "speed": dict(self.speed),
-                "hunger_rate": dict(self.hunger_rate),
-                "max_hunger": dict(self.max_hunger),
-                "vision_range": dict(self.vision_range),
-                "gestation_period": dict(self.gestation_period),
-                "gender": self.gender.name
+            "gender": self.gender,
+            "genes": {
+                "speed": self.speed.export_dict(),
+                "hunger_rate": self.hunger_rate.export_dict(),
+                "max_hunger": self.max_hunger.export_dict(),
+                "vision_range": self.vision_range.export_dict(),
+                "gestation_period": self.gestation_period.export_dict(),
             }
         }
         

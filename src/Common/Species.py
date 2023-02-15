@@ -42,6 +42,17 @@ class BaseSpecie:
         else:
             return SpecieRelationship.NEUTRAL
 
+
+    def export_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "prey": self.__edible_entities,
+            "can_move": self.can_move,
+            "can_see": self.can_see,
+        }
+
+
     @property
     def name(self) -> str:
         return self.__name

@@ -9,7 +9,7 @@ def create_new_board(size: tuple[int, int], entities: dict[Species.BaseSpecie, i
     width, height = size
     new_board = board.Board(width, height, 5)
 
-    for target_species, num in zip(entities.keys(), entities.values()):
+    for target_species, num in entities.items():
         for _ in range(num):
             new_board.set_entity(
                 entity=Entity(
@@ -44,9 +44,18 @@ class Simulation:
         self.entity_board = entity_board
         self.time_created = cur_time
         self.time_delta = time_delta
+        self.global_time = cur_time
 
     def adjust_time_delta(self, new_td: float) -> None:
         self.time_delta = new_td
+
+    def export_dict(self) -> dict:
+        return {
+            "time_zero" : self.time_created,
+            "time_delta" : self.time_delta,
+            "time_current" : self.global_time,
+            "board": self.entity_board.export_dict()
+        }
 
     def run(self, num_steps: int) -> None:
         for _ in range(num_steps):

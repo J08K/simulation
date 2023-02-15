@@ -72,6 +72,8 @@ class Board:
     
     entity_registry : dict[Entity, tuple[int, int]] # Stores each entity's current grid. Quick and dirty lookup basically.
     
+    # TODO Keep track of species and commonalities in the board. And output this is the export.
+    
     def __init__(self, width : float, height : float, grid_size : float) -> None:
         self.__width = width
         self.__height = height
@@ -80,6 +82,24 @@ class Board:
         self.sub_grids = []
         
         self.new_sub_grids(transfer_data=False)
+    
+    
+    def export_dict(self) -> None:
+        entities = []
+        for entity in self.all_entities:
+            x, y = self.get_entity_location(entity)
+            entities.append({
+                "entity": entity.export_dict(),
+                "x": x,
+                "y": y,
+            })
+
+        return {
+            "width": self.width,
+            "height": self.height,
+            "entities": entities,
+        }
+    
     
     def new_sub_grids(self, transfer_data : bool) -> None:
         cached_entities = {}

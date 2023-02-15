@@ -26,10 +26,10 @@ class Entity:
         self.genome = genome
 
         self.eyes = vision.Vision(self.genome.vision_range)
-        self.memory = Memory.Memory()
+        self.memory = Memory.Memory(3.0, 5.0, cur_day) # TODO Add NON arbitrary values.
 
         self.__is_alive = True
-        self.__day_born = cur_day
+        self.__day_born = cur_day # TODO Convert to timestamp of global time, when born.
 
         self.__uuid = uuid4()
     
@@ -46,6 +46,16 @@ class Entity:
         for other in other_entities:
             identified[self.specie.identify_relationship(other.specie)].append(other)
         return identified
+
+
+    def export_dict(self) -> dict:
+        return {
+            "uuid": self.uuid,
+            "species": self.specie.export_dict(),
+            "genome": self.genome.export_dict(),
+            "memory": self.memory.export_dict(),
+            "is_alive": self.is_alive,
+        }
 
     def age(self, current_day : int) -> int:
         return current_day - self.__day_born
