@@ -36,6 +36,22 @@ body {
   font-family: "Roboto";
 }
 
+body::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+body::-webkit-scrollbar-track {
+  background: none;
+}
+ 
+body::-webkit-scrollbar-thumb {
+  background-color: var(--neutral-color-variant);
+  border-radius: 0.5em;
+}
+
+
 main {
   min-height: 100vh;
 }
+
+

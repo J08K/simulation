@@ -1,0 +1,87 @@
+$neutral-color: var(--neutral-color);
+$neutral-color-variant: var(--neutral-color-variant);
+$text-secondary-color: var(--text-secondary-color);
+
+$warning-color: var(--warning-color);
+$warning-color-light: var(--warning-color-light);
+$warning-color-dark: var(--warning-color-dark);
+
+$primary-color : var(--primary-color);
+$primary-color-light : var(--primary-color-light);
+$primary-color-dark : var(--primary-color-dark);
+
+$secondary-color : var(--secondary-color);
+$secondary-color-light : var(--secondary-color-light);
+$secondary-color-dark : var(--secondary-color-dark);
+
+.EntityInfo {
+    width: 100%;
+    box-sizing: border-box;
+
+    > * {
+        padding: 0.5em;
+    }
+
+    .Header {
+        background-color: $neutral-color-variant;
+        border-radius: 0.2em;
+    }
+
+    .br {
+        box-sizing: border-box;
+        width: 100%;
+        height: 3px;
+
+        margin: 0.2em 0 0.2em 0;
+
+        background-color: $neutral-color-variant;
+    }
+
+    span.Data {
+        color: $primary-color-light;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    span.DataRed {
+        color: $warning-color;
+    }
+
+    .Generic {
+        
+        > * {
+            display: grid;
+            grid-template-columns: auto auto;
+        }
+
+        span.Data {
+            text-align: right;
+        }
+    }
+
+    .Species {
+        > * {
+            display: grid;
+            grid-template-columns: auto auto;
+        }
+
+        span.Data {
+            text-align: right;
+        }
+
+        .PreyData {
+            display: grid;
+            grid-template-columns: auto auto auto auto;
+        }
+    }
+
+    .Genome {
+
+    }
+
+    .Memory {
+
+    }
+}

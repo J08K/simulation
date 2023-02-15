@@ -96,13 +96,19 @@ const Board = (props : BoardProps) => {
             })
         }
 
-        window.addEventListener("resize", () => {
+        function handleResizeEvent(event : Event) {
             if (!time_out) {
                 time_out = setTimeout(handleResize, 100);
             }
             clearTimeout(time_out);
             time_out = setTimeout(handleResize, 100);
-        });
+        }
+
+        window.addEventListener("resize", handleResizeEvent);
+
+        return () => {
+            window.removeEventListener("resize", handleResizeEvent);
+        }
     });
 
     return (

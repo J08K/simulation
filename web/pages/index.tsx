@@ -4,6 +4,8 @@ import styles from "../styles/index.module.scss";
 import { useState } from 'react';
 import EntityList from '@/components/entityList/index';
 import { EntityLocation } from '@/utils/types';
+import EntitySidebar from "@/components/sidebar/entity";
+import { test_entity_location } from '@/utils/newTypes';
 
 export default function Home() {
 
@@ -24,7 +26,9 @@ export default function Home() {
             <Board width={16} height={10} grid_size={3} entity_locations={entity_locations}/>
             <EntityList entity_locations={entity_locations} setEntityLocations={setEntityLocations}/>
           </div>
-          <div></div>
+          <div>
+            <EntitySidebar selected={test_entity_location}/>
+          </div>
         </div>
       </main>
     </>
