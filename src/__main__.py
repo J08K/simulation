@@ -1,6 +1,6 @@
-import LoggingHandler
-import Config
-import scoring
+import Simulation
+from Common import Species
+import json
 
 if __name__ == "__main__":
     """ config = Config.ProjectConfigHandler()
@@ -24,10 +24,12 @@ if __name__ == "__main__":
     logger.stop()
 
     print("Logger has stopped!") """
+
+    brd = Simulation.create_new_board((16, 10), {
+        Species.BaseSpecie(0, "bear", [1], True, True): 5,
+        Species.BaseSpecie(1, "deer", [2], True, True): 20,
+        Species.BaseSpecie(2, "plant", [3], False, False): 30,
+    })
     
-    print(scoring.max_delta_distance([
-        (-9.0, 7.0),
-        (-5.0, 5.0),
-        (-10.0, 2.0),
-        (-4.0, 0.0)
-    ]))
+    with open("board.json", "w+") as file:
+        json.dump(brd.export_dict(), file)

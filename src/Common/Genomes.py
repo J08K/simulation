@@ -122,7 +122,7 @@ class Genome:
     def export_dict(self) -> dict:
         return {
             "uuid": self.uuid,
-            "gender": self.gender,
+            "gender": self.gender.name,
             "genes": {
                 "speed": self.speed.export_dict(),
                 "hunger_rate": self.hunger_rate.export_dict(),

@@ -5,6 +5,8 @@ import math
 
 from entities import Entity
 
+import pprint
+
 
 class OutOfBoundsError(Exception):
     """Raised when a given location is out of bounds for a grid."""
@@ -176,7 +178,11 @@ class Board:
 
 
     def get_grid(self, grid_x : int, grid_y : int) -> SubGrid:
-        return self.sub_grids[grid_x][grid_y]
+        try:
+            return self.sub_grids[grid_x][grid_y]
+        except IndexError as exception:
+            pprint.pprint(self.sub_grids)
+            raise OutOfBoundsError(f"Grid ({grid_x}, {grid_y}) is not on this board! '{exception}'")
 
 
     def iter_grids(self) -> tuple[SubGrid, tuple[int, int]]:
@@ -223,7 +229,7 @@ class Board:
         new_grid.change_entity_data(entity, x, y)
 
 
-    def get_entities_nearby(self, entity : Entity) -> list[tuple[Entity. float, float]]:
+    def get_entities_nearby(self, entity : Entity) -> list[tuple[Entity, float, float]]:
         if entity not in self.entity_registry:
             raise EntityNotFoundError(f"Entity '{str(entity)}' is not present in the registry.")
         

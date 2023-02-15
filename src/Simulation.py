@@ -5,13 +5,13 @@ from entities import Entity
 from Common import Species, Genomes, calc_distance
 
 
-def create_new_board(size: tuple[int, int], entities: dict[Species.BaseSpecie, int]) -> board.Board:
+def create_new_board(size: tuple[int, int], species: dict[Species.BaseSpecie, int]) -> board.Board:
     width, height = size
-    new_board = board.Board(width, height, 5)
+    new_board = board.Board(width, height, 3)
 
-    for target_species, num in entities.items():
+    for target_species, num in species.items():
         for _ in range(num):
-            new_board.set_entity(
+            new_board.add_entity(
                 entity=Entity(
                     specie=target_species,
                     genome=Genomes.Genome(
@@ -19,16 +19,13 @@ def create_new_board(size: tuple[int, int], entities: dict[Species.BaseSpecie, i
                         hunger_rate_gene=Genomes.Gene("hunger_rate", 0.5, 0.2),
                         max_hunger_gene=Genomes.Gene("max_hunger", 0.5, 0.2),
                         vision_range_gene=Genomes.Gene("vision_range", 0.5, 0.2),
-                        gestation_period_gene=Genomes.Gene(
-                            "gestation_period", 0.5, 0.2
-                        ),
+                        gestation_period_gene=Genomes.Gene("gestation_period", 0.5, 0.2),
+                        gender=random.choice([Genomes.Gender.FEMALE, Genomes.Gender.MALE])
                     ),
                     cur_day=0,
                 ),
-                location=(
-                    random.randint(0, new_board.max_x_coord),
-                    random.randint(0, new_board.max_x_coord),
-                ),
+                x=random.randint(0, new_board.max_x_coord),
+                y=random.randint(0, new_board.max_y_coord),
             )
     return new_board
 
@@ -39,6 +36,8 @@ class Simulation:
     time_created: float
     time_delta: float
     global_time: float
+    
+    # TODO This should implement a logger.
 
     def __init__(self, entity_board: board.Board, cur_time: float, time_delta: float) -> None:
         self.entity_board = entity_board
