@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useState } from "react";
 import styles from "./board.module.scss";
 
-import { BoardProps } from "@/utils/types";
+import { BoardProps, EntityLocation } from "@/utils/types";
 
 function genGrids(width: number, height: number, grid_size: number) {
     let num_width_full_grids = Math.floor(width / grid_size);
@@ -68,43 +68,48 @@ function genGrids(width: number, height: number, grid_size: number) {
 
 const Board = (props : BoardProps) => {
 
-    let [entity_elements, setEntityElements] = useState<JSX.Element[]>([]);
+    // ! Do not use for accurate data. Value is not set without one resize.
+    let [dimensions, setDimensions] = useState({width : 0, height : 0});
+    let time_out : NodeJS.Timeout;
 
-    function renderEntities() {
-        let times_run = 0;
+    function renderEntity(entity_location : EntityLocation, index : number) {
         let reference_grid = document.getElementById("sub_grids");
 
         if (!reference_grid) {
             throw "Sub grids not found!"
         }
+
         let reference_width = reference_grid.scrollWidth;
         let reference_height = reference_grid.scrollHeight;
 
-        setEntityElements(
-            props.entity_locations.map((entity) => {
-                console.log(times_run);
-                let top_offset = reference_height - ((reference_height / props.height) * entity.y);
-                let left_offset = (reference_width / props.width) * entity.x;
-                return <div style={{left: left_offset.toString() + "px", top: top_offset.toString() + "px"}}>{entity.entity.id}</div>
-            })
-        )
-    }
-
-    useReducer((state : {count: number}, action : ) => {}, { // TODO Implemnent it to render each state change of props.entity_locations
-        status: "stopped",
-    })
+        let top_offset = reference_height - ((reference_height / props.height) * entity_location.y);
+        let left_offset = (reference_width / props.width) * entity_location.x;
+        return <div key={index} style={{left: `calc(${left_offset}px - 0.5em)`, top: `calc(${top_offset}px - 0.5em)`}}>{entity_location.entity.id}</div>
+    }    
 
     useEffect(() => {
-        window.addEventListener("resize", renderEntities);
-    })
-        
+
+        function handleResize() { 
+            setDimensions({
+                width: window.innerWidth,
+                height: window.innerWidth,
+            })
+        }
+
+        window.addEventListener("resize", () => {
+            if (!time_out) {
+                time_out = setTimeout(handleResize, 100);
+            }
+            clearTimeout(time_out);
+            time_out = setTimeout(handleResize, 100);
+        });
+    });
 
     return (
         <div className={styles.board}>
             <div className={styles.base_grid} style={{"aspectRatio" : `${props.width}/${props.height}`}}>
                 <table id="sub_grids"> { ...genGrids(props.width, props.height, props.grid_size) } </table>
-                <div id="entities" className={styles.Entities}>{...entity_elements}</div>
-                <div>{props.entity_locations.length}</div>
+                <div id="entities" className={styles.Entities}>{props.entity_locations.map((entity_location, index) => {return renderEntity(entity_location, index)})}</div>
             </div>
         </div>
     );
