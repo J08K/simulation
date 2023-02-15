@@ -1,6 +1,7 @@
+import json
 import Simulation
 from Common import Species
-import json
+import timeit
 
 if __name__ == "__main__":
     """ config = Config.ProjectConfigHandler()
@@ -30,6 +31,8 @@ if __name__ == "__main__":
         Species.BaseSpecie(1, "deer", [2], True, True): 20,
         Species.BaseSpecie(2, "plant", [3], False, False): 30,
     })
-    
-    with open("board.json", "w+") as file:
-        json.dump(brd.export_dict(), file)
+
+    entity = brd.all_entities[0]
+
+    with open("entity.json", "w+") as file:
+        json.dump(entity.export_dict(), file, indent=4)

@@ -123,12 +123,12 @@ class Genome:
         return {
             "uuid": self.uuid,
             "gender": self.gender.name,
-            "genes": {
-                "speed": self.speed.export_dict(),
-                "hunger_rate": self.hunger_rate.export_dict(),
-                "max_hunger": self.max_hunger.export_dict(),
-                "vision_range": self.vision_range.export_dict(),
-                "gestation_period": self.gestation_period.export_dict(),
-            }
+            "genes": [
+                self.speed.export_dict(),
+                self.hunger_rate.export_dict(),
+                self.max_hunger.export_dict(),
+                self.vision_range.export_dict(),
+                self.gestation_period.export_dict(),
+            ]    
         }
         

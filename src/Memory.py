@@ -24,9 +24,9 @@ class ShortTermMemory:
 
     def export_dict(self) -> dict:
         return {
-            "memory_length": float,
+            "memory_length": self.memory_length,
             "entity_locations": [{
-                "uuid": uuid,
+                "uuid": str(uuid),
                 "time_added": timestamp,
                 "x": x,
                 "y": y,
@@ -53,7 +53,7 @@ class LongTermMemory:
 
     def export_dict(self) -> dict:
         return {
-            "memory_length": float,
+            "memory_length": self.memory_length,
             "static_food_locations": [{
                 "time_added": timestamp,
                 "x": x,
@@ -94,7 +94,7 @@ class Memory:
 
     def export_dict(self) -> dict:
         return {
-            "current_time": float,
+            "current_time": self.current_time,
             "long_term": self.long_term.export_dict(),
             "short_term": self.short_term.export_dict(),
         }
