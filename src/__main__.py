@@ -27,12 +27,11 @@ if __name__ == "__main__":
     print("Logger has stopped!") """
 
     brd = Simulation.create_new_board((16, 10), {
-        Species.BaseSpecie(0, "bear", [1], True, True): 5,
-        Species.BaseSpecie(1, "deer", [2], True, True): 20,
-        Species.BaseSpecie(2, "plant", [3], False, False): 30,
+        Species.BaseSpecie(0, "bear", [1], True, True): 50,
+        Species.BaseSpecie(1, "deer", [2], True, True): 200,
+        Species.BaseSpecie(2, "plant", [3], False, False): 300,
     })
 
-    entity = brd.all_entities[0]
 
-    with open("entity.json", "w+") as file:
-        json.dump(entity.export_dict(), file, indent=4)
+    with open("board.json", "w+") as file:
+        json.dump(brd.export_dict(), file, indent=4)

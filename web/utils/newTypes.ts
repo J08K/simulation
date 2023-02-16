@@ -98,7 +98,7 @@ export let test_entity_location : EntityLocation = {
                 }],
             },
             long_term: {
-                memory_length: 3,
+                memory_length: 4,
                 static_food_locations: [{
                     time_added: 0.1,
                     x: 2,
