@@ -1,14 +1,9 @@
 import { EntityListProps } from "@/utils/types";
 import styles from "./entityList.module.scss";
 import {EntityLocation} from "@/utils/types"
-import {FormEvent, useRef, useState } from "react";
 
 
-function isNumeric(txt : string) {
-    return !isNaN(+txt);
-}
-
-const EntityItem = (props : { onDelete : Function, entity_location : EntityLocation }) => {
+const EntityItem = (props : {entity_location : EntityLocation }) => {
     
     return (
         <div className={styles.EntityItem}>
@@ -29,7 +24,7 @@ const EntityList = (props : EntityListProps) => {
                 </div>
             </div>
             <div className={styles.List}>
-                {props.entity_locations.map((entity, index) => <EntityItem key={index} entity_location={entity} onDelete={() => {} /* TODO Add on delete*/}/>)}
+                {props.entity_locations.map((entity, index) => <EntityItem key={index} entity_location={entity}/>)}
             </div>
         </>
     )
