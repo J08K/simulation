@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./board.module.scss";
 
 import { BoardProps, EntityLocation } from "@/utils/types";
@@ -80,7 +80,7 @@ const EntityBlob = (props : {
 
 const Board = (props : BoardProps) => {
 
-    // ! Do not use for accurate data. Value is not set without one resize.
+    // ! Do not use for accurate data. Value is only set after first resize.
     let [dimensions, setDimensions] = useState({width : 0, height : 0});
     let time_out : NodeJS.Timeout;
     let [first_rendered, setFirstRendered] = useState(false);
