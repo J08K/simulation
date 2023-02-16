@@ -4,8 +4,9 @@ import styles from "../styles/index.module.scss";
 import { useState } from 'react';
 import EntityList from '@/components/entityList/index';
 import { EntityLocation } from '@/utils/types';
-import EntitySidebar from "@/components/sidebar/entity";
+import EntitySidebar from "@/components/sidebar/currentEntity/entity";
 import { test_entity_location } from '@/utils/types';
+import DBConn from "@/components/sidebar/dbConn/dbConn";
 
 export default function Home() {
 
@@ -22,7 +23,9 @@ export default function Home() {
       </Head>
       <main>
         <div className={styles.interface}>
-          <div></div>
+          <div>
+            <DBConn />
+          </div>
           <div className='main'>
             <Board width={16} height={10} grid_size={3} entity_locations={entity_locations} onEntitySelect={(entity : EntityLocation) => {setSelectedEntity(entity)}}/>
             <EntityList entity_locations={entity_locations} setEntityLocations={setEntityLocations}/>

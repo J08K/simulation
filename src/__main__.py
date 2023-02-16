@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     sim = Simulation.Simulation(brd, 0.1)
 
-    for _ in range(1000):
+    for _ in range(100):
         logger.new_message(Message(
             "simulation", LogLevel.DATA, sim.export_dict(),
         ))

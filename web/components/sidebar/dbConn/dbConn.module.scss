@@ -1,0 +1,86 @@
+$neutral-color: var(--neutral-color);
+$neutral-color-variant: var(--neutral-color-variant);
+
+$text-primary-color: var(--text-primary-color);
+$text-secondary-color: var(--text-secondary-color);
+
+$warning-color: var(--warning-color);
+$warning-color-light: var(--warning-color-light);
+$warning-color-dark: var(--warning-color-dark);
+
+$primary-color : var(--primary-color);
+$primary-color-light : var(--primary-color-light);
+$primary-color-dark : var(--primary-color-dark);
+
+$secondary-color : var(--secondary-color);
+$secondary-color-light : var(--secondary-color-light);
+$secondary-color-dark : var(--secondary-color-dark);
+
+.DBSidebar {
+
+    width: 100%;
+    box-sizing: border-box;
+
+    > * {
+        padding: 0.5em;
+    }
+
+    .MainHeader {
+        background-color: $neutral-color-variant;
+        border-radius: 0.2em;
+        box-sizing: border-box;
+
+        display: grid;
+        grid-template-columns: auto auto;
+        width: 100%;
+
+        button {
+            float: right;
+            color: $text-primary-color;
+            width: min-content;
+
+            margin: auto 0 auto auto;
+
+            font-family: "Roboto";
+        }
+    }
+
+    > * > *{
+        display: grid;
+        grid-template-columns: auto auto;
+    }
+
+    .br {
+        box-sizing: border-box;
+        width: 100%;
+        height: 3px;
+
+        margin: 0.2em 0 0.2em 0;
+
+        background-color: $neutral-color-variant;
+    }
+
+    span.Data {
+        text-align: right;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .Green {
+        color: $primary-color-light;
+    }
+
+    .Red {
+        color: $warning-color;
+    }
+
+    .Blue {
+        color: blue;
+
+        &:hover {
+            cursor:wait;
+        }
+    }
+}
