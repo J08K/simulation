@@ -20,18 +20,6 @@ const EntityItem = (props : { onDelete : Function, entity_location : EntityLocat
 }
 
 const EntityList = (props : EntityListProps) => {
-    
-    let entity_id_ref = useRef<HTMLInputElement>(null);
-    let entity_x_ref = useRef<HTMLInputElement>(null);
-    let entity_y_ref = useRef<HTMLInputElement>(null);
-
-    function checkValidNumber (event : FormEvent<HTMLInputElement>) {
-        if (isNumeric(event.currentTarget.value)) { // TODO Check if number is also inside of grid.
-            event.currentTarget.className = "";
-        } else {
-            event.currentTarget.className = styles.InvalidNumber;
-        }
-    }
 
     return (
         <>
