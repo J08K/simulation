@@ -8,6 +8,7 @@ const EntityItem = (props : {entity_location : EntityLocation }) => {
     return (
         <div className={styles.EntityItem}>
             <div>Entity ID: <span>{props.entity_location.entity.uuid}</span></div>
+            <div>Gender: <span>{props.entity_location.entity.genome.gender}</span></div>
             <div>X: <span>{props.entity_location.x.toFixed(2)}</span></div>
             <div>Y: <span>{props.entity_location.y.toFixed(2)}</span></div>
         </div>
