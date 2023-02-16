@@ -5,7 +5,7 @@ import { useState } from 'react';
 import EntityList from '@/components/entityList/index';
 import { EntityLocation } from '@/utils/types';
 import EntitySidebar from "@/components/sidebar/entity";
-import { test_entity_location } from '@/utils/newTypes';
+import { test_entity_location } from '@/utils/types';
 
 export default function Home() {
 

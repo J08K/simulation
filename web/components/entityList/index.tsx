@@ -12,7 +12,7 @@ const EntityItem = (props : { onDelete : Function, entity_location : EntityLocat
     
     return (
         <div className={styles.EntityItem}>
-            <div>Entity ID: <span>{props.entity_location.entity.id}</span></div>
+            <div>Entity ID: <span>{props.entity_location.entity.uuid}</span></div>
             <div>X: <span>{props.entity_location.x.toFixed(2)}</span></div>
             <div>Y: <span>{props.entity_location.y.toFixed(2)}</span></div>
         </div>
@@ -33,38 +33,11 @@ const EntityList = (props : EntityListProps) => {
         }
     }
 
-    function handleSubmit (event : FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-
-        let entity_id = (entity_id_ref.current) ? Number(entity_id_ref.current.value) : 0;
-        let entity_x = (entity_x_ref.current) ? Number(entity_x_ref.current.value) : 0;
-        let entity_y = (entity_y_ref.current) ? Number(entity_y_ref.current.value) : 0;
-
-        let new_entity : EntityLocation = {
-            entity: {
-                id: entity_id,
-            },
-            x: entity_x,
-            y: entity_y,
-        }
-
-        props.setEntityLocations([...props.entity_locations, new_entity])
-    }
-
     return (
         <>
             <div className={styles.ControlPanel}>
                 <div className={styles.Status}>
                     Current active entities: {props.entity_locations.length}
-                </div>
-
-                <div className={styles.Buttons}>
-                    <form onSubmit={handleSubmit}>
-                        <input ref={entity_id_ref} id="entity_id" name="entity_id" placeholder="Entity ID" onChange={checkValidNumber} required/>
-                        <input ref={entity_x_ref} id="entity_x" name="entity_x" placeholder="X Position" onChange={checkValidNumber} required/>
-                        <input ref={entity_y_ref} id="entity_y" name="entity_y" placeholder="Y Position" onChange={checkValidNumber} required/>
-                        <input name="submit" type="submit" value="Add Entity"/>
-                    </form>
                 </div>
             </div>
             <div className={styles.List}>

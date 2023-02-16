@@ -1,4 +1,4 @@
-import { EntityLocation } from "@/utils/newTypes";
+import { EntityLocation } from "@/utils/types";
 
 import styles from "./entity.module.scss";
 import { useEffect } from "react";

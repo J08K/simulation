@@ -84,7 +84,7 @@ const Board = (props : BoardProps) => {
 
         let top_offset = reference_height - ((reference_height / props.height) * entity_location.y);
         let left_offset = (reference_width / props.width) * entity_location.x;
-        return <div key={index} style={{left: `calc(${left_offset}px - 0.5em)`, top: `calc(${top_offset}px - 0.5em)`}}>{entity_location.entity.id}</div>
+        return <div key={index} style={{left: `calc(${left_offset}px - 0.5em)`, top: `calc(${top_offset}px - 0.5em)`}}>{entity_location.entity.uuid}</div>
     }    
 
     useEffect(() => {
