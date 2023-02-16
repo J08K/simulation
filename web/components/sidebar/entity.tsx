@@ -5,7 +5,8 @@ import { useEffect } from "react";
 import { findDOMNode } from "react-dom";
 
 const EntitySidebar = (props : {
-    selected : EntityLocation | null
+    selected : EntityLocation | null,
+    onDeselect : Function,
 }) => {
 
     function DataColor(statement : boolean) {
@@ -51,7 +52,7 @@ const EntitySidebar = (props : {
 
     return (
         <div className={styles.EntityInfo}>
-            <div className={styles.Header}>Entity Information</div>
+            <div className={styles.MainHeader}>Entity Information <button  onClick={() => {props.onDeselect()}}>Deselect</button></div>
             <div className={styles.Generic}>
                 <div>UUID: <span className={styles.Data}>{props.selected.entity.uuid}</span></div>
                 <div className={styles.br}></div>

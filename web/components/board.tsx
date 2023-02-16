@@ -66,11 +66,24 @@ function genGrids(width: number, height: number, grid_size: number) {
     return sub_grids;
 }
 
+const EntityBlob = (props : {
+    entity: EntityLocation,
+    left_offset: number,
+    top_offset: number,
+    onSelect: Function,
+}) => {
+
+    return (
+        <div onClick={() => {props.onSelect(props.entity)}} style={{left: `calc(${props.left_offset}px - 0.5em)`, top: `calc(${props.top_offset}px - 0.5em)`}}>{props.entity.entity.species.id}</div>
+    )
+}
+
 const Board = (props : BoardProps) => {
 
     // ! Do not use for accurate data. Value is not set without one resize.
     let [dimensions, setDimensions] = useState({width : 0, height : 0});
     let time_out : NodeJS.Timeout;
+    let [first_rendered, setFirstRendered] = useState(false);
 
     function renderEntity(entity_location : EntityLocation, index : number) {
         let reference_grid = document.getElementById("sub_grids");
@@ -84,10 +97,22 @@ const Board = (props : BoardProps) => {
 
         let top_offset = reference_height - ((reference_height / props.height) * entity_location.y);
         let left_offset = (reference_width / props.width) * entity_location.x;
-        return <div key={index} style={{left: `calc(${left_offset}px - 0.5em)`, top: `calc(${top_offset}px - 0.5em)`}}>{entity_location.entity.uuid}</div>
-    }    
+        return <EntityBlob key={index} entity={entity_location} left_offset={left_offset} top_offset={top_offset} onSelect={props.onEntitySelect}/>
+    }   
+
+    function renderAllEntities() {
+        if (first_rendered) {
+            return props.entity_locations.map((entity_location, index) => renderEntity(entity_location, index))
+        } else {
+            return []
+        }
+    }
 
     useEffect(() => {
+
+        if (!first_rendered) {
+            setFirstRendered(true)
+        }
 
         function handleResize() { 
             setDimensions({
@@ -106,6 +131,7 @@ const Board = (props : BoardProps) => {
 
         window.addEventListener("resize", handleResizeEvent);
 
+
         return () => {
             window.removeEventListener("resize", handleResizeEvent);
         }
@@ -115,7 +141,7 @@ const Board = (props : BoardProps) => {
         <div className={styles.board}>
             <div className={styles.base_grid} style={{"aspectRatio" : `${props.width}/${props.height}`}}>
                 <table id="sub_grids"> { ...genGrids(props.width, props.height, props.grid_size) } </table>
-                <div id="entities" className={styles.Entities}>{props.entity_locations.map((entity_location, index) => {return renderEntity(entity_location, index)})}</div>
+                <div id="entities" className={styles.Entities}>{...renderAllEntities()}</div>
             </div>
         </div>
     );

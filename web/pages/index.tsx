@@ -9,7 +9,8 @@ import { test_entity_location } from '@/utils/types';
 
 export default function Home() {
 
-  let [entity_locations, setEntityLocations] = useState<EntityLocation[]>([]);
+  let [entity_locations, setEntityLocations] = useState<EntityLocation[]>([test_entity_location]);
+  let [selected_entity, setSelectedEntity] = useState<EntityLocation | null>(null);
 
   return (
     <>
@@ -23,11 +24,11 @@ export default function Home() {
         <div className={styles.interface}>
           <div></div>
           <div className='main'>
-            <Board width={16} height={10} grid_size={3} entity_locations={entity_locations}/>
+            <Board width={16} height={10} grid_size={3} entity_locations={entity_locations} onEntitySelect={(entity : EntityLocation) => {setSelectedEntity(entity)}}/>
             <EntityList entity_locations={entity_locations} setEntityLocations={setEntityLocations}/>
           </div>
           <div>
-            <EntitySidebar selected={test_entity_location}/>
+            <EntitySidebar selected={selected_entity} onDeselect={() => {setSelectedEntity(null); console.log("Triggered!")}}/>
           </div>
         </div>
       </main>

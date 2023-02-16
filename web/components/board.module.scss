@@ -97,5 +97,9 @@ $text-secondary-color: var(--text-secondary-color);
         border-radius: 50%;
 
         box-sizing: border-box;
+
+        &:hover {
+            cursor: pointer;
+        }
     }
 }

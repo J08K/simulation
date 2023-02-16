@@ -1,5 +1,7 @@
 $neutral-color: var(--neutral-color);
 $neutral-color-variant: var(--neutral-color-variant);
+
+$text-primary-color: var(--text-primary-color);
 $text-secondary-color: var(--text-secondary-color);
 
 $warning-color: var(--warning-color);
@@ -25,6 +27,27 @@ $secondary-color-dark : var(--secondary-color-dark);
     .Header {
         background-color: $neutral-color-variant;
         border-radius: 0.2em;
+    }
+
+    .MainHeader {
+        background-color: $neutral-color-variant;
+        border-radius: 0.2em;
+        box-sizing: border-box;
+
+        display: grid;
+        grid-template-columns: auto auto;
+        width: 100%;
+
+        button {
+            float: right;
+            color: $text-primary-color;
+            width: min-content;
+
+            margin: auto 0 auto auto;
+
+            font-family: "Roboto";
+        }
+
     }
 
     .br {
@@ -79,7 +102,21 @@ $secondary-color-dark : var(--secondary-color-dark);
 
     .Genome {
 
+        > * {
+            display: grid;
+            grid-template-columns: auto auto;
+
+            margin-top: 0.25em;
+        }
+
+        span.Data {
+            text-align: right;
+        }
+
+
         .List {
+
+            display: block;
 
             .ListItemGene {
                 border: 1px solid $neutral-color-variant;
@@ -108,8 +145,21 @@ $secondary-color-dark : var(--secondary-color-dark);
 
     .Memory {
 
+        > * {
+            display: grid;
+            grid-template-columns: auto auto;
+
+            margin-top: 0.25em;
+        }
+
+        span.Data {
+            text-align: right;
+        }
+
         .List {
             
+            display: block;
+
             .ListItemLongTerm {
                 border: 1px solid $neutral-color-variant;
                 display: grid;

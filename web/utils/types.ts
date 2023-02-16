@@ -65,6 +65,7 @@ export type BoardProps = {
     height : number,
     grid_size : number,
     entity_locations : Array<EntityLocation>,
+    onEntitySelect: Function,
 }
 
 export type EntityListProps = {
