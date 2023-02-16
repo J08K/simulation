@@ -32,6 +32,7 @@ if __name__ == "__main__":
         Species.BaseSpecie(2, "plant", [3], False, False): 300,
     })
 
+    sim = Simulation.Simulation(brd, 0.0, 0.1)
 
     with open("board.json", "w+") as file:
-        json.dump(brd.export_dict(), file, indent=4)
+        json.dump(sim.export_dict(), file, indent=4)
