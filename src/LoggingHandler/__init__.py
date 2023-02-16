@@ -5,6 +5,9 @@ import pathlib
 import os
 import io
 import tempfile
+import pymongo
+
+from Common import cycle_names
 
 from LoggingHandler import LogTypes
 from LoggingHandler.LogTypes import CommandType, LogLevel
@@ -21,6 +24,7 @@ class Logger:
     __output_file_path : pathlib.Path | None
     __is_temp_dir : bool
     __file_obj : io.TextIOWrapper
+    __mongo_collection : pymongo.collection.Collection
     
     def __writer(self) -> None:
 
@@ -29,6 +33,13 @@ class Logger:
         self.__output_file_path = None
         self.__is_temp_dir = True
         self.__file_obj : io.TextIOWrapper = tempfile.TemporaryFile() # TODO Make sure that this is checked, and or make it so that this is put in a temp folder.
+
+        def getCollection(database : pymongo.database.Database):
+            coll_names = database.list_collection_names()
+            for collection_name in cycle_names("simdata", " ", False, 1):
+                if collection_name not in coll_names:
+                    return database[collection_name]
+                
 
         # * The only thing this function needs to do is to handle the outputting of WELL STRUCTURED inputs.
         # TODO Let this thread do more computing, to take the load of the main thread.
@@ -70,7 +81,10 @@ class Logger:
         def handle_message(msg : LogTypes.Message) -> None:
             # TODO Add message exporting, like sending them to a database or server.
             if msg.level == LogLevel.DATA:
-                ... # TODO Store DATA in a different file.
+                data_id = self.__mongo_collection.insert_one(msg.get_data())
+                self.new_message(LogTypes.Message(
+                    "logger", LogLevel.INFO, f"Inserted data into collection with id: '{str(data_id)}'."
+                ))
             elif msg.level.value >= self.__verbosity:
                 self.__file_obj.write(bytes(f"\n[{str(msg.creation)}][{msg.level.name}][{msg.source}]:{msg.get_data()}", encoding="UTF-8"))
         
@@ -110,6 +124,20 @@ class Logger:
                     ))
                 case _:
                     raise TypeError(f"Unknown command type: {str(cmd)}")
+
+        db_url = "mongodb://admin:admin@localhost:3001"
+        mongo_client = pymongo.MongoClient(db_url) # TODO Add this to config.
+        self.new_message(LogTypes.Message(
+            "logger", LogLevel.INFO, f"Client connected on url: {db_url}",
+        ))
+        database = mongo_client["simulationdb"]
+        self.new_message(LogTypes.Message(
+            "logger", LogLevel.INFO, "Database connected!",
+        ))
+        self.__mongo_collection = getCollection(database)
+        self.new_message(LogTypes.Message(
+            "logger", LogLevel.INFO, f"Created new collection '{self.__mongo_collection.name}'",
+        ))
 
         while self.__run_thread:
             message = self.__queue.get()

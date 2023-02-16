@@ -1,30 +1,15 @@
-import json
 import Simulation
 from Common import Species
-import timeit
+import Config
+
+import LoggingHandler
+from LoggingHandler.LogTypes import Message, LogLevel
 
 if __name__ == "__main__":
-    """ config = Config.ProjectConfigHandler()
+    config = Config.ProjectConfigHandler()
     logger = LoggingHandler.Logger()
     print(f"Logger status is: {logger.is_running()}")
-
-    logger.new_message(LoggingHandler.LogTypes.Message(
-        source="the outside",
-        level=LoggingHandler.LogLevel.DEBUG,
-        data="This should be in a temp directory."
-    ))
-
     logger.change_output_dir(config.config_root)
-
-    logger.new_message(LoggingHandler.LogTypes.Message(
-        source="the outside again",
-        level=LoggingHandler.LogLevel.DEBUG,
-        data="This should be in a better, more suitable location!"
-    ))
-
-    logger.stop()
-
-    print("Logger has stopped!") """
 
     brd = Simulation.create_new_board((16, 10), {
         Species.BaseSpecie(0, "bear", [1], True, True): 50,
@@ -32,6 +17,11 @@ if __name__ == "__main__":
         Species.BaseSpecie(2, "plant", [3], False, False): 300,
     })
 
+    sim = Simulation.Simulation(brd, 0.1)
 
-    with open("board.json", "w+") as file:
-        json.dump(brd.export_dict(), file, indent=4)
+    for _ in range(1000):
+        logger.new_message(Message(
+            "simulation", LogLevel.DATA, sim.export_dict(),
+        ))
+
+    logger.stop()

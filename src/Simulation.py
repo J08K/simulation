@@ -39,11 +39,11 @@ class Simulation:
     
     # TODO This should implement a logger.
 
-    def __init__(self, entity_board: board.Board, cur_time: float, time_delta: float) -> None:
+    def __init__(self, entity_board: board.Board, time_delta: float) -> None:
         self.entity_board = entity_board
-        self.time_created = cur_time
+        self.time_created = 0.0
         self.time_delta = time_delta
-        self.global_time = cur_time
+        self.global_time = 0.0
 
     def adjust_time_delta(self, new_td: float) -> None:
         self.time_delta = new_td
