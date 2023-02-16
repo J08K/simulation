@@ -32,17 +32,19 @@ class Message:
     source : str
     level : LogLevel
     creation : datetime.datetime
-    __data : str
+    __data : Any
     __parser : Callable[[Any], str]
     
-    def __init__(self, source : str, level : LogLevel, data : str, parser : Callable[[Any], str] = str) -> None:
+    def __init__(self, source : str, level : LogLevel, data : Any, parser : Callable[[Any], str] = None) -> None:
         self.creation = datetime.datetime.now()
         self.source = source.upper()
         self.level = level
         self.__data = data
         self.__parser = parser
 
-    def get_data(self) -> str:
+    def get_data(self) -> Any:
+        if self.__parser == None:
+            return self.__data
         return self.__parser(self.__data)
 
 # TODO for data, add a function to parse it into a string. This makes it so that the computing is done on the Logging thread.

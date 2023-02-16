@@ -31,3 +31,12 @@ def clamp(min_n: int, max_n: int, n: int) -> int:
 
 def avg(values: list[float]) -> float:
     return sum(values) / len(values)
+
+
+def cycle_names(start_name : str, spacer : str, clean_start : bool, start_num : int = 2) -> str:
+    if clean_start:
+        yield start_name
+    idx = start_num
+    while True:
+        yield start_name + spacer + str(idx)
+        idx += 1
