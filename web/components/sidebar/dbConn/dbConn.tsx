@@ -1,30 +1,69 @@
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import type { SimData } from "@/utils/types";
 import styles from "./dbConn.module.scss";
+import useSWR from "swr";
 
 type StatusType = {
     value: string,
     class_name: string,
 }
 
-
 const LoadingStatus : StatusType = { value: "Loading", class_name : styles.Blue }
 const ConnectedStatus : StatusType = { value: "Connected", class_name : styles.Green }
 const DisconnectedStatus : StatusType = { value: "Disconnected", class_name : styles.Red }
 
-async function getConnStatus() {
-    const data : {is_connected : boolean} = await (await fetch("http://localhost:3000/api/database/check")).json()
-    
-    return data.is_connected ? ConnectedStatus : DisconnectedStatus
-}
+const fetcher = (url : string, params : RequestInit = {}) => fetch(url, params).then((res) => res.json())
 
-const DBConn = async (props : {
-
+const DBConn = (props : {
+    setter: Function,
 }) => {
 
-    let [status, setStatus] = useState<StatusType>(await getConnStatus());
+    let check = useSWR<{is_connected : boolean}>("/api/database/check", fetcher);
+    let availableCollections = useSWR<{collections : string[]}>("/api/database/collections", fetcher);
 
-    async function refreshData() {
-        setStatus(await getConnStatus());
+    let [current_collection, setCurrentCollection] = useState<string>();
+
+    async function latestSim() {
+        if (!current_collection) {
+            let target = document.getElementById("selectedCollection");
+            if ( target instanceof HTMLSelectElement ) {
+                setCurrentCollection(target.value)
+            }  
+        } 
+
+        let data : {sim_data : SimData} = await fetcher("/api/database/latest", {
+            method: "POST",
+            headers: {
+                'content-type': 'application/json;charset=UTF-8',
+            },
+            body: JSON.stringify({ 
+                collection_name: current_collection ,
+            }),
+        });
+        if (data) {
+            props.setter(data.sim_data);
+        }
+        return
+    }
+
+    function renderConnStat() {
+        if (check.isLoading) {
+            return LoadingStatus
+        } else if (check.error) {
+            return DisconnectedStatus
+        } else {
+            if (check.data) {
+                return check.data.is_connected ? ConnectedStatus : DisconnectedStatus
+            } else {
+                return DisconnectedStatus
+            }
+            
+        }
+    }
+
+    function handleCurrentCollectionChange(event : ChangeEvent<HTMLSelectElement>) {
+        setCurrentCollection(event.target.value);
+        latestSim().then(() => {console.log("Fetched latest simulation data.")});
     }
 
     useEffect(() => {
@@ -58,9 +97,15 @@ const DBConn = async (props : {
 
     return (
         <div className={styles.DBSidebar}>
-            <div className={styles.MainHeader}>Database connection <button onClick={refreshData}>Refresh</button></div>
+            <div className={styles.MainHeader}>Database connection<button onClick={() => {latestSim()}}>Refresh</button></div>
             <div className={styles.Generic}>
-                <div>Status: <span className={styles.Data + " " + status.class_name}>{status.value}</span></div>
+                <div>Status: <span className={styles.Data + " " + renderConnStat().class_name}>{renderConnStat().value}</span></div>
+                <div>
+                    Collection: 
+                    <select id="selectedCollection" onChange={handleCurrentCollectionChange}>
+                        {(availableCollections.data) ? availableCollections.data.collections.map((collection, index) => <option key={index} value={collection}>{collection}</option>) : null}
+                    </select>
+                </div>
             </div>
         </div>
     )

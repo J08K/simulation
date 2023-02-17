@@ -99,6 +99,7 @@ class Board:
         return {
             "width": self.width,
             "height": self.height,
+            "grid_size": self.__grid_size,
             "entities": entities,
         }
     

@@ -50,6 +50,11 @@ $secondary-color-dark : var(--secondary-color-dark);
         grid-template-columns: auto auto;
     }
 
+    select {
+        background-color: $neutral-color-variant;
+        color: $text-secondary-color;
+    }
+
     .br {
         box-sizing: border-box;
         width: 100%;

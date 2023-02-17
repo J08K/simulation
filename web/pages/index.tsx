@@ -3,15 +3,15 @@ import Board from "components/board";
 import styles from "../styles/index.module.scss";
 import { useState } from 'react';
 import EntityList from '@/components/entityList/index';
-import { EntityLocation } from '@/utils/types';
+import { EntityLocation, test_entity_location, SimData} from '@/utils/types';
 import EntitySidebar from "@/components/sidebar/currentEntity/entity";
-import { test_entity_location } from '@/utils/types';
 import DBConn from "@/components/sidebar/dbConn/dbConn";
 
 export default function Home() {
 
   let [entity_locations, setEntityLocations] = useState<EntityLocation[]>([test_entity_location]);
   let [selected_entity, setSelectedEntity] = useState<EntityLocation | null>(null);
+  let [SimData, setSimData] = useState<SimData | null>(null);
 
   return (
     <>
@@ -24,7 +24,7 @@ export default function Home() {
       <main>
         <div className={styles.interface}>
           <div>
-            <DBConn />
+            <DBConn setter={setSimData}/>
           </div>
           <div className='main'>
             <Board width={16} height={10} grid_size={3} entity_locations={entity_locations} onEntitySelect={(entity : EntityLocation) => {setSelectedEntity(entity)}}/>

@@ -60,6 +60,20 @@ export type EntityLocation = {
     y : number,
 }
 
+export type Board = {
+    height: number,
+    width: number,
+    grid_size: number,
+    entities: EntityLocation[],
+}
+
+export type SimData = {
+    time_current : number,
+    time_delta : number,
+    time_zero : number,
+    board: Board,
+}
+
 export type BoardProps = {
     width : number,
     height : number,
