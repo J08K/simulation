@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./board.module.scss";
 
-import { BoardProps, EntityLocation } from "@/utils/types";
+import { Board, EntityLocation } from "@/utils/types";
 
 function genGrids(width: number, height: number, grid_size: number) {
     let num_width_full_grids = Math.floor(width / grid_size);
@@ -78,12 +78,19 @@ const EntityBlob = (props : {
     )
 }
 
-const Board = (props : BoardProps) => {
+const Board = (props : {
+    grid_size : number,
+    board_data: Board | null
+    onEntitySelect: Function,
+}) => {
 
     // ! Do not use for accurate data. Value is only set after first resize.
     let [dimensions, setDimensions] = useState({width : 0, height : 0});
     let time_out : NodeJS.Timeout;
     let [first_rendered, setFirstRendered] = useState(false);
+
+    let board_width = props.board_data ? props.board_data.width : 16
+    let board_height = props.board_data ? props.board_data.height : 10
 
     function renderEntity(entity_location : EntityLocation, index : number) {
         let reference_grid = document.getElementById("sub_grids");
@@ -95,14 +102,19 @@ const Board = (props : BoardProps) => {
         let reference_width = reference_grid.scrollWidth;
         let reference_height = reference_grid.scrollHeight;
 
-        let top_offset = reference_height - ((reference_height / props.height) * entity_location.y);
-        let left_offset = (reference_width / props.width) * entity_location.x;
+        let top_offset = reference_height - ((reference_height / board_height) * entity_location.y);
+        let left_offset = (reference_width / board_width) * entity_location.x;
         return <EntityBlob key={index} entity={entity_location} left_offset={left_offset} top_offset={top_offset} onSelect={props.onEntitySelect}/>
     }   
 
     function renderAllEntities() {
         if (first_rendered) {
-            return props.entity_locations.map((entity_location, index) => renderEntity(entity_location, index))
+            if (props.board_data) {
+                return props.board_data.entities.map((entity_location, index) => renderEntity(entity_location, index))
+            }
+            else {
+                return []
+            }
         } else {
             return []
         }
@@ -139,8 +151,8 @@ const Board = (props : BoardProps) => {
 
     return (
         <div className={styles.board}>
-            <div className={styles.base_grid} style={{"aspectRatio" : `${props.width}/${props.height}`}}>
-                <table id="sub_grids"> { ...genGrids(props.width, props.height, props.grid_size) } </table>
+            <div className={styles.base_grid} style={{"aspectRatio" : `${board_width}/${board_height}`}}>
+                <table id="sub_grids">{ ...genGrids(board_width, board_height, props.grid_size) }</table>
                 <div id="entities" className={styles.Entities}>{...renderAllEntities()}</div>
             </div>
         </div>

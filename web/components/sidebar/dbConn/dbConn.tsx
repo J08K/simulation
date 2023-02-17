@@ -23,25 +23,29 @@ const DBConn = (props : {
 
     let [current_collection, setCurrentCollection] = useState<string>();
 
-    async function latestSim() {
-        if (!current_collection) {
-            let target = document.getElementById("selectedCollection");
-            if ( target instanceof HTMLSelectElement ) {
-                setCurrentCollection(target.value)
-            }  
-        } 
+    async function selectCollection () {
+        let target = document.getElementById("selectedCollection");
+        if ( target instanceof HTMLSelectElement ) {
+            setCurrentCollection(target.value)
+            return target.value
+        }
+    }
 
-        let data : {sim_data : SimData} = await fetcher("/api/database/latest", {
-            method: "POST",
-            headers: {
-                'content-type': 'application/json;charset=UTF-8',
-            },
-            body: JSON.stringify({ 
-                collection_name: current_collection ,
-            }),
-        });
-        if (data) {
-            props.setter(data.sim_data);
+    async function latestSim() {
+        let target_collection = await selectCollection();
+        if (target_collection) {
+            let data : {sim_data : SimData} = await fetcher("/api/database/latest", {
+                method: "POST",
+                headers: {
+                    'content-type': 'application/json;charset=UTF-8',
+                },
+                body: JSON.stringify({ 
+                    collection_name: target_collection,
+                }),
+            });
+            if (data) {
+                props.setter(data.sim_data);
+            }
         }
         return
     }
@@ -62,7 +66,7 @@ const DBConn = (props : {
     }
 
     function handleCurrentCollectionChange(event : ChangeEvent<HTMLSelectElement>) {
-        setCurrentCollection(event.target.value);
+        selectCollection();
         latestSim().then(() => {console.log("Fetched latest simulation data.")});
     }
 

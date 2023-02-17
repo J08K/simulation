@@ -9,7 +9,6 @@ import DBConn from "@/components/sidebar/dbConn/dbConn";
 
 export default function Home() {
 
-  let [entity_locations, setEntityLocations] = useState<EntityLocation[]>([test_entity_location]);
   let [selected_entity, setSelectedEntity] = useState<EntityLocation | null>(null);
   let [SimData, setSimData] = useState<SimData | null>(null);
 
@@ -27,8 +26,8 @@ export default function Home() {
             <DBConn setter={setSimData}/>
           </div>
           <div className='main'>
-            <Board width={16} height={10} grid_size={3} entity_locations={entity_locations} onEntitySelect={(entity : EntityLocation) => {setSelectedEntity(entity)}}/>
-            <EntityList entity_locations={entity_locations} setEntityLocations={setEntityLocations}/>
+            <Board grid_size={3} board_data={SimData !== null ? SimData.board : null } onEntitySelect={(entity : EntityLocation) => {setSelectedEntity(entity)}}/>
+            <EntityList entity_locations={SimData !== null ? SimData.board.entities : null}/>
           </div>
           <div>
             <EntitySidebar selected={selected_entity} onDeselect={() => {setSelectedEntity(null); console.log("Triggered!")}}/>

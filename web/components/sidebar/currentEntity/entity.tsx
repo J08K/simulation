@@ -17,12 +17,6 @@ const EntitySidebar = (props : {
         }
     }
 
-    if (!props.selected) {
-        return (
-            <div className={styles.Header}>Select an entity...</div>
-        )
-    }
-
     useEffect(() => {
 
         function handleCopyData(event : Event) {
@@ -49,6 +43,12 @@ const EntitySidebar = (props : {
             }
         }
     });
+
+    if (!props.selected) {
+        return (
+            <div className={styles.Header}>Select an entity...</div>
+        )
+    }
 
     return (
         <div className={styles.EntityInfo}>
