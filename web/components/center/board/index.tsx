@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import styles from "./board.module.scss";
+import styles from "./styling.module.scss";
 
 import { Board, EntityLocation } from "@/utils/types";
 

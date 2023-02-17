@@ -2,11 +2,11 @@ import Head from 'next/head';
 import styles from "../styles/index.module.scss";
 import { useState } from 'react';
 import { EntityLocation, SimData} from '@/utils/types';
-import Board from "@/components/board";
-import EntityList from '@/components/entityList';
-import EntitySidebar from "@/components/sidebar/currentEntity/entity";
-import DBConn from "@/components/sidebar/dbConn/dbConn";
-import SimInfo from '@/components/sidebar/simInfo/simInfo';
+import Board from "@/components/center/board";
+import EntityList from '@/components/center/entityList';
+import EntitySidebar from "@/components/sidebar/currentEntity";
+import DBConn from "@/components/sidebar/dbConn";
+import SimInfo from '@/components/sidebar/simInfo';
 
 export default function Home() {
 

@@ -1,4 +1,4 @@
-import styles from "./entityList.module.scss";
+import styles from "./styling.module.scss";
 import {EntityLocation} from "@/utils/types"
 
 

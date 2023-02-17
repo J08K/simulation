@@ -1,6 +1,6 @@
 import { EntityLocation } from "@/utils/types";
 
-import styles from "./entity.module.scss";
+import styles from "./styling.module.scss";
 import { useEffect } from "react";
 import { findDOMNode } from "react-dom";
 

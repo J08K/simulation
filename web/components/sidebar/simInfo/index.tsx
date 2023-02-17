@@ -1,4 +1,4 @@
-import styles from "./simInfo.module.scss";
+import styles from "./styling.module.scss";
 import type {SimData} from "@/utils/types";
 
 const SimInfo = (props : {

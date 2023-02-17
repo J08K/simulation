@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import type { SimData } from "@/utils/types";
-import styles from "./dbConn.module.scss";
+import styles from "./styling.module.scss";
 import useSWR from "swr";
 
 type StatusType = {
