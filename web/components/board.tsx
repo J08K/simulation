@@ -79,7 +79,6 @@ const EntityBlob = (props : {
 }
 
 const Board = (props : {
-    grid_size : number,
     board_data: Board | null
     onEntitySelect: Function,
 }) => {
@@ -89,8 +88,9 @@ const Board = (props : {
     let time_out : NodeJS.Timeout;
     let [first_rendered, setFirstRendered] = useState(false);
 
-    let board_width = props.board_data ? props.board_data.width : 16
-    let board_height = props.board_data ? props.board_data.height : 10
+    var board_width = props.board_data ? props.board_data.width : 16
+    var board_height = props.board_data ? props.board_data.height : 10
+    var board_grid_size = props.board_data ? props.board_data.grid_size : 3
 
     function renderEntity(entity_location : EntityLocation, index : number) {
         let reference_grid = document.getElementById("sub_grids");
@@ -143,6 +143,9 @@ const Board = (props : {
 
         window.addEventListener("resize", handleResizeEvent);
 
+        board_width = props.board_data ? props.board_data.width : 16
+        board_height = props.board_data ? props.board_data.height : 10
+        board_grid_size = props.board_data ? props.board_data.grid_size : 3
 
         return () => {
             window.removeEventListener("resize", handleResizeEvent);
@@ -152,8 +155,8 @@ const Board = (props : {
     return (
         <div className={styles.board}>
             <div className={styles.base_grid} style={{"aspectRatio" : `${board_width}/${board_height}`}}>
-                <table id="sub_grids">{ ...genGrids(board_width, board_height, props.grid_size) }</table>
-                <div id="entities" className={styles.Entities}>{...renderAllEntities()}</div>
+                <table id="sub_grids">{ ...genGrids(board_width, board_height, board_grid_size) }</table>
+                <div id="entities" className={styles.Entities}>{...renderAllEntities() /* TODO Doesn't rerender correctly, needs refresh */}</div>
             </div>
         </div>
     );

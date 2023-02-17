@@ -1,16 +1,17 @@
 import Head from 'next/head';
-import Board from "components/board";
 import styles from "../styles/index.module.scss";
 import { useState } from 'react';
-import EntityList from '@/components/entityList/index';
-import { EntityLocation, test_entity_location, SimData} from '@/utils/types';
+import { EntityLocation, SimData} from '@/utils/types';
+import Board from "@/components/board";
+import EntityList from '@/components/entityList';
 import EntitySidebar from "@/components/sidebar/currentEntity/entity";
 import DBConn from "@/components/sidebar/dbConn/dbConn";
+import SimInfo from '@/components/sidebar/simInfo/simInfo';
 
 export default function Home() {
 
   let [selected_entity, setSelectedEntity] = useState<EntityLocation | null>(null);
-  let [SimData, setSimData] = useState<SimData | null>(null);
+  let [sim_data, setSimData] = useState<SimData | null>(null);
 
   return (
     <>
@@ -24,10 +25,11 @@ export default function Home() {
         <div className={styles.interface}>
           <div>
             <DBConn setter={setSimData}/>
+            <SimInfo sim_data={sim_data} />
           </div>
           <div className='main'>
-            <Board grid_size={3} board_data={SimData !== null ? SimData.board : null } onEntitySelect={(entity : EntityLocation) => {setSelectedEntity(entity)}}/>
-            <EntityList entity_locations={SimData !== null ? SimData.board.entities : null}/>
+            <Board board_data={sim_data !== null ? sim_data.board : null } onEntitySelect={(entity : EntityLocation) => {setSelectedEntity(entity)}}/>
+            <EntityList entity_locations={sim_data !== null ? sim_data.board.entities : null}/>
           </div>
           <div>
             <EntitySidebar selected={selected_entity} onDeselect={() => {setSelectedEntity(null); console.log("Triggered!")}}/>

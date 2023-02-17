@@ -59,6 +59,22 @@ $secondary-color-dark : var(--secondary-color-dark);
     max-height: 18em;
 
     overflow-y: scroll;
+
+    
+
+    &::-webkit-scrollbar {
+        width: 0.5em;
+    }
+      
+    &::-webkit-scrollbar-track {
+        background: none;
+        margin: 0.2em 0 0.2em 0;
+    }
+       
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--neutral-color-variant);
+        border-radius: 0.5em;
+    }
 }
 
 .EntityItem {
@@ -69,7 +85,7 @@ $secondary-color-dark : var(--secondary-color-dark);
     border-bottom: solid 1px $neutral-color-variant;
 
     display: grid;
-    grid-template-columns: auto auto auto auto auto;
+    grid-template-columns: 5% auto 20% 10% 10%;
 
     color: $text-secondary-color;
 

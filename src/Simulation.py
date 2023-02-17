@@ -24,8 +24,8 @@ def create_new_board(size: tuple[int, int], species: dict[Species.BaseSpecie, in
                     ),
                     cur_day=0,
                 ),
-                x=random.randint(0, new_board.max_x_coord),
-                y=random.randint(0, new_board.max_y_coord),
+                x=random.random() * new_board.max_x_coord,
+                y=random.random() * new_board.max_y_coord,
             )
     return new_board
 

@@ -63,7 +63,7 @@ export type EntityLocation = {
 export type Board = {
     height: number,
     width: number,
-    // TODO grid_size: number,
+    grid_size: number,
     entities: EntityLocation[],
 }
 
