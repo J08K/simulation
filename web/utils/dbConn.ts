@@ -28,11 +28,19 @@ export async function getCollections () {
     return output
 }
 
-export async function getLatest(collection_name : string) {
+export async function getLatest(collection_name : string) : Promise<SimData | null> {
     await clientPromise;
     let cursor = client.db("simulationdb").collection(collection_name).find({}).sort({_id: -1}).limit(1);
     let arr = await cursor.toArray()
     let doc = (arr.length > 0) ? arr[0] : null
     cursor.close()
-    return doc
+    if (doc) {
+        return {
+            time_current: doc.time_current,
+            time_delta: doc.time_delta,
+            time_zero: doc.time_zero,
+            board: doc.board,
+        }
+    }
+    return null
 }
