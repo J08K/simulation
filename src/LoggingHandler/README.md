@@ -4,10 +4,10 @@ Module for exporting data from the simulation outside.
 
 ## Goals
 
-- [ ] - Real-time server for inputting and outputting data.
+- [x] - Real-time server for inputting and outputting data.
 - [x] - Data storage.
 - [x] - Parallel to the simulation, so preferably not on the same thread.
-- [ ] - Historical data API.
+- [x] - Historical data API.
 
 ## Plan
 
