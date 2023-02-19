@@ -19,7 +19,7 @@ const EntityItem = (props : {
 }
 
 const EntityList = (props : {
-    entity_locations : Array<EntityLocation> | null,
+    entity_locations : Array<EntityLocation> | null | undefined,
 }) => {
 
     return (

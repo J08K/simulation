@@ -44,3 +44,20 @@ export async function getLatest(collection_name : string) : Promise<SimData | nu
     }
     return null
 }
+
+export async function getSpecific(collection_name : string, time : number) {
+    await clientPromise;
+    let cursor = client.db("simulationdb").collection(collection_name).find({time_current : time});
+    let arr = await cursor.toArray();
+    let doc = (arr.length > 0) ? arr[0] : null
+    cursor.close()
+    if (doc) {
+        return {
+            time_current: doc.time_current,
+            time_delta: doc.time_delta,
+            time_zero: doc.time_zero,
+            board: doc.board,
+        }
+    }
+    return null
+}

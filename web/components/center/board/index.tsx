@@ -79,7 +79,7 @@ const EntityBlob = (props : {
 }
 
 const Board = (props : {
-    board_data: Board | null
+    board_data: Board | null | undefined
     onEntitySelect: Function,
 }) => {
 

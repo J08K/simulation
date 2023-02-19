@@ -15,39 +15,20 @@ const DisconnectedStatus : StatusType = { value: "Disconnected", class_name : st
 const fetcher = (url : string, params : RequestInit = {}) => fetch(url, params).then((res) => res.json())
 
 const DBConn = (props : {
-    setter: Function,
+    target_time : number,
+    timeLimitSetter : Function,
+    targetCollectionSetter : Function,
 }) => {
 
     let check = useSWR<{is_connected : boolean}>("/api/database/check", fetcher);
     let availableCollections = useSWR<{collections : string[]}>("/api/database/collections", fetcher);
 
-    let [current_collection, setCurrentCollection] = useState<string>();
-
     async function selectCollection () {
         let target = document.getElementById("selectedCollection");
         if ( target instanceof HTMLSelectElement ) {
-            setCurrentCollection(target.value)
+            props.targetCollectionSetter(target.value)
             return target.value
         }
-    }
-
-    async function latestSim() {
-        let target_collection = await selectCollection();
-        if (target_collection) {
-            let data : {sim_data : SimData} = await fetcher("/api/database/latest", {
-                method: "POST",
-                headers: {
-                    'content-type': 'application/json;charset=UTF-8',
-                },
-                body: JSON.stringify({ 
-                    collection_name: target_collection,
-                }),
-            });
-            if (data) {
-                props.setter(data.sim_data);
-            }
-        }
-        return
     }
 
     function renderConnStat() {
@@ -65,9 +46,18 @@ const DBConn = (props : {
         }
     }
 
+    async function getTimeLimits() {
+        let target_collection = await selectCollection();
+        if (target_collection) {
+            let data : {sim_data : SimData} = await fetcher(`/api/database/collections/${target_collection}/-1`);
+            if (data) {
+                props.timeLimitSetter(data.sim_data.time_current);
+            }
+        }
+    }
+
     function handleCurrentCollectionChange(event : ChangeEvent<HTMLSelectElement>) {
         selectCollection();
-        latestSim().then(() => {console.log("Fetched latest simulation data.")});
     }
 
     useEffect(() => {
@@ -101,7 +91,7 @@ const DBConn = (props : {
 
     return (
         <div className={styles.DBSidebar}>
-            <div className={styles.MainHeader}>Database connection<button onClick={() => {latestSim()}}>Refresh</button></div>
+            <div className={styles.MainHeader}>Database connection<button onClick={() => {getTimeLimits()}}>Refresh</button></div>
             <div className={styles.Generic}>
                 <div>Status: <span className={styles.Data + " " + renderConnStat().class_name}>{renderConnStat().value}</span></div>
                 <div>

@@ -3,7 +3,7 @@ import random
 
 from entities import Entity
 from Common import Species, Genomes, calc_distance
-
+from move import Direction
 
 def create_new_board(size: tuple[int, int], species: dict[Species.BaseSpecie, int]) -> board.Board:
     width, height = size
@@ -52,42 +52,44 @@ class Simulation:
         return {
             "time_zero" : self.time_created,
             "time_delta" : self.time_delta,
-            "time_current" : self.global_time,
+            "time_current" : round(self.global_time, len(str(self.time_delta)[2:])),
             "board": self.entity_board.export_dict()
         }
 
-    def run(self, num_steps: int) -> None:
-        for _ in range(num_steps):
-            # TODO Phase 1
-            # First loop should let all of the entities on the board observe.
-            # Entities in this phase should also do a risk assesment of every action.
-            # All observations and risk assesments should be output to the log using Log Level DATA.
-            for entity in self.entity_board.all_entities:
-                if (entity.specie.can_see):  # If an entity cannot see, then it cannot do any actions anyway.
-                    # Update entities memory
-                    entity.memory.update()
-                    
-                    # Get entities surroundings and some basic context
-                    cur_x, cur_y = self.entity_board.get_entity_location(entity)
-                    observation = self.entity_board.get_all_in_view(entity)
-                    identified = entity.identify_multiple_relationships(list(observation.keys()))
-                    distances = {target: calc_distance(x, y, cur_x, cur_y) for target, x, y in observation.items()}
-                    
-                    # Log predators in current entities memory.
-                    for predator, x, y in identified[Species.SpecieRelationship.PREDATOR]:
-                        entity.memory.remember_entity_location(predator, x, y)
-                    
-                    for _, x, y in identified[Species.SpecieRelationship.PREY]:
-                        entity.memory.remember_food_location(x, y)
-                    
-                    # This section has to do with predators, and how they move.
-                    ...
+    def step(self) -> None:
+        # TODO Phase 1
 
-            # TODO Phase 2
-            # Second loop should let every entity decide what action to commit.
-            # The actions are then done.
-            # The new position and commited actions should be output to the log using Log Level DATA.
-            for entity in self.entity_board.entities:
-                ...
+        ENTITY_SPEED = 8 # * In meters per second
 
-            self.global_time += self.time_delta
+        # First loop should let all of the entities on the board observe.
+        # Entities in this phase should also do a risk assesment of every action.
+        # All observations and risk assesments should be output to the log using Log Level DATA.
+        for current_entity in self.entity_board.all_entities:
+            if current_entity.specie.can_see:  # If an entity cannot see, then it cannot do any actions anyway.
+                # TODO Update entities memory
+                # current_entity.memory.update()
+                
+                # Get entities surroundings and some basic context
+                cur_x, cur_y = self.entity_board.get_entity_location(current_entity)
+                max_travel_distance = self.time_delta * ENTITY_SPEED
+                observation = self.entity_board.get_all_in_view(current_entity)
+                identified = current_entity.identify_multiple_relationships(list(observation.keys()))
+                
+                new_location = cur_x, cur_y
+
+                # TODO Go to closest food if it exists, else...
+                if len(identified[Species.SpecieRelationship.PREY]):
+
+                    # Get closest food
+                    closest_food = min(identified[Species.SpecieRelationship.PREY], key=lambda target: calc_distance(cur_x, cur_y, *self.entity_board.get_entity_location(target)))
+
+                    # Move towards closest food
+                    food_location = self.entity_board.get_entity_location(closest_food)
+                    diff_x, diff_y = Direction.max_delta_location(max_travel_distance, *Direction.calc_direction(cur_x, cur_y, *food_location))
+                    new_location = cur_x + diff_x, cur_y + diff_y
+
+                    # Change location of current entity on the board.
+
+                self.entity_board.set_entity_location(current_entity, *new_location)
+
+        self.global_time += self.time_delta

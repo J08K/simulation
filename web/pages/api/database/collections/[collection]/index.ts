@@ -9,8 +9,9 @@ type Data = {
 export default async function handler (
     req: NextApiRequest,
     res: NextApiResponse<Data>) {
-        if (req.body) {
-            await getLatest(req.body.collection_name)
-            return res.status(200).json({sim_data : await getLatest(req.body.collection_name)})
+        if (req.query.collection) {
+            return res.status(200).json({sim_data : await getLatest(req.query.collection as string)})
+        } else {
+            console.log("No collection name was given!");
         }
 }
