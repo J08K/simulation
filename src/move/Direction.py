@@ -10,7 +10,7 @@ def max_delta_location(max_distance : float, x : float, y : float, maximize : bo
     direction_vec_distance = Common.calc_distance(0, 0, x, y)
     if direction_vec_distance > max_distance or maximize:
         multiplier = direction_vec_distance / max_distance
-        return x * multiplier, y * multiplier
+        return x / multiplier, y / multiplier
     return x, y
 
 def random_direction() -> tuple[float, float]:

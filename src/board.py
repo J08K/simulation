@@ -312,5 +312,3 @@ class Board:
     @property
     def __len__(self) -> int:
         return self.num_entities
-
-    # TODO get_all_in_view()
