@@ -25,7 +25,7 @@ class Entity:
         self.specie = specie
         self.genome = genome
 
-        self.eyes = vision.Vision(self.genome.vision_range.value)
+        self.eyes = vision.Vision(self.genome.vision_range.value * 2) # TODO Do, some correct multiplication.
         self.memory = Memory.Memory(3.0, 5.0, cur_day) # TODO Add NON arbitrary values.
 
         self.__is_alive = True

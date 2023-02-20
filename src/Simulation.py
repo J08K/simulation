@@ -2,7 +2,7 @@ import board
 import random
 
 from entities import Entity
-from Common import Species, Genomes, calc_distance
+from Common import Species, Genomes, calc_distance, clamp
 from move import Direction
 
 import pprint
@@ -93,16 +93,26 @@ class Simulation:
 
                     # Move towards closest food
                     diff_x, diff_y = Direction.max_delta_location(max_travel_distance, *Direction.calc_direction(cur_x, cur_y, *food_location))
+                    print((diff_x, diff_y))
+                    print(calc_distance(0, 0, diff_x, diff_y))
                     new_location = cur_x + diff_x, cur_y + diff_y
                     #print(new_location)
                     
                     if calc_distance(cur_x, cur_y, *food_location) <= max_travel_distance:
                         self.entity_board.kill_entity(closest_food)
+                    else:
+                         
+                        # Move entity closer to food.
+                        self.entity_board.set_entity_location(current_entity, *new_location)
 
                 else:
-                    ... # TODO Random movement?
+                    direction = Direction.random_direction()
+                    diff_x, diff_y = Direction.max_delta_location(max_travel_distance, *direction, True)
+                    new_x, new_y = cur_x + diff_x, cur_y + diff_y
+                    new_x, new_y = clamp(0, self.entity_board.max_x_coord, new_x), clamp(0, self.entity_board.max_y_coord, new_y)
+                    
+                    self.entity_board.set_entity_location(current_entity, new_x, new_y)
 
-                # Change location of current entity on the board.
-                self.entity_board.set_entity_location(current_entity, *new_location)
+                
 
         self.global_time += self.time_delta

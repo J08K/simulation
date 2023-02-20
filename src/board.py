@@ -220,6 +220,8 @@ class Board:
         if entity not in self.entity_registry:
             raise EntityNotFoundError(f"Entity '{str(entity)}' is not present in the registry.")
 
+        old_location = self.get_entity_location(entity)
+
         entity_current_grid = self.entity_registry[entity]
         entity_new_grid = self.grid_from_entity_loc(x, y)
         new_grid = self.get_grid(*entity_new_grid)
@@ -228,6 +230,8 @@ class Board:
             self.get_grid(*entity_current_grid).pop_entity(entity)
             self.entity_registry[entity] = entity_new_grid
         new_grid.change_entity_data(entity, x, y)
+        
+        print(f"Entity {entity.specie.name} changed location {old_location} -> ({x}, {y})")
 
 
     def get_entities_nearby(self, entity : Entity) -> list[tuple[Entity, float, float]]:
@@ -235,7 +239,9 @@ class Board:
             raise EntityNotFoundError(f"Entity '{str(entity)}' is not present in the registry.")
         
         current_grid_coords = self.entity_registry[entity]
-        found_entities = [(new_entity, x, y)for new_entity, x, y in self.get_grid(*current_grid_coords).get_all_entities() if new_entity != entity]
+        found_entities = [(new_entity, x, y)for new_entity, x, y in self.get_grid(*current_grid_coords).get_all_entities()]
+        if entity in found_entities:
+            found_entities.pop(entity)
         for neighbour in self.get_neighbour_grids(*current_grid_coords):
             found_entities += self.get_grid(*neighbour).get_all_entities()
         return found_entities

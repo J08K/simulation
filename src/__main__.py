@@ -11,10 +11,10 @@ if __name__ == "__main__":
     print(f"Logger status is: {logger.is_running()}")
     logger.change_output_dir(config.config_root)
 
-    brd = Simulation.create_new_board((20, 10), {
+    brd = Simulation.create_new_board((5, 4), {
         #Species.BaseSpecie(0, "bear", [1], True, True): 50,
-        Species.BaseSpecie(1, "deer", [2], True, True): 50,
-        Species.BaseSpecie(2, "plant", [3], False, False): 100,
+        Species.BaseSpecie(1, "deer", [2], True, True): 20,
+        Species.BaseSpecie(2, "plant", [3], False, False): 30,
     })
 
     sim = Simulation.Simulation(brd, 0.1)
