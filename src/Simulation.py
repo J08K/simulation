@@ -5,6 +5,8 @@ from entities import Entity
 from Common import Species, Genomes, calc_distance
 from move import Direction
 
+import pprint
+
 def create_new_board(size: tuple[int, int], species: dict[Species.BaseSpecie, int]) -> board.Board:
     width, height = size
     new_board = board.Board(width, height, 3)
@@ -77,19 +79,30 @@ class Simulation:
                 
                 new_location = cur_x, cur_y
 
-                # TODO Go to closest food if it exists, else...
+                # Go to closest food if it exists.
                 if len(identified[Species.SpecieRelationship.PREY]):
+                    
+                    #print()
+                    #pprint.pprint(identified)
+                    #print(f"Entity: {current_entity} -> ({cur_x}, {cur_y}) found food.")
 
                     # Get closest food
                     closest_food = min(identified[Species.SpecieRelationship.PREY], key=lambda target: calc_distance(cur_x, cur_y, *self.entity_board.get_entity_location(target)))
+                    food_location = self.entity_board.get_entity_location(closest_food)
+                    #print(f"Closest food is: {closest_food} -> {food_location}")
 
                     # Move towards closest food
-                    food_location = self.entity_board.get_entity_location(closest_food)
                     diff_x, diff_y = Direction.max_delta_location(max_travel_distance, *Direction.calc_direction(cur_x, cur_y, *food_location))
                     new_location = cur_x + diff_x, cur_y + diff_y
+                    #print(new_location)
+                    
+                    if calc_distance(cur_x, cur_y, *food_location) <= max_travel_distance:
+                        self.entity_board.kill_entity(closest_food)
 
-                    # Change location of current entity on the board.
+                else:
+                    ... # TODO Random movement?
 
+                # Change location of current entity on the board.
                 self.entity_board.set_entity_location(current_entity, *new_location)
 
         self.global_time += self.time_delta

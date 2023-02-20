@@ -226,7 +226,7 @@ class Board:
         if entity_current_grid != entity_new_grid:
             # If grid has changed, remove the entity from the old grid, and change their grid in the registry.
             self.get_grid(*entity_current_grid).pop_entity(entity)
-            self.entity_registry[entity] = new_grid
+            self.entity_registry[entity] = entity_new_grid
         new_grid.change_entity_data(entity, x, y)
 
 
@@ -246,6 +246,14 @@ class Board:
             raise EntityNotFoundError(f"Entity '{str(entity)}' is not present in the registry.")
         grid_x, grid_y = self.entity_registry[entity]
         return self.sub_grids[grid_x][grid_y].get_entity_location(entity)
+
+
+    def kill_entity(self, entity : Entity) -> tuple[float, float]:
+        current_grid_coords = self.entity_registry[entity]
+        current_grid = self.get_grid(*current_grid_coords)
+        self.entity_registry.pop(entity)
+        entity.kill()
+        return current_grid.pop_entity(entity)
 
 
     def get_all_in_view(self, entity : Entity) -> dict[Entity, tuple[float, float]]:

@@ -60,6 +60,9 @@ class Entity:
     def age(self, current_day : int) -> int:
         return current_day - self.__day_born
     
+    def kill(self) -> None:
+        self.__is_alive = False
+    
     @property
     def uuid(self) -> str:
         return str(self.__uuid)
