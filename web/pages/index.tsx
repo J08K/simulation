@@ -18,6 +18,20 @@ const fetcher = (url : string, params : RequestInit = {}) => fetch(url, params).
   return null
 });
 
+class SimDataCache {
+  private size : number;
+  private time : number;
+
+  // TODO Add hashmap maybe?
+
+  constructor(size : number, time : number) {
+    this.size = size;
+    this.time = time;
+  }
+
+
+}
+
 export default function Home() {
 
   let [selected_entity, setSelectedEntity] = useState<EntityLocation | null>(null);
