@@ -74,23 +74,20 @@ const EntityBlob = (props : {
 }) => {
 
     return (
-        <div onClick={() => {props.onSelect(props.entity)}} style={{left: `calc(${props.left_offset}px - 0.5em)`, top: `calc(${props.top_offset}px - 0.5em)`}}>{props.entity.entity.species.id}</div>
+        <div onClick={() => {props.onSelect(props.entity)}} style={{left: `${props.left_offset}%`, top: `${props.top_offset}%`}}>{props.entity.entity.species.id}</div>
     )
 }
 
 const Board = (props : {
     board_data: Board | null | undefined
     onEntitySelect: Function,
+    dimensions : {width: number, height: number, grid_size: number} | null
 }) => {
 
-    // ! Do not use for accurate data. Value is only set after first resize.
-    let [dimensions, setDimensions] = useState({width : 0, height : 0});
-    let time_out : NodeJS.Timeout;
-    let [first_rendered, setFirstRendered] = useState(false);
-
-    var board_width = props.board_data ? props.board_data.width : 16
-    var board_height = props.board_data ? props.board_data.height : 10
-    var board_grid_size = props.board_data ? props.board_data.grid_size : 3
+    // ! Do not use for accurate data. 
+    var board_width = props.dimensions ? props.dimensions.width : 16
+    var board_height = props.dimensions ? props.dimensions.height : 10
+    var board_grid_size = props.dimensions ? props.dimensions.grid_size : 3
 
     function renderEntity(entity_location : EntityLocation, index : number) {
         let reference_grid = document.getElementById("sub_grids");
@@ -99,58 +96,19 @@ const Board = (props : {
             throw "Sub grids not found!"
         }
 
-        let reference_width = reference_grid.scrollWidth;
-        let reference_height = reference_grid.scrollHeight;
-
-        let top_offset = reference_height - ((reference_height / board_height) * entity_location.y);
-        let left_offset = (reference_width / board_width) * entity_location.x;
+        let top_offset = (1 - (entity_location.y / board_height))  * 100;
+        let left_offset = (entity_location.x / board_width) * 100;
         return <EntityBlob key={index} entity={entity_location} left_offset={left_offset} top_offset={top_offset} onSelect={props.onEntitySelect}/>
     }   
 
     function renderAllEntities() {
-        if (first_rendered) {
-            if (props.board_data) {
-                return props.board_data.entities.map((entity_location, index) => renderEntity(entity_location, index))
-            }
-            else {
-                return []
-            }
-        } else {
+        if (props.board_data) {
+            return props.board_data.entities.map((entity_location, index) => renderEntity(entity_location, index))
+        }
+        else {
             return []
         }
     }
-
-    useEffect(() => {
-
-        if (!first_rendered) {
-            setFirstRendered(true)
-        }
-
-        function handleResize() { 
-            setDimensions({
-                width: window.innerWidth,
-                height: window.innerWidth,
-            })
-        }
-
-        function handleResizeEvent(event : Event) {
-            if (!time_out) {
-                time_out = setTimeout(handleResize, 100);
-            }
-            clearTimeout(time_out);
-            time_out = setTimeout(handleResize, 100);
-        }
-
-        window.addEventListener("resize", handleResizeEvent);
-
-        board_width = props.board_data ? props.board_data.width : 16
-        board_height = props.board_data ? props.board_data.height : 10
-        board_grid_size = props.board_data ? props.board_data.grid_size : 3
-
-        return () => {
-            window.removeEventListener("resize", handleResizeEvent);
-        }
-    });
 
     return (
         <div className={styles.board}>
