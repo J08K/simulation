@@ -32,7 +32,7 @@ $secondary-color-dark : var(--secondary-color-dark);
 
         margin-top: 0.5em;
 
-        height: 1.5em;
+        height: 2em;
 
         align-items: center;
 
@@ -40,7 +40,20 @@ $secondary-color-dark : var(--secondary-color-dark);
             text-align: center;
         }
 
+        .RangeSelector {
+            width: 100%;
+
+            display: grid;
+            grid-template-columns: 2em auto 2em;
+
+            > button {
+                aspect-ratio: 1;
+                height: 100%;
+            }
+        }
+
         input[type="range"] {
+            width: 100%;
             appearance: none;
             -webkit-appearance: none;
             background: transparent;
