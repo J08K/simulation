@@ -1,8 +1,9 @@
 import Head from 'next/head';
 import styles from "../styles/index.module.scss";
 import { useState } from 'react';
-import { EntityLocation, SimData } from '@/utils/types';
+import type { EntityLocation, SimData } from '@/utils/types';
 import useSWR from "swr";
+import { SimDataCache } from '@/utils/simCache';
 
 import Board from "@/components/center/board";
 import EntityList from '@/components/center/entityList';
@@ -18,19 +19,7 @@ const fetcher = (url : string, params : RequestInit = {}) => fetch(url, params).
   return null
 });
 
-class SimDataCache {
-  private size : number;
-  private time : number;
-
-  // TODO Add hashmap maybe?
-
-  constructor(size : number, time : number) {
-    this.size = size;
-    this.time = time;
-  }
-
-
-}
+let CachedSims : SimDataCache | undefined;
 
 export default function Home() {
 
@@ -41,6 +30,15 @@ export default function Home() {
   let sim_data = useSWR<SimData | null>(`/api/database/collections/${target_collection}/${target_time}`, fetcher); // TODO No need for SWR here. 
   let [time_max, setTimeMax] = useState<number>(10);
   let [board_cache, setBoardCache] = useState<{width : number, height: number, grid_size : number} | null>(null);
+
+  if (!CachedSims && target_collection) {
+    CachedSims = new SimDataCache(20, target_collection);
+  }
+  //console.log(CachedSims?.get(target_time));
+  CachedSims?.get(1.0, (result : SimData | null) => {
+    console.log("Finished!");
+    console.log(result);
+  });
 
   function setTargetCollection(target : string) {
     setHasChanged(true)

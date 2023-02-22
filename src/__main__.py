@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     brd = Simulation.create_new_board((5, 4), {
         #Species.BaseSpecie(0, "bear", [1], True, True): 50,
-        Species.BaseSpecie(1, "deer", [2], True, True): 1,
+        Species.BaseSpecie(1, "deer", [2], True, True): 10,
         Species.BaseSpecie(2, "plant", [3], False, False): 50,
     })
 

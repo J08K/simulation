@@ -81,22 +81,14 @@ class Simulation:
 
                 # Go to closest food if it exists.
                 if len(identified[Species.SpecieRelationship.PREY]):
-                    
-                    print()
-                    pprint.pprint(identified)
-                    print(f"Entity: {current_entity} -> ({cur_x}, {cur_y}) found food.")
 
                     # Get closest food
                     closest_food = min(identified[Species.SpecieRelationship.PREY], key=lambda target: calc_distance(cur_x, cur_y, *self.entity_board.get_entity_location(target)))
                     food_location = self.entity_board.get_entity_location(closest_food)
-                    print(f"Closest food is: {closest_food} -> {food_location}")
 
                     # Move towards closest food
                     diff_x, diff_y = Direction.max_delta_location(max_travel_distance, *Direction.calc_direction(cur_x, cur_y, *food_location))
-                    print((diff_x, diff_y))
-                    print(calc_distance(0, 0, diff_x, diff_y))
                     new_location = cur_x + diff_x, cur_y + diff_y
-                    #print(new_location)
                     
                     if calc_distance(cur_x, cur_y, *food_location) <= max_travel_distance: # TODO Add interaction range.
                         self.entity_board.kill_entity(closest_food)
