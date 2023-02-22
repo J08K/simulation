@@ -11,9 +11,17 @@ export default async function handler (
     res: NextApiResponse<Data>) {
         if (req.query.collection) {
             if (Number(req.query.time) === -1) {
-                return res.status(200).json({sim_data : await getLatest(req.query.collection as string)})
+                let data = await getLatest(req.query.collection as string);
+                if (!data) {
+                    console.log(`Request with collection ${req.query.collection} and time ${req.query.time} returned no data!`);
+                }
+                return res.status(200).json({sim_data : data})
             } else if (Number(req.query.time) >= 0) {
-                return res.status(200).json({sim_data : await getSpecific(req.query.collection as string, Number(req.query.time))});
+                let data = await getSpecific(req.query.collection as string, Number(req.query.time));
+                if (!data) {
+                    console.log(`Request with collection '${req.query.collection}' and time '${req.query.time}' (${typeof Number(req.query.time)}) returned no data!`);
+                }
+                return res.status(200).json({sim_data : data});
             } else {
                 console.log("Invalid time was given!")
             }

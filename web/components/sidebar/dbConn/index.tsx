@@ -96,7 +96,7 @@ const DBConn = (props : {
                 <div>Status: <span className={styles.Data + " " + renderConnStat().class_name}>{renderConnStat().value}</span></div>
                 <div>
                     Collection: 
-                    <select id="selectedCollection" onChange={handleCurrentCollectionChange}>
+                    <select id="selectedCollection" onInput={handleCurrentCollectionChange}>
                         {(availableCollections.data) ? availableCollections.data.collections.map((collection, index) => <option key={index} value={collection}>{collection}</option>) : null}
                     </select>
                 </div>

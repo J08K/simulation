@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import styles from "../styles/index.module.scss";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { EntityLocation, SimData } from '@/utils/types';
 import useSWR from "swr";
 import { SimDataCache } from '@/utils/simCache';
@@ -19,37 +19,44 @@ const fetcher = (url : string, params : RequestInit = {}) => fetch(url, params).
   return null
 });
 
-let CachedSims : SimDataCache | undefined;
+var CachedSims : SimDataCache = new SimDataCache(20);
 
 export default function Home() {
 
   let [selected_entity, setSelectedEntity] = useState<EntityLocation | null>(null);
   let [target_collection, TargetCollectionSetter] = useState<string>();
   let [target_collection_has_changed, setHasChanged] = useState(true);
-  let [target_time, setTargetTime] = useState<number>(-1);
-  let sim_data = useSWR<SimData | null>(`/api/database/collections/${target_collection}/${target_time}`, fetcher); // TODO No need for SWR here. 
+  let [target_time, targetTimeSetter] = useState<number>(-1);
   let [time_max, setTimeMax] = useState<number>(10);
   let [board_cache, setBoardCache] = useState<{width : number, height: number, grid_size : number} | null>(null);
+  var [current_sim, setCurrentSim] = useState<SimData | null>(null);
 
-  if (!CachedSims && target_collection) {
-    CachedSims = new SimDataCache(20, target_collection);
+
+  function setSimData(time : number) {
+    CachedSims.get(time).then((result) => {
+      setCurrentSim(result);
+    });
   }
-  //console.log(CachedSims?.get(target_time));
-  CachedSims?.get(1.0, (result : SimData | null) => {
-    console.log("Finished!");
-    console.log(result);
-  });
 
   function setTargetCollection(target : string) {
     setHasChanged(true)
     TargetCollectionSetter(target);
+    CachedSims.setCollection(target);
+    console.log(target)
+    
+    setSimData(target_time);
   }
 
-  if (sim_data.data && target_collection_has_changed) {
+  function setTargetTime(time : number) {
+    targetTimeSetter(time);
+    setSimData(time);
+  }
+
+  if (current_sim && target_collection_has_changed) {
     setBoardCache({
-      width: sim_data.data.board.width,
-      height: sim_data.data.board.height,
-      grid_size: sim_data.data.board.grid_size,
+      width: current_sim.board.width,
+      height: current_sim.board.height,
+      grid_size: current_sim.board.grid_size,
     });
     setHasChanged(false);
   }
@@ -66,12 +73,12 @@ export default function Home() {
         <div className={styles.interface}>
           <div>
             <DBConn targetCollectionSetter={setTargetCollection} target_time={target_time} timeLimitSetter={setTimeMax}/>
-            <SimInfo sim_data={sim_data.data} />
+            <SimInfo sim_data={current_sim} />
           </div>
           <div className='main'>
-            <Board dimensions={board_cache} board_data={sim_data.data?.board} onEntitySelect={(entity : EntityLocation) => {setSelectedEntity(entity)}}/>
-            <TimeSelector target_time_setter={setTargetTime} time_limits={{time_delta : sim_data.data?.time_delta, time_max : time_max}}/>
-            <EntityList entity_locations={sim_data.data?.board.entities}/>
+            <Board dimensions={board_cache} board_data={current_sim?.board} onEntitySelect={(entity : EntityLocation) => {setSelectedEntity(entity)}}/>
+            <TimeSelector target_time_setter={setTargetTime} time_limits={{time_delta : current_sim?.time_delta, time_max : time_max}}/>
+            <EntityList entity_locations={current_sim?.board.entities}/>
           </div>
           <div>
             <EntitySidebar selected={selected_entity} onDeselect={() => {setSelectedEntity(null); console.log("Triggered!")}}/>
