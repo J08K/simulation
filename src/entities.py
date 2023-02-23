@@ -55,6 +55,7 @@ class Entity:
             "genome": self.genome.export_dict(),
             "memory": self.memory.export_dict(),
             "is_alive": self.is_alive,
+            # TODO Add age
         }
 
     def age(self, current_day : int) -> int:
