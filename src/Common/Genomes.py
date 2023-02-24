@@ -79,10 +79,11 @@ class Genome:
     
     def __init__(self, 
                  speed_gene : Gene, 
-                 hunger_rate_gene : Gene, 
+                 hunger_rate_gene : Gene, # TODO Remove this gene.
                  max_hunger_gene : Gene,
                  vision_range_gene : Gene,
-                 gestation_period_gene : Gene,
+                 gestation_period_gene : Gene, 
+                 # TODO Add 'fecundity'. https://www.khanacademy.org/science/ap-biology/ecology-ap/energy-flow-through-ecosystems/a/life-history-strategies
                  gender : Gender
                  ) -> None:
         self.speed = speed_gene
