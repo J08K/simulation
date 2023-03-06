@@ -67,7 +67,7 @@ class Simulation:
         # Entities in this phase should also do a risk assesment of every action.
         # All observations and risk assesments should be output to the log using Log Level DATA.
         for current_entity in self.entity_board.all_entities:
-            if current_entity.specie.can_see:  # If an entity cannot see, then it cannot do any actions anyway.
+            if current_entity.specie.can_see and current_entity in self.entity_board:  # If an entity cannot see, then it cannot do any actions anyway.
                 # TODO Update entities memory
                 # current_entity.memory.update()
                 

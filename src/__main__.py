@@ -17,7 +17,7 @@ if __name__ == "__main__":
             Species.BaseSpecie(2, "plant", [3], False, False): 50,
         })
 
-        sim = Simulation.Simulation(brd, 0.1)
+        sim = Simulation.Simulation(brd, 0.01)
 
         for idx in range(100):
             print(f"Step {idx}")

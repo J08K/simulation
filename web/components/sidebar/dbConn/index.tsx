@@ -88,6 +88,12 @@ const DBConn = (props : {
         }
     });
 
+    let regex_sort : RegExp = /[^0-9]/g;
+
+    function collNum(s : string) {
+        let value = Number(s.replaceAll(regex_sort, ""));
+        return value
+    }
 
     return (
         <div className={styles.DBSidebar}>
@@ -97,7 +103,7 @@ const DBConn = (props : {
                 <div>
                     Collection: 
                     <select id="selectedCollection" onInput={handleCurrentCollectionChange}>
-                        {(availableCollections.data) ? availableCollections.data.collections.sort().map((collection, index) => <option key={index} value={collection}>{collection}</option>) : null}
+                        {(availableCollections.data) ? availableCollections.data.collections.sort((a, b) => collNum(b) - collNum(a)).map((collection, index) => <option key={index} value={collection}>{collection}</option>) : null}
                     </select>
                 </div>
             </div>

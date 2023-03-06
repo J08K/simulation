@@ -274,6 +274,9 @@ class Board:
 
         return visible
 
+    def __contains__(self, entity : Entity):
+        return entity in self.entity_registry
+
     @property
     def all_entities(self) -> list[Entity]:
         return [entity for entity in self.entity_registry.keys()]
