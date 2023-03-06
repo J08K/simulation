@@ -5,8 +5,6 @@ from entities import Entity
 from Common import Species, Genomes, calc_distance, clamp
 from move import Direction
 
-import pprint
-
 def create_new_board(size: tuple[int, int], species: dict[Species.BaseSpecie, int]) -> board.Board:
     width, height = size
     new_board = board.Board(width, height, 3)
@@ -59,7 +57,6 @@ class Simulation:
         }
 
     def step(self) -> None:
-        # TODO Phase 1
 
         ENTITY_SPEED = 8 # * In meters per second
 
@@ -79,30 +76,69 @@ class Simulation:
                 
                 new_location = cur_x, cur_y
 
-                # Go to closest food if it exists.
-                if len(identified[Species.SpecieRelationship.PREY]):
+                # ///////////////////////////////////////////////////////////////////
+                # * Get important entity locations.
 
+                food_location = None
+                predator_location = None
+
+                # Go to closest food if it exists.
+                if identified[Species.SpecieRelationship.PREY]:
                     # Get closest food
                     closest_food = min(identified[Species.SpecieRelationship.PREY], key=lambda target: calc_distance(cur_x, cur_y, *self.entity_board.get_entity_location(target)))
                     food_location = self.entity_board.get_entity_location(closest_food)
 
-                    # Move towards closest food
-                    diff_x, diff_y = Direction.max_delta_location(max_travel_distance, *Direction.calc_direction(cur_x, cur_y, *food_location))
-                    new_location = cur_x + diff_x, cur_y + diff_y
+                if identified[Species.SpecieRelationship.PREDATOR]:
+                    # Get closest predator
+                    closest_predator = min(identified[Species.SpecieRelationship.PREDATOR], key=lambda target: calc_distance(cur_x, cur_y, *self.entity_board.get_entity_location(target)))
+                    predator_location = self.entity_board.get_entity_location(closest_predator)
+                
+                # ///////////////////////////////////////////////////////////////////
+                # * Figure out where to move.
+
+                if food_location or predator_location:
                     
-                    if calc_distance(cur_x, cur_y, *food_location) <= max_travel_distance: # TODO Add interaction range.
-                        self.entity_board.kill_entity(closest_food)
-                    self.entity_board.set_entity_location(current_entity, *new_location)
-                    # Move entity closer to food.
+                    # TODO Better decision making.
+
+                    food_dist = None
+                    if food_location:
+                        food_dist = calc_distance(cur_x, cur_y, *food_location)
+                    
+                    predator_dist = None
+                    if predator_location:
+                        predator_dist = calc_distance(cur_x, cur_y, *predator_location)
+
+                    if food_dist and (predator_dist == None or food_dist <= predator_dist):
+                        # * Food is closest
+
+                        diff_x, diff_y = Direction.max_delta_location(max_travel_distance, *Direction.calc_direction(cur_x, cur_y, *food_location))
+                        new_location = cur_x + diff_x, cur_y + diff_y
+
+                        if calc_distance(cur_x, cur_y, *food_location) <= max_travel_distance: # TODO Add max interaction range.
+                            self.entity_board.kill_entity(closest_food)
+                        self.entity_board.set_entity_location(current_entity, *new_location)
+
+                    else:
+                        # * Predator is closest
+                        
+                        diff_x, diff_y = Direction.max_delta_location(max_travel_distance, *Direction.calc_direction(cur_x, cur_y, *predator_location))
+                        new_location = clamp(0, self.entity_board.max_x_coord, cur_x - diff_x), clamp(0, self.entity_board.max_y_coord, cur_y - diff_y) # Should go in the other direction of predator.
+
+                        self.entity_board.set_entity_location(current_entity, *new_location)
+
 
                 else:
                     direction = Direction.random_direction()
+
+                    # TODO Make it travel in a certain direction for some time.
+                    
                     diff_x, diff_y = Direction.max_delta_location(max_travel_distance, *direction, True)
                     new_x, new_y = cur_x + diff_x, cur_y + diff_y
                     new_x, new_y = clamp(0, self.entity_board.max_x_coord, new_x), clamp(0, self.entity_board.max_y_coord, new_y)
                     
                     self.entity_board.set_entity_location(current_entity, new_x, new_y)
 
+                # ///////////////////////////////////////////////////////////////////
                 
 
         self.global_time += self.time_delta

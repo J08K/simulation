@@ -12,11 +12,16 @@ def calc_best_flee_vector(rel_predator_pos : list[tuple[float, float]]) -> tuple
 def normalize_vector(vec : tuple[float, float]) -> tuple[float, float]:
     """Keeps the shape of the vector, but makes it so that x will be 1 or -1."""
     
+    # TODO This is BS, no reason for this.
+
     x, y = vec
     divisor = abs(1 / x)
     return x * divisor, y * divisor
 
 def maximize_vector(vec : tuple[float, float], max_range : float) -> tuple[float, float]:
+
+    # TODO Already implemented in move.Direction??
+
     x_val, y_val = vec
     # TODO Test if the fast inverse square root algorithm can work here.
     xy_modifier = ((x_val ** 2 + y_val ** 2) / max_range ** 2) ** -0.5
