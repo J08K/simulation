@@ -1,0 +1,49 @@
+digraph "packages" {
+rankdir=BT
+charset="utf-8"
+"src" [color="black", label=<src>, shape="box", style="solid"];
+"src.Common" [color="black", label=<src.Common>, shape="box", style="solid"];
+"src.Common.Genomes" [color="black", label=<src.Common.Genomes>, shape="box", style="solid"];
+"src.Common.Rotation" [color="black", label=<src.Common.Rotation>, shape="box", style="solid"];
+"src.Common.Species" [color="black", label=<src.Common.Species>, shape="box", style="solid"];
+"src.Config" [color="black", label=<src.Config>, shape="box", style="solid"];
+"src.Config.data" [color="black", label=<src.Config.data>, shape="box", style="solid"];
+"src.Config.defaults" [color="black", label=<src.Config.defaults>, shape="box", style="solid"];
+"src.LoggingHandler" [color="black", label=<src.LoggingHandler>, shape="box", style="solid"];
+"src.LoggingHandler.LogTypes" [color="black", label=<src.LoggingHandler.LogTypes>, shape="box", style="solid"];
+"src.Memory" [color="black", label=<src.Memory>, shape="box", style="solid"];
+"src.Simulation" [color="black", label=<src.Simulation>, shape="box", style="solid"];
+"src.__main__" [color="black", label=<src.__main__>, shape="box", style="solid"];
+"src.board" [color="black", label=<src.board>, shape="box", style="solid"];
+"src.entities" [color="black", label=<src.entities>, shape="box", style="solid"];
+"src.move" [color="black", label=<src.move>, shape="box", style="solid"];
+"src.move.Direction" [color="black", label=<src.move.Direction>, shape="box", style="solid"];
+"src.move.flee" [color="black", label=<src.move.flee>, shape="box", style="solid"];
+"src.scoring" [color="black", label=<src.scoring>, shape="box", style="solid"];
+"src.vision" [color="black", label=<src.vision>, shape="box", style="solid"];
+"src.Common" -> "src.Common" [arrowhead="open", arrowtail="none"];
+"src.Config" -> "src.Config" [arrowhead="open", arrowtail="none"];
+"src.LoggingHandler" -> "src.Common" [arrowhead="open", arrowtail="none"];
+"src.LoggingHandler" -> "src.LoggingHandler" [arrowhead="open", arrowtail="none"];
+"src.LoggingHandler" -> "src.LoggingHandler.LogTypes" [arrowhead="open", arrowtail="none"];
+"src.Simulation" -> "src.Common" [arrowhead="open", arrowtail="none"];
+"src.Simulation" -> "src.Common.Genomes" [arrowhead="open", arrowtail="none"];
+"src.Simulation" -> "src.Common.Species" [arrowhead="open", arrowtail="none"];
+"src.Simulation" -> "src.board" [arrowhead="open", arrowtail="none"];
+"src.Simulation" -> "src.entities" [arrowhead="open", arrowtail="none"];
+"src.Simulation" -> "src.move" [arrowhead="open", arrowtail="none"];
+"src.Simulation" -> "src.move.Direction" [arrowhead="open", arrowtail="none"];
+"src.__main__" -> "src.Common" [arrowhead="open", arrowtail="none"];
+"src.__main__" -> "src.Common.Species" [arrowhead="open", arrowtail="none"];
+"src.__main__" -> "src.Config" [arrowhead="open", arrowtail="none"];
+"src.__main__" -> "src.LoggingHandler" [arrowhead="open", arrowtail="none"];
+"src.__main__" -> "src.LoggingHandler.LogTypes" [arrowhead="open", arrowtail="none"];
+"src.__main__" -> "src.Simulation" [arrowhead="open", arrowtail="none"];
+"src.board" -> "src.Common" [arrowhead="open", arrowtail="none"];
+"src.board" -> "src.entities" [arrowhead="open", arrowtail="none"];
+"src.entities" -> "src.Common" [arrowhead="open", arrowtail="none"];
+"src.entities" -> "src.Memory" [arrowhead="open", arrowtail="none"];
+"src.entities" -> "src.vision" [arrowhead="open", arrowtail="none"];
+"src.scoring" -> "src.Common" [arrowhead="open", arrowtail="none"];
+"src.vision" -> "src.Common" [arrowhead="open", arrowtail="none"];
+}
