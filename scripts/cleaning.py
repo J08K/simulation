@@ -66,3 +66,5 @@ if __name__ == "__main__":
     print("[PYCACHE]: Done cleaning pycache!")
     
     clean_config(parsed_args)
+
+    # TODO Also clear database if it exists.
