@@ -105,9 +105,7 @@ const Board = (props : {
         if (props.board_data) {
             return props.board_data.entities.map((entity_location, index) => renderEntity(entity_location, index))
         }
-        else {
-            return []
-        }
+        return []
     }
 
     return (
