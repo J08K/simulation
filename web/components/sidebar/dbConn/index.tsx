@@ -97,7 +97,7 @@ const DBConn = (props : {
                 <div>
                     Collection: 
                     <select id="selectedCollection" onInput={handleCurrentCollectionChange}>
-                        {(availableCollections.data) ? availableCollections.data.collections.map((collection, index) => <option key={index} value={collection}>{collection}</option>) : null}
+                        {(availableCollections.data) ? availableCollections.data.collections.sort().map((collection, index) => <option key={index} value={collection}>{collection}</option>) : null}
                     </select>
                 </div>
             </div>

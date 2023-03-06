@@ -66,6 +66,27 @@ function genGrids(width: number, height: number, grid_size: number) {
     return sub_grids;
 }
 
+function getEntityColor(species_id : number) {
+
+    function hslToHex(h: number, s: number, l: number ) { // Adapted from: https://stackoverflow.com/a/44134328
+        l /= 100;
+        const a = s * Math.min(l, 1 - l) / 100;
+        const f = (n: number) => {
+            const k = (n + h / 30) % 12;
+            const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+            return Math.round(255 * color).toString(16).padStart(2, '0');   // convert to Hex and prefix "0" if needed
+        };
+        return `#${f(0)}${f(8)}${f(4)}`;
+    }
+
+    let hue = (species_id % 10) * 100;
+    let saturation = 100;
+    let lumin = 50;
+    
+    return hslToHex(hue, saturation, lumin);
+
+}
+
 const EntityBlob = (props : {
     entity: EntityLocation,
     left_offset: number,
@@ -74,7 +95,7 @@ const EntityBlob = (props : {
 }) => {
 
     return (
-        <div onClick={() => {props.onSelect(props.entity)}} style={{left: `${props.left_offset}%`, top: `${props.top_offset}%`}}>{props.entity.entity.species.id}</div>
+        <div onClick={() => {props.onSelect(props.entity)}} style={{left: `${props.left_offset}%`, top: `${props.top_offset}%`, backgroundColor: getEntityColor(props.entity.entity.species.id)}}>{props.entity.entity.species.id}</div>
     )
 }
 

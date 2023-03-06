@@ -7,12 +7,14 @@ import io
 import tempfile
 import pymongo
 
+from typing import Any
+
 from Common import cycle_names
 
 from LoggingHandler import LogTypes
-from LoggingHandler.LogTypes import CommandType, LogLevel
-# TODO ADD Message and Command to the top import as well.
-__version__ = "0.0.1"
+from LoggingHandler.LogTypes import CommandType, LogLevel, Command, Message
+
+__version__ = "0.0.2"
 
 class Logger:
     
@@ -32,18 +34,13 @@ class Logger:
 
         self.__output_file_path = None
         self.__is_temp_dir = True
-        self.__file_obj : io.TextIOWrapper = tempfile.TemporaryFile() # TODO Make sure that this is checked, and or make it so that this is put in a temp folder.
+        self.__file_obj : io.TextIOWrapper = tempfile.TemporaryFile()
 
-        def getCollection(database : pymongo.database.Database):
+        def getCollection(database : pymongo.database.Database) -> Any | None:
             coll_names = database.list_collection_names()
             for collection_name in cycle_names("simdata", " ", False, 1):
                 if collection_name not in coll_names:
                     return database[collection_name]
-                
-
-        # * The only thing this function needs to do is to handle the outputting of WELL STRUCTURED inputs.
-        # TODO Let this thread do more computing, to take the load of the main thread.
-
 
         def create_new_file(file_path : pathlib.Path) -> pathlib.Path:
             idx = 1
@@ -158,13 +155,13 @@ class Logger:
         if self.__run_thread:
             self.__queue.put(message)
         else:
-            ... # TODO Probably add some kind of exception when trying to add logs to a stopped logger?
+            raise ValueError("Tried creating logger message, but logger has stopped!")
 
     def new_command(self, cmd : LogTypes.Command) -> None:
         if self.__run_thread:
             self.__queue.put(cmd)
         else:
-            ... # TODO Probably add some kind of exception when trying to add logs to a stopped logger?
+            raise ValueError("Tried creating logger command, but logger has stopped!")
 
     def change_output_dir(self, new_path : str | pathlib.Path) -> None:
         new_path = pathlib.Path(new_path)
@@ -181,3 +178,21 @@ class Logger:
     
     def is_running(self) -> bool:
         return self.__run_thread
+    
+
+class Handler:
+
+    current_logger : Logger | None
+
+    def __init__(self) -> None:
+        self.current_logger = None
+    
+    def __enter__(self) -> Logger:
+        if self.current_logger:
+            raise ValueError("Tried creating a logger, when one has already been instantiated!")
+        
+        self.current_logger = Logger()
+        return self.current_logger
+    
+    def __exit__(self, *args, **kwargs) -> None:
+        self.current_logger.stop()
