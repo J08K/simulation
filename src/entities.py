@@ -17,11 +17,13 @@ class Entity:
     # State
     __is_alive : bool
     __day_born : int
+    reproductive_urge : float
+    hunger : float
 
     # Metadata
     __uuid : UUID
     
-    def __init__(self, specie: Common.Species.BaseSpecie, genome : Common.Genomes.Genome, cur_day : int) -> None:
+    def __init__(self, specie: Common.Species.BaseSpecie, genome : Common.Genomes.Genome, hunger : float, cur_day : int) -> None:
         self.specie = specie
         self.genome = genome
 
@@ -30,11 +32,10 @@ class Entity:
 
         self.__is_alive = True
         self.__day_born = cur_day # TODO Convert to timestamp of global time, when born.
+        self.reproductive_urge = 0.2
+        self.hunger = hunger
 
         self.__uuid = uuid4()
-    
-    def do_action(self, cur_location : tuple[float, float], surroundings : dict["Entity", tuple[float, float]]):
-        ...
     
     def identify_multiple_relationships(self, other_entities : list["Entity"]) -> dict[Common.Species.SpecieRelationship, list["Entity"]]:
         identified = {

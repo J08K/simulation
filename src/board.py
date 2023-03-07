@@ -230,8 +230,6 @@ class Board:
             self.get_grid(*entity_current_grid).pop_entity(entity)
             self.entity_registry[entity] = entity_new_grid
         new_grid.change_entity_data(entity, x, y)
-        
-        print(f"Entity {entity.specie.name} changed location {old_location} -> ({x}, {y})")
 
 
     def get_entities_nearby(self, entity : Entity) -> list[tuple[Entity, float, float]]:

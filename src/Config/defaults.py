@@ -3,7 +3,7 @@ from Config import data as ConfigData
 DEFAULT_SIMULATION_CONFIG = ConfigData.SimulationConfig(
     max_agents=1000,
     start_agents=100,
-    time_delta=0.1,
+    time_delta=0.01,
     num_steps=100_000,
 )
 

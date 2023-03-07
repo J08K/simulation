@@ -6,7 +6,7 @@ import LoggingHandler
 from LoggingHandler.LogTypes import Message, LogLevel
 
 if __name__ == "__main__":
-    config = Config.ProjectConfigHandler()
+    config = Config.ProjectConfigHandler("./config.toml")
     with LoggingHandler.Handler() as logger:
         print(f"Logger status is: {logger.is_running()}")
         logger.change_output_dir(config.config_root)

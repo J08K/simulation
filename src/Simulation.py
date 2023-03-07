@@ -22,6 +22,7 @@ def create_new_board(size: tuple[int, int], species: dict[Species.BaseSpecie, in
                         gestation_period_gene=Genomes.Gene("gestation_period", 0.5, 0.2),
                         gender=random.choice([Genomes.Gender.FEMALE, Genomes.Gender.MALE])
                     ),
+                    hunger=1.0,
                     cur_day=0,
                 ),
                 x=random.random() * new_board.max_x_coord,

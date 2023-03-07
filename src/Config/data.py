@@ -1,39 +1,78 @@
-class SimulationConfig:
-    
-    max_agents : int
-    start_agents : int
-    time_delta : float
-    num_steps : int
+from typing import Any
 
-    def __init__(
-                self, 
-                max_agents : int,
-                start_agents : int, 
+
+class BaseConf:
+
+    def __init__(self) -> None:
+        pass
+
+    def export(self) -> dict:
+        keys = [idx for idx in dir(self) if not idx.endswith("__")]
+        return {key:self.__getattribute__(key) for key in keys}
+
+class SimulationConfig(BaseConf):
+    
+    width : float
+    height : float
+    grid_size : float
+    time_delta : float
+    num_steps : float
+
+    def __init__(self, 
+                width : float,
+                height : float,
+                grid_size : float,
                 time_delta : float,
-                num_steps : int
+                num_steps : float,
             ) -> None:
-        self.max_agents = max_agents
-        self.start_agents = start_agents
+        super().__init__()
+        self.width = width
+        self.height = height
+        self.grid_size = grid_size
         self.time_delta = time_delta
         self.num_steps = num_steps
-        
-    def export(self) -> dict:
-        return {
-            "max_agents": self.max_agents,
-            "start_agents": self.start_agents,
-            "time_delta": self.time_delta,
-            "num_steps": self.num_steps,
-        }
-    
-    @staticmethod
-    def from_dict(obj : dict) -> "SimulationConfig":
-        # TODO Error handling for missing data.
-        return SimulationConfig(
-            max_agents=obj["max_agents"],
-            start_agents=obj["start_agents"],
-            time_delta=obj["time_delta"],
-            num_steps=obj["num_steps"],
-        )
+
+
+class LoggerConfig(BaseConf):
+
+    db_uri : str
+    db_port : int
+    db_username : str
+    db_password : str
+    db_collection_name : str
+
+    def __init__(self,
+                db_uri : str,
+                db_port : int,
+                db_username : str,
+                db_password : str,
+                db_collection_name : str,
+                 ) -> None:
+        super().__init__()
+        self.db_uri = db_uri
+        self.db_port = db_port
+        self.db_username = db_username
+        self.db_password = db_password
+        self.db_collection_name = db_collection_name
+
+
+class EvolutionConfig(BaseConf):
+
+    mutability : str
+
+    def __init__(self, mutability : str) -> None:
+        super().__init__()
+        self.mutability = mutability
+
+
+class SpeciesConfig(BaseConf):
+
+    species : dict[str, dict[str, Any]]
+
+    def __init__(self, species: dict[str, dict[str, Any]]) -> None:
+        super().__init__()
+        self.species = species
+
 class Config:
     
     Simulation : SimulationConfig
