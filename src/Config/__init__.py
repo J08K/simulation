@@ -35,14 +35,45 @@ class ProjectConfigHandler:
             self.config_root = config_path
         else:
             self.config_root = get_default_config_dir()
-        self.config_file_path = self.config_root / "config.toml"
+            self.config_file_path = self.config_root / "config.toml"
+
+        if "config.toml" in os.listdir():
+            self.config_file_path = pathlib.Path(os.path.abspath(os.getcwd())) / "config.toml"
+
         self.integrity_check()
         self.read_config()
     
     def read_config(self) -> None:
         with open(self.config_file_path, "r") as config_file:
             data = toml.load(config_file)
-            self.config = ConfigData.Config.from_dict(data)
+            self.config = ConfigData.Config( # TODO This is awful, not everything has to be class and object based.
+                # Prime example of why people hate OOP, this... (Job Kolhorn, 2023)
+                sim_conf=ConfigData.SimulationConfig(
+                    width=data["simulation"]["width"],
+                    height=data["simulation"]["height"],
+                    grid_size=data["simulation"]["grid_size"],
+                    time_delta=data["simulation"]["time_delta"],
+                    num_steps=data["simulation"]["num_steps"],
+                ),
+                log_conf=ConfigData.LoggerConfig(
+                    db_uri=data["logger"]["db"]["uri"],
+                    db_port=data["logger"]["db"]["port"],
+                    db_username=data["logger"]["db"]["username"],
+                    db_password=data["logger"]["db"]["password"],
+                    db_collection_name=data["logger"]["db"]["collection_name"],
+                ),
+                evo_conf=ConfigData.EvolutionConfig(
+                    mutability=data["evolution"]["mutability"],
+                ),
+                ent_conf=ConfigData.EntitiesConfig(
+                    hunger_speed_multiplier=data["entities"]["hunger_speed_multiplier"],
+                    short_term_memory_span=data["entities"]["short_term_memory_span"],
+                    long_term_memory_span=data["entities"]["long_term_memory_span"],
+                ),
+                spe_conf=ConfigData.SpeciesConfig(
+                    species=data["species"]
+                )
+            )
     
     def create_default_config(self, config_path : pathlib.Path) -> None:
         default_config = ConfigDefaults.DEFAULT_CONFIG

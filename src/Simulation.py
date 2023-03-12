@@ -5,6 +5,8 @@ from entities import Entity
 from Common import Species, Genomes, calc_distance, clamp
 from move import Direction
 
+from Config import ConfigData
+
 def create_new_board(size: tuple[int, int], species: dict[Species.BaseSpecie, int]) -> board.Board:
     width, height = size
     new_board = board.Board(width, height, 3)
@@ -38,12 +40,15 @@ class Simulation:
     time_delta: float
     global_time: float
     
+    config : ConfigData.Config
     # TODO This should implement a logger.
 
-    def __init__(self, entity_board: board.Board, time_delta: float) -> None:
+    def __init__(self, entity_board: board.Board, config : ConfigData.Config) -> None:
+        self.config = config
+
         self.entity_board = entity_board
         self.time_created = 0.0
-        self.time_delta = time_delta
+        self.time_delta = self.config.Simulation.time_delta
         self.global_time = 0.0
 
     def adjust_time_delta(self, new_td: float) -> None:
@@ -69,9 +74,17 @@ class Simulation:
                 # TODO Update entities memory
                 # current_entity.memory.update()
                 
-                # Get entities surroundings and some basic context
-                cur_x, cur_y = self.entity_board.get_entity_location(current_entity)
+                # ///////////////////////////////////////////////////////////////////
+                # Get entity context
                 max_travel_distance = self.time_delta * ENTITY_SPEED
+                current_hunger_used = self.config.Entities.hunger_speed_multiplier
+                if current_entity.hunger < self.config.Entities.hunger_speed_multiplier:
+                    max_travel_distance = max_travel_distance * (current_entity.hunger / self.config.Entities.hunger_speed_multiplier)
+                    current_hunger_used = current_entity.hunger
+
+                # ///////////////////////////////////////////////////////////////////
+                # Get entities surroundings
+                cur_x, cur_y = self.entity_board.get_entity_location(current_entity)
                 observation = self.entity_board.get_all_in_view(current_entity)
                 identified = current_entity.identify_multiple_relationships(list(observation.keys()))
                 

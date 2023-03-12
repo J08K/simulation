@@ -6,20 +6,18 @@ import LoggingHandler
 from LoggingHandler.LogTypes import Message, LogLevel
 
 if __name__ == "__main__":
-    config = Config.ProjectConfigHandler("./config.toml")
+    config = Config.ProjectConfigHandler()
     with LoggingHandler.Handler() as logger:
         print(f"Logger status is: {logger.is_running()}")
         logger.change_output_dir(config.config_root)
 
-        brd = Simulation.create_new_board((5, 4), {
-            Species.BaseSpecie(0, "bear", [1], True, True): 2,
-            Species.BaseSpecie(1, "deer", [2], True, True): 10,
-            Species.BaseSpecie(2, "plant", [3], False, False): 50,
+        brd = Simulation.create_new_board((config.config.Simulation.width, config.config.Simulation.height), {
+            Species.BaseSpecie(val["id"], spec, val["prey"], val["can_move"], val["can_see"]):val["start_amount"] for spec, val in config.config.Species.species.items()
         })
 
-        sim = Simulation.Simulation(brd, 0.01)
+        sim = Simulation.Simulation(brd, config.config)
 
-        for idx in range(100):
+        for idx in range(config.config.Simulation.num_steps):
             print(f"Step {idx}")
             
             logger.new_message(Message(

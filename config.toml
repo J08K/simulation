@@ -17,7 +17,7 @@ num_steps = 10
 mutability = 0.1
 
 [entities]
-hunger_speed_multiplier = 0.1 # Maximum hunger gained by moving.
+hunger_speed_multiplier = 0.1 # Maximum hunger used by moving.
 short_term_memory_span = 3.0
 long_term_memory_span = 5.0
 

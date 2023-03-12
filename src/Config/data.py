@@ -16,14 +16,14 @@ class SimulationConfig(BaseConf):
     height : float
     grid_size : float
     time_delta : float
-    num_steps : float
+    num_steps : int
 
     def __init__(self, 
                 width : float,
                 height : float,
                 grid_size : float,
                 time_delta : float,
-                num_steps : float,
+                num_steps : int,
             ) -> None:
         super().__init__()
         self.width = width
@@ -65,6 +65,18 @@ class EvolutionConfig(BaseConf):
         self.mutability = mutability
 
 
+class EntitiesConfig(BaseConf):
+
+    hunger_speed_multiplier: float
+    short_term_memory_span: float
+    long_term_memory_span: float
+
+    def __init__(self, hunger_speed_multiplier : float, short_term_memory_span : float, long_term_memory_span : float) -> None:
+        super().__init__()
+        self.hunger_speed_multiplier = hunger_speed_multiplier
+        self.short_term_memory_span = short_term_memory_span
+        self.long_term_memory_span = long_term_memory_span
+
 class SpeciesConfig(BaseConf):
 
     species : dict[str, dict[str, Any]]
@@ -75,28 +87,24 @@ class SpeciesConfig(BaseConf):
 
 class Config:
     
-    Simulation : SimulationConfig
+    Simulation: SimulationConfig
+    Logger: LoggerConfig
+    Evolution: EvolutionConfig
+    Entities: EntitiesConfig
+    Species: SpeciesConfig
     
-    def __init__(self, sim_conf : SimulationConfig) -> None:
+    def __init__(self, sim_conf: SimulationConfig, log_conf: LoggerConfig, evo_conf: EvolutionConfig, ent_conf: EntitiesConfig, spe_conf: SpeciesConfig) -> None:
         self.Simulation = sim_conf
+        self.Logger = log_conf
+        self.Evolution = evo_conf
+        self.Entities = ent_conf
+        self.Species = spe_conf
         
     def export(self) -> dict:
-        return {
+        return { # TODO Export it in a way that it would be easily parsed to the TOML config format.
             "simulation": self.Simulation.export(),
+            "logger": self.Logger.export(),
+            "evolution": self.Evolution.export(),
+            "entities": self.Entities.export(),
+            "species": self.Species.export(),
         }
-
-    @staticmethod
-    def from_dict(obj : dict) -> "Config":
-        # TODO Add error handling for missing config points.
-        new_conf = dict()
-        
-        for conf_title, data in obj.items():
-            match str(conf_title).lower():
-                case "simulation":
-                    new_conf["simulation"] = SimulationConfig.from_dict(data)
-        
-        new_conf_obj = Config(
-            sim_conf=new_conf["simulation"],
-        )
-        
-        return new_conf_obj
