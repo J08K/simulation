@@ -8,8 +8,11 @@ import tempfile
 import pymongo
 
 from typing import Any
+from rich.progress import track
 
 from Common import cycle_names
+
+from Config import ConfigData
 
 from LoggingHandler import LogTypes
 from LoggingHandler.LogTypes import CommandType, LogLevel, Command, Message
@@ -20,6 +23,8 @@ class Logger:
     
     writer_thread : threading.Thread
     
+    config : ConfigData.LoggerConfig
+
     __run_thread : bool
     __queue : queue.Queue[LogTypes.Message | LogTypes.Command]
     __verbosity : int
@@ -38,7 +43,7 @@ class Logger:
 
         def getCollection(database : pymongo.database.Database) -> Any | None:
             coll_names = database.list_collection_names()
-            for collection_name in cycle_names("simdata", " ", False, 1):
+            for collection_name in cycle_names(self.config.db_collection_name, " ", False, 1):
                 if collection_name not in coll_names:
                     return database[collection_name]
 
@@ -96,8 +101,8 @@ class Logger:
                     ))
                 case CommandType.END_LOG:
                     self.__run_thread = False
-                    for message in self.__queue.queue:
-                        handle_message(message)
+
+                    # * By now, should not have any messages to process anyway.
 
                     handle_message(LogTypes.Message(
                         source="logger",
@@ -122,8 +127,8 @@ class Logger:
                 case _:
                     raise TypeError(f"Unknown command type: {str(cmd)}")
 
-        db_url = "mongodb://admin:admin@localhost:3001"
-        mongo_client = pymongo.MongoClient(db_url) # TODO Add this to config.
+        db_url = f"mongodb://{self.config.db_username}:{self.config.db_password}@{self.config.db_uri}:{str(self.config.db_port)}"
+        mongo_client = pymongo.MongoClient(db_url)
         self.new_message(LogTypes.Message(
             "logger", LogLevel.INFO, f"Client connected on url: {db_url}",
         ))
@@ -144,7 +149,18 @@ class Logger:
                 elif isinstance(message, LogTypes.Message):
                     handle_message(message)
 
-    def __init__(self) -> None:
+        remaining = list(self.__queue.queue)
+        for item in track(remaining, description="Handling remaining messages...", total=len(remaining)):
+            if item:
+                if isinstance(item, LogTypes.Command):
+                    handle_command(item)
+                elif isinstance(item, LogTypes.Message):
+                    handle_message(item)
+        
+
+    def __init__(self, config : ConfigData.LoggerConfig) -> None:
+        self.config = config
+
         self.writer_thread = threading.Thread(target=self.__writer)
         self.__queue = queue.Queue()
         self.__run_thread = True
@@ -154,8 +170,8 @@ class Logger:
     def new_message(self, message : LogTypes.Message) -> None:
         if self.__run_thread:
             self.__queue.put(message)
-        else:
-            raise ValueError("Tried creating logger message, but logger has stopped!")
+        # else:
+        #     raise ValueError("Tried creating logger message, but logger has stopped!")
 
     def new_command(self, cmd : LogTypes.Command) -> None:
         if self.__run_thread:
@@ -176,7 +192,6 @@ class Logger:
             LogTypes.CommandType.END_LOG,
             "ENDED LOG"
         ))
-        print(f"Unhandled messages: {self.__queue.qsize()}") # TODO This should be in the worker thread.
     
     def is_running(self) -> bool:
         return self.__run_thread
@@ -185,15 +200,17 @@ class Logger:
 class Handler:
 
     current_logger : Logger | None
+    config: ConfigData.LoggerConfig
 
-    def __init__(self) -> None:
+    def __init__(self, config : ConfigData.LoggerConfig) -> None:
         self.current_logger = None
+        self.config = config
     
     def __enter__(self) -> Logger:
         if self.current_logger:
             raise ValueError("Tried creating a logger, when one has already been instantiated!")
         
-        self.current_logger = Logger()
+        self.current_logger = Logger(self.config)
         return self.current_logger
     
     def __exit__(self, *args, **kwargs) -> None:

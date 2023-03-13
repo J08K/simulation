@@ -146,15 +146,30 @@ class Simulation:
 
 
                 else:
-                    direction = Direction.random_direction()
+                    # Entity has not found a target and will move to a pseudo-random location.
 
-                    # TODO Make it travel in a certain direction for some time.
-                    
+                    if current_entity.fallback_location == None:
+                        fallback_distance = max_travel_distance / self.time_delta * 5
+                        direction = Direction.random_direction()
+                        
+                        diff_x, diff_y = Direction.max_delta_location(fallback_distance, *direction, True)
+                        fall_x, fall_y = cur_x + diff_x, cur_y + diff_y
+                        fall_x, fall_y = clamp(0, self.entity_board.max_x_coord, fall_x), clamp(0, self.entity_board.max_y_coord, fall_y)
+                        
+                        current_entity.fallback_location = fall_x, fall_y
+
+                    fall_x, fall_y= current_entity.fallback_location
+
+                    direction = Direction.calc_direction(cur_x, cur_y, fall_x, fall_y)
+
                     diff_x, diff_y = Direction.max_delta_location(max_travel_distance, *direction, True)
                     new_x, new_y = cur_x + diff_x, cur_y + diff_y
                     new_x, new_y = clamp(0, self.entity_board.max_x_coord, new_x), clamp(0, self.entity_board.max_y_coord, new_y)
-                    
+
                     self.entity_board.set_entity_location(current_entity, new_x, new_y)
+
+                    if new_x == fall_x and new_y == fall_y:
+                        current_entity.fallback_location = None
 
                 # ///////////////////////////////////////////////////////////////////
                 

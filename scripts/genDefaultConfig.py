@@ -3,7 +3,7 @@ import toml
 DEFAULT_CONFIG = {
     "logger": {
         "db": {
-            "uri": "mongodb://admin:admin@localhost",
+            "uri": "localhost",
             "port": 3001,
             "username": "admin",
             "password": "admin",

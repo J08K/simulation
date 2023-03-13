@@ -92,16 +92,18 @@ const EntityBlob = (props : {
     left_offset: number,
     top_offset: number,
     onSelect: Function,
+    is_selected: boolean,
 }) => {
 
     return (
-        <div onClick={() => {props.onSelect(props.entity)}} style={{left: `${props.left_offset}%`, top: `${props.top_offset}%`, backgroundColor: getEntityColor(props.entity.entity.species.id)}}>{props.entity.entity.species.id}</div>
+        <div onClick={() => {props.onSelect(props.entity)}} style={{left: `${props.left_offset}%`, top: `${props.top_offset}%`, backgroundColor: props.is_selected ? "white" : getEntityColor(props.entity.entity.species.id)}}>{props.entity.entity.species.id}</div>
     )
 }
 
 const Board = (props : {
     board_data: Board | null | undefined
     onEntitySelect: Function,
+    selected_entity: string | null,
     dimensions : {width: number, height: number, grid_size: number} | null
 }) => {
 
@@ -119,7 +121,7 @@ const Board = (props : {
 
         let top_offset = (1 - (entity_location.y / board_height))  * 100;
         let left_offset = (entity_location.x / board_width) * 100;
-        return <EntityBlob key={index} entity={entity_location} left_offset={left_offset} top_offset={top_offset} onSelect={props.onEntitySelect}/>
+        return <EntityBlob key={index} entity={entity_location} left_offset={left_offset} top_offset={top_offset} onSelect={props.onEntitySelect} is_selected={entity_location.entity.uuid === props.selected_entity}/>
     }   
 
     function renderAllEntities() {

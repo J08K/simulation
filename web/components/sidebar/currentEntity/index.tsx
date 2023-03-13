@@ -1,11 +1,15 @@
-import { EntityLocation } from "@/utils/types";
+import { Board } from "@/utils/types";
 
 import styles from "./styling.module.scss";
 import { useEffect } from "react";
-import { findDOMNode } from "react-dom";
+
+function round(val : number, num_decimals : number) {
+    return Math.round(val * Math.pow(10, num_decimals)) / Math.pow(10, num_decimals);
+}
 
 const EntitySidebar = (props : {
-    selected : EntityLocation | null,
+    selected : string | null,
+    board : Board | undefined,
     onDeselect : Function,
 }) => {
 
@@ -44,54 +48,61 @@ const EntitySidebar = (props : {
         }
     });
 
-    if (!props.selected) {
+    if (!props.selected || !props.board) {
         return (
             <div className={styles.Header}>Select an entity...</div>
         )
     }
 
+    let sel_entity = props.board.entities.find((val) => val.entity.uuid == props.selected);
+    if (!sel_entity) {
+        return (
+            <div className={styles.Header}>Entity not found...</div>
+        )
+    }    
+
     return (
         <div className={styles.EntityInfo}>
             <div className={styles.MainHeader}>Entity Information <button  onClick={() => {props.onDeselect()}}>Deselect</button></div>
             <div className={styles.Generic}>
-                <div>UUID: <span className={styles.Data}>{props.selected.entity.uuid}</span></div>
+                <div>UUID: <span className={styles.Data}>{sel_entity.entity.uuid}</span></div>
                 <div className={styles.br}></div>
-                <div>Is alive: <span className={DataColor(props.selected.entity.is_alive)}>{props.selected.entity.is_alive ? "True" : "False"}</span></div>
+                <div>Is alive: <span className={DataColor(sel_entity.entity.is_alive)}>{sel_entity.entity.is_alive ? "True" : "False"}</span></div>
                 <div className={styles.br}></div>
-                <div>Gender: <span className={styles.Data}>{props.selected.entity.genome.gender}</span></div>
+                <div>Gender: <span className={styles.Data}>{sel_entity.entity.genome.gender}</span></div>
                 <div className={styles.br}></div>
-                <div>Hunger: <span className={styles.Data}>{props.selected.entity.hunger}</span></div>
+                <div>Hunger: <span className={styles.Data}>{round(sel_entity.entity.hunger, 5).toFixed(5)}</span></div>
             </div>
             <div className={styles.Header}>Species Information</div>
 
 
 
             <div className={styles.Species}>
-                <div>ID: <span className={styles.Data}>{props.selected.entity.species.id}</span></div>
+                <div>ID: <span className={styles.Data}>{sel_entity.entity.species.id}</span></div>
                 <div className={styles.br}></div>
-                <div>Name: <span className={styles.Data}>{props.selected.entity.species.name}</span></div>
+                <div>Name: <span className={styles.Data}>{sel_entity.entity.species.name}</span></div>
                 <div className={styles.br}></div>
                 <div>
                     Prey: 
                     <div className={styles.PreyData}>
-                        {props.selected.entity.species.prey.map((prey, index) => {return (<span key={index} className={styles.Data}>{prey}</span>)})}
+                        {sel_entity.entity.species.prey.map((prey, index) => {return (<span key={index} className={styles.Data}>{prey}</span>)})}
                     </div>
                 </div>
                 <div className={styles.br}></div>
-                <div>Can move: <span className={DataColor(props.selected.entity.species.can_move)}>{props.selected.entity.species.can_move ? "True" : "False"}</span></div>
+                <div>Can move: <span className={DataColor(sel_entity.entity.species.can_move)}>{sel_entity.entity.species.can_move ? "True" : "False"}</span></div>
                 <div className={styles.br}></div>
-                <div>Can see: <span className={DataColor(props.selected.entity.species.can_see)}>{props.selected.entity.species.can_see ? "True" : "False"}</span></div>
+                <div>Can see: <span className={DataColor(sel_entity.entity.species.can_see)}>{sel_entity.entity.species.can_see ? "True" : "False"}</span></div>
             </div>
             <div className={styles.Header}>Genome Information</div>
 
 
 
             <div className={styles.Genome}>
-                <div>UUID: <span className={styles.Data}>{props.selected.entity.genome.uuid}</span></div>
+                <div>UUID: <span className={styles.Data}>{sel_entity.entity.genome.uuid}</span></div>
                 <div className={styles.br}></div>
                 <div>Genomes: </div>
                 <div className={styles.List}>
-                    {props.selected.entity.genome.genes.map((gene, index) => {
+                    {sel_entity.entity.genome.genes.map((gene, index) => {
                         return <div key={index} className={styles.ListItemGene}>
                             <div>UUID: <span className={styles.Data}>{gene.uuid}</span></div>
                             <div>Name: <span className={styles.Data}>{gene.name.toUpperCase()}</span></div>
@@ -106,13 +117,13 @@ const EntitySidebar = (props : {
 
 
             <div className={styles.Memory}>
-                <div>Current time: <span className={styles.Data}>{props.selected.entity.memory.current_time}</span></div>
+                <div>Current time: <span className={styles.Data}>{sel_entity.entity.memory.current_time}</span></div>
                 <div className={styles.br}></div>
                 <div>Short term memory:</div>
-                <div>Memory length: <span className={styles.Data}>{props.selected.entity.memory.short_term.memory_length}</span></div>
+                <div>Memory length: <span className={styles.Data}>{sel_entity.entity.memory.short_term.memory_length}</span></div>
                 <div>Entity Locations: </div>
                 <div className={styles.List}>
-                    {props.selected.entity.memory.short_term.entity_locations.map((entity, index) => {
+                    {sel_entity.entity.memory.short_term.entity_locations.map((entity, index) => {
                         return <div key={index} className={styles.ListItemShortTerm}>
                             <div>Entity UUID: <span className={styles.Data}>{entity.uuid}</span></div>
                             <div>Time added: <span className={styles.Data}>{entity.time_added}</span></div>
@@ -122,10 +133,10 @@ const EntitySidebar = (props : {
                 </div>
                 <div className={styles.br}></div>
                 <div>Long term memory:</div>
-                <div>Memory length: <span className={styles.Data}>{props.selected.entity.memory.long_term.memory_length}</span></div>
+                <div>Memory length: <span className={styles.Data}>{sel_entity.entity.memory.long_term.memory_length}</span></div>
                 <div>Static food locations:</div>
                 <div className={styles.List}>
-                    {props.selected.entity.memory.long_term.static_food_locations.map((food, index) => {
+                    {sel_entity.entity.memory.long_term.static_food_locations.map((food, index) => {
                         return <div key={index} className={styles.ListItemLongTerm}>
                                 <div>Time added: <span className={styles.Data}>{food.time_added}</span></div>
                                 <div>Location: (<span className={styles.Data}>{food.x}</span>, <span className={styles.Data}>{food.y}</span>)</div>

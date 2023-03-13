@@ -1,5 +1,5 @@
 [logger.db] # TODO Implement
-uri = "mongodb://admin:admin@localhost"
+uri = "localhost"
 port = 3001
 username = "admin"
 password = "admin"

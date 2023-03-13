@@ -23,7 +23,7 @@ var CachedSims : SimDataCache = new SimDataCache(20);
 
 export default function Home() {
 
-  let [selected_entity, setSelectedEntity] = useState<EntityLocation | null>(null);
+  let [selected_entity, setSelectedEntity] = useState<string | null>(null);
   let [target_collection, TargetCollectionSetter] = useState<string>();
   let [target_collection_has_changed, setHasChanged] = useState(true);
   let [target_time, targetTimeSetter] = useState<number>(-1);
@@ -76,12 +76,12 @@ export default function Home() {
             <SimInfo sim_data={current_sim} />
           </div>
           <div className='main'>
-            <Board dimensions={board_cache} board_data={current_sim?.board} onEntitySelect={(entity : EntityLocation) => {setSelectedEntity(entity)}}/>
+            <Board dimensions={board_cache} board_data={current_sim?.board} onEntitySelect={(entity : EntityLocation) => {setSelectedEntity(entity.entity.uuid)}} selected_entity={selected_entity}/>
             <TimeSelector target_time_setter={setTargetTime} time_limits={{time_delta : current_sim?.time_delta, time_max : time_max}}/>
             <EntityList entity_locations={current_sim?.board.entities}/>
           </div>
           <div>
-            <EntitySidebar selected={selected_entity} onDeselect={() => {setSelectedEntity(null); console.log("Triggered!")}}/>
+            <EntitySidebar selected={selected_entity} board={current_sim?.board} onDeselect={() => {setSelectedEntity(null); console.log("Triggered!")}}/>
           </div>
         </div>
       </main>

@@ -7,7 +7,7 @@ from rich.progress import track
 
 if __name__ == "__main__":
     config = Config.ProjectConfigHandler()
-    with LoggingHandler.Handler() as logger:
+    with LoggingHandler.Handler(config.config.Logger) as logger:
         print(f"Logger status is: {logger.is_running()}")
         logger.change_output_dir(config.config_root)
 

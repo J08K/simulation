@@ -25,8 +25,8 @@ export class SimDataCache {
         this.size = size;
         this.collection = null;
 
-        this.accuracy = 1; // For most cases this should be fine.
-        this.time_delta = 0.1;
+        this.accuracy = 2; // For most cases this should be fine.
+        this.time_delta = 0.01;
 
         this.cache = new Map();
 
@@ -60,6 +60,12 @@ export class SimDataCache {
         for (let idx=low; idx <= high; idx = round(idx + this.time_delta, this.accuracy)) {
             if (idx >= 0 && idx !== time && !this.cache.has(idx)) { // TODO Check if we can do this without the 'has()'. Might be slow? O(log(n))
                 this.cache.set(idx, fetcher(this.url(round(idx, this.accuracy))));
+            }
+        }
+
+        for (let [key, _] of this.cache.entries()) {
+            if (key < low || key > high) {
+                this.cache.delete(key);
             }
         }
     }

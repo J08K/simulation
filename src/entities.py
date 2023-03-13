@@ -22,6 +22,9 @@ class Entity:
     reproductive_urge : float
     hunger : float
 
+    # If entity has no targets
+    fallback_location : tuple[float, float] | None
+
     # Metadata
     __uuid : UUID
     
@@ -36,6 +39,8 @@ class Entity:
         self.__day_born = cur_day # TODO Convert to timestamp of global time, when born.
         self.reproductive_urge = 0.2
         self.hunger = hunger
+
+        self.fallback_location = None
 
         self.__uuid = uuid4()
     
