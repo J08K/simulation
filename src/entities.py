@@ -4,6 +4,8 @@ import Common
 import vision
 import Memory
 
+from Config import ConfigData
+
 class Entity:
     
     # What the entity is:
@@ -23,12 +25,12 @@ class Entity:
     # Metadata
     __uuid : UUID
     
-    def __init__(self, specie: Common.Species.BaseSpecie, genome : Common.Genomes.Genome, hunger : float, cur_day : int) -> None:
+    def __init__(self, specie: Common.Species.BaseSpecie, genome : Common.Genomes.Genome, hunger : float, cur_day : int, config: ConfigData.Config) -> None:
         self.specie = specie
         self.genome = genome
 
-        self.eyes = vision.Vision(self.genome.vision_range.value * 2) # TODO Do, some correct multiplication.
-        self.memory = Memory.Memory(3.0, 5.0, cur_day) # TODO Add NON arbitrary values.
+        self.eyes = vision.Vision(self.genome.vision_range.value * config.Simulation.grid_size)
+        self.memory = Memory.Memory(config.Entities.short_term_memory_span, config.Entities.long_term_memory_span, cur_day)
 
         self.__is_alive = True
         self.__day_born = cur_day # TODO Convert to timestamp of global time, when born.
@@ -56,7 +58,7 @@ class Entity:
             "genome": self.genome.export_dict(),
             "memory": self.memory.export_dict(),
             "is_alive": self.is_alive,
-            # TODO Add age
+            "hunger": self.hunger,
         }
 
     def age(self, current_day : int) -> int:

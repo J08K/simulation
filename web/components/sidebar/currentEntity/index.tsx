@@ -59,6 +59,8 @@ const EntitySidebar = (props : {
                 <div>Is alive: <span className={DataColor(props.selected.entity.is_alive)}>{props.selected.entity.is_alive ? "True" : "False"}</span></div>
                 <div className={styles.br}></div>
                 <div>Gender: <span className={styles.Data}>{props.selected.entity.genome.gender}</span></div>
+                <div className={styles.br}></div>
+                <div>Hunger: <span className={styles.Data}>{props.selected.entity.hunger}</span></div>
             </div>
             <div className={styles.Header}>Species Information</div>
 

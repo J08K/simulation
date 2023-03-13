@@ -1,5 +1,5 @@
 from typing import Any
-
+from Common import Species
 
 class BaseConf:
 
@@ -79,11 +79,14 @@ class EntitiesConfig(BaseConf):
 
 class SpeciesConfig(BaseConf):
 
-    species : dict[str, dict[str, Any]]
+    species : dict[Species.BaseSpecie, int]
 
     def __init__(self, species: dict[str, dict[str, Any]]) -> None:
         super().__init__()
-        self.species = species
+        self.species = {Species.BaseSpecie(val["id"], idx, val["prey"], val["can_move"], val["can_see"]): val["start_amount"] for idx, val in species.items()}
+
+    def items(self) -> list[tuple[Species.BaseSpecie, int]]:
+        return self.species.items()
 
 class Config:
     

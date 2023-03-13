@@ -43,8 +43,8 @@ DEFAULT_CONFIG = {
         "plant": {
             "id": 2,
             "prey": [],
-            "can_move": True,
-            "can_see": True,
+            "can_move": False,
+            "can_see": False,
             "start_amount": 50,
         },
     },

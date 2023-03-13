@@ -52,6 +52,7 @@ export type Entity = {
     genome: Genome,
     memory: Memory,
     is_alive: boolean,
+    hunger: number,
 }
 
 export type EntityLocation = {
@@ -123,6 +124,7 @@ export let test_entity_location : EntityLocation = {
             }
         },
         is_alive: false,
+        hunger: 0.5,
     },
     x: 2,
     y: 2,

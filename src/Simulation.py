@@ -7,21 +7,22 @@ from move import Direction
 
 from Config import ConfigData
 
-def create_new_board(size: tuple[int, int], species: dict[Species.BaseSpecie, int]) -> board.Board:
-    width, height = size
-    new_board = board.Board(width, height, 3)
+def create_new_board(config : ConfigData.Config) -> board.Board:
+    new_board = board.Board(config.Simulation.width, config.Simulation.height, config.Simulation.grid_size)
 
-    for target_species, num in species.items():
+    for specie, num in config.Species.items():
+        mut = config.Evolution.mutability
         for _ in range(num):
             new_board.add_entity(
                 entity=Entity(
-                    specie=target_species,
+                    config=config,
+                    specie=specie,
                     genome=Genomes.Genome(
-                        speed_gene=Genomes.Gene("speed", 0.5, 0.2),
-                        hunger_rate_gene=Genomes.Gene("hunger_rate", 0.5, 0.2),
-                        max_hunger_gene=Genomes.Gene("max_hunger", 0.5, 0.2),
-                        vision_range_gene=Genomes.Gene("vision_range", 0.5, 0.2),
-                        gestation_period_gene=Genomes.Gene("gestation_period", 0.5, 0.2),
+                        speed_gene=Genomes.Gene("speed", 0.5, mut),
+                        hunger_rate_gene=Genomes.Gene("hunger_rate", 0.5, mut),
+                        max_hunger_gene=Genomes.Gene("max_hunger", 0.5, mut),
+                        vision_range_gene=Genomes.Gene("vision_range", 0.5, mut),
+                        gestation_period_gene=Genomes.Gene("gestation_period", 0.5, mut),
                         gender=random.choice([Genomes.Gender.FEMALE, Genomes.Gender.MALE])
                     ),
                     hunger=1.0,
@@ -64,7 +65,7 @@ class Simulation:
 
     def step(self) -> None:
 
-        ENTITY_SPEED = 8 # * In meters per second
+        ENTITY_REF_SPEED = 8 # * In meters per second
 
         # First loop should let all of the entities on the board observe.
         # Entities in this phase should also do a risk assesment of every action.
@@ -76,11 +77,12 @@ class Simulation:
                 
                 # ///////////////////////////////////////////////////////////////////
                 # Get entity context
-                max_travel_distance = self.time_delta * ENTITY_SPEED
-                current_hunger_used = self.config.Entities.hunger_speed_multiplier
+                entity_speed = ENTITY_REF_SPEED * current_entity.genome.speed.value
+                max_travel_distance = self.time_delta * entity_speed
+                hunger_used = (current_entity.genome.speed.value ** 3) * self.config.Entities.hunger_speed_multiplier # Using the formula from: https://www.desmos.com/calculator/6aam956gcc
                 if current_entity.hunger < self.config.Entities.hunger_speed_multiplier:
                     max_travel_distance = max_travel_distance * (current_entity.hunger / self.config.Entities.hunger_speed_multiplier)
-                    current_hunger_used = current_entity.hunger
+                    hunger_used = current_entity.hunger
 
                 # ///////////////////////////////////////////////////////////////////
                 # Get entities surroundings
@@ -130,15 +132,17 @@ class Simulation:
 
                         if calc_distance(cur_x, cur_y, *food_location) <= max_travel_distance: # TODO Add max interaction range.
                             self.entity_board.kill_entity(closest_food)
+                            current_entity.hunger += 0.3 # TODO Actual value representing something when eating animals.
                         self.entity_board.set_entity_location(current_entity, *new_location)
 
                     else:
-                        # * Predator is closest
-                        
-                        diff_x, diff_y = Direction.max_delta_location(max_travel_distance, *Direction.calc_direction(cur_x, cur_y, *predator_location))
-                        new_location = clamp(0, self.entity_board.max_x_coord, cur_x - diff_x), clamp(0, self.entity_board.max_y_coord, cur_y - diff_y) # Should go in the other direction of predator.
+                        if predator_location:
+                            # * Predator is closest
+                            
+                            diff_x, diff_y = Direction.max_delta_location(max_travel_distance, *Direction.calc_direction(cur_x, cur_y, *predator_location))
+                            new_location = clamp(0, self.entity_board.max_x_coord, cur_x - diff_x), clamp(0, self.entity_board.max_y_coord, cur_y - diff_y) # Should go in the other direction of predator.
 
-                        self.entity_board.set_entity_location(current_entity, *new_location)
+                            self.entity_board.set_entity_location(current_entity, *new_location)
 
 
                 else:
@@ -154,5 +158,8 @@ class Simulation:
 
                 # ///////////////////////////////////////////////////////////////////
                 
+                current_entity.hunger -= hunger_used
+                if current_entity.hunger <= 0:
+                    self.entity_board.kill_entity(current_entity)
 
         self.global_time += self.time_delta

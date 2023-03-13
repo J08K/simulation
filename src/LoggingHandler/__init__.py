@@ -171,10 +171,12 @@ class Logger:
         ))
 
     def stop(self) -> None:
+        self.__run_thread = False
         self.__queue.put(LogTypes.Command(
             LogTypes.CommandType.END_LOG,
             "ENDED LOG"
         ))
+        print(f"Unhandled messages: {self.__queue.qsize()}") # TODO This should be in the worker thread.
     
     def is_running(self) -> bool:
         return self.__run_thread

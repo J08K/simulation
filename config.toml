@@ -6,11 +6,11 @@ password = "admin"
 collection_name = "simdata"
 
 [simulation]
-width = 5
-height = 4
+width = 50
+height = 40
 grid_size = 3
 time_delta = 0.01
-num_steps = 10
+num_steps = 1000
 
 # TODO Add some values for entity reference values.
 [evolution]
@@ -26,18 +26,18 @@ id = 0
 prey = [1]
 can_move = true
 can_see = true
-start_amount = 2
+start_amount = 20
 
 [species.deer]
 id = 1
 prey = [2]
 can_move = true
 can_see = true
-start_amount = 10
+start_amount = 100
 
 [species.plant]
 id = 2
 prey = []
-can_move = true
-can_see = true
-start_amount = 50
+can_move = false
+can_see = false
+start_amount = 500

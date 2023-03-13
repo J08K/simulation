@@ -74,12 +74,7 @@ class ProjectConfigHandler:
                     species=data["species"]
                 )
             )
-    
-    def create_default_config(self, config_path : pathlib.Path) -> None:
-        default_config = ConfigDefaults.DEFAULT_CONFIG
-        with open(config_path, "w+") as config_fp:
-            toml.dump(default_config.export(), config_fp)
-    
+
     def integrity_check(self) -> None:
         if not os.access(self.config_root.parent.parent, os.W_OK): # Check if the process has write access to the directory.
             raise NoWritePermission("Directory: ")
@@ -88,7 +83,7 @@ class ProjectConfigHandler:
         if not os.path.isdir(self.config_root): # Check if the PROJECT_NAME folder exists.
             os.mkdir(self.config_root)
         if not os.path.exists(self.config_file_path): # Check if the main config file exists.
-            self.create_default_config(self.config_file_path)
+            ConfigDefaults.genDefaultConfig(self.config_file_path)
         
     def export(self) -> dict:
         return {

@@ -272,7 +272,7 @@ class Board:
 
         return visible
 
-    def __contains__(self, entity : Entity):
+    def __contains__(self, entity : Entity) -> bool:
         return entity in self.entity_registry
 
     @property
