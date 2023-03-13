@@ -3,12 +3,13 @@ version: "3.5"
 services:
   mongo:
     image: mongo:latest
-    container_name: mongo
+    container_name: simDB
+    command: mongod --port 3001
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin
     ports:
-      - "0.0.0.0:3001:27017"
+      - "0.0.0.0:3001:3001"
     networks:
       - MONGO
     volumes:
@@ -18,7 +19,20 @@ services:
       - type: volume
         source: MONGO_CONFIG
         target: /data/configdb
-# TODO Add Webserver.
+  web:
+    build:
+      context: ./web/
+      target: runner
+    volumes:
+      - ./web:/web
+    command: npm run dev
+    container_name: Web
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+    links:
+    - "mongo:mongo"
 networks:
   MONGO:
     name: MONGO
