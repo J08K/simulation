@@ -79,10 +79,11 @@ class Simulation:
                 # Get entity context
                 entity_speed = ENTITY_REF_SPEED * current_entity.genome.speed.value
                 max_travel_distance = self.time_delta * entity_speed
-                hunger_used = (current_entity.genome.speed.value ** 3) * self.config.Entities.hunger_speed_multiplier # Using the formula from: https://www.desmos.com/calculator/6aam956gcc
-                if current_entity.hunger < self.config.Entities.hunger_speed_multiplier:
-                    max_travel_distance = max_travel_distance * (current_entity.hunger / self.config.Entities.hunger_speed_multiplier)
-                    hunger_used = current_entity.hunger
+                
+                hunger_used = self.config.Entities.hunger_speed_multiplier
+                if current_entity.hunger + self.config.Entities.hunger_speed_multiplier >= current_entity.max_hunger:
+                    max_travel_distance = max_travel_distance * ((current_entity.max_hunger - current_entity.hunger) / self.config.Entities.hunger_speed_multiplier)
+                    hunger_used = current_entity.max_hunger - current_entity.hunger
 
                 # ///////////////////////////////////////////////////////////////////
                 # Get entities surroundings
@@ -132,7 +133,7 @@ class Simulation:
 
                         if calc_distance(cur_x, cur_y, *food_location) <= max_travel_distance: # TODO Add max interaction range.
                             self.entity_board.kill_entity(closest_food)
-                            current_entity.hunger -= 0.3 # TODO Actual value representing something when eating animals.
+                            current_entity.hunger -= self.config.Entities.prey_saturation
                         self.entity_board.set_entity_location(current_entity, *new_location)
 
                     else:
@@ -142,7 +143,8 @@ class Simulation:
                             diff_x, diff_y = Direction.max_delta_location(max_travel_distance, *Direction.calc_direction(cur_x, cur_y, *predator_location))
                             new_location = clamp(0, self.entity_board.max_x_coord, cur_x - diff_x), clamp(0, self.entity_board.max_y_coord, cur_y - diff_y) # Should go in the other direction of predator.
 
-                            self.entity_board.set_entity_location(current_entity, *new_location)
+                            if random.randint(0, 9) != 0: # TODO Random failure due to stress, just so that entities can catch up.
+                                self.entity_board.set_entity_location(current_entity, *new_location)
 
 
                 else:
@@ -174,7 +176,7 @@ class Simulation:
                 # ///////////////////////////////////////////////////////////////////
                 
                 current_entity.hunger += hunger_used
-                if current_entity.hunger <= 0:
+                if current_entity.hunger >= current_entity.max_hunger:
                     self.entity_board.kill_entity(current_entity)
 
         self.global_time += self.time_delta

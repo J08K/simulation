@@ -8,7 +8,7 @@ collection_name = "simdata"
 [simulation]
 width = 50
 height = 40
-grid_size = 3
+grid_size = 9
 time_delta = 0.01
 num_steps = 1000
 
@@ -17,7 +17,7 @@ num_steps = 1000
 mutability = 0.1
 
 [entities]
-hunger_speed_multiplier = 0.01 # Maximum hunger used by moving.
+hunger_speed_multiplier = 0.001 # Maximum hunger used by moving.
 short_term_memory_span = 3.0
 long_term_memory_span = 5.0
 prey_saturation = 0.4 # Amount of hunger lost when a prey has been eaten.

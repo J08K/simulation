@@ -25,6 +25,9 @@ class Entity:
 
     # If entity has no targets
     fallback_location : tuple[float, float] | None
+    
+    # Static stuff
+    max_hunger : float
 
     # Metadata
     __uuid : UUID
@@ -42,6 +45,8 @@ class Entity:
         self.hunger = hunger
 
         self.fallback_location = None
+        
+        self.max_hunger = -sin(pi * self.genome.speed.value - (pi/2)) + 1 # https://www.desmos.com/calculator/ph8iwacdps
 
         self.__uuid = uuid4()
     
@@ -66,9 +71,6 @@ class Entity:
             "is_alive": self.is_alive,
             "hunger": self.hunger,
         }
-        
-    def calc_max_hunger(self) -> float:
-        return -0.5 * sin(pi * self.genome.speed.value - (pi/2)) + 0.5
 
     def age(self, current_day : int) -> int:
         return current_day - self.__day_born

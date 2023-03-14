@@ -10,6 +10,8 @@ def max_delta_location(max_distance : float, x : float, y : float, maximize : bo
     direction_vec_distance = Common.calc_distance(0, 0, x, y)
     if direction_vec_distance > max_distance or maximize:
         multiplier = direction_vec_distance / max_distance
+        if multiplier == 0:
+            return 0, 0
         return x / multiplier, y / multiplier
     return x, y
 
