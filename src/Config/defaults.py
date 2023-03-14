@@ -24,6 +24,7 @@ DEFAULT_CONFIG = {
         "hunger_speed_multiplier": 0.1,
         "short_term_memory_span": 3.0,
         "long_term_memory_span": 5.0,
+        "prey_saturation": 0.3,
     },
     "species": {
         "bear": {

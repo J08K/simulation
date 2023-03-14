@@ -25,7 +25,7 @@ def create_new_board(config : ConfigData.Config) -> board.Board:
                         gestation_period_gene=Genomes.Gene("gestation_period", 0.5, mut),
                         gender=random.choice([Genomes.Gender.FEMALE, Genomes.Gender.MALE])
                     ),
-                    hunger=1.0,
+                    hunger=0.0,
                     cur_day=0,
                 ),
                 x=random.random() * new_board.max_x_coord,
@@ -132,7 +132,7 @@ class Simulation:
 
                         if calc_distance(cur_x, cur_y, *food_location) <= max_travel_distance: # TODO Add max interaction range.
                             self.entity_board.kill_entity(closest_food)
-                            current_entity.hunger += 0.3 # TODO Actual value representing something when eating animals.
+                            current_entity.hunger -= 0.3 # TODO Actual value representing something when eating animals.
                         self.entity_board.set_entity_location(current_entity, *new_location)
 
                     else:
@@ -173,7 +173,7 @@ class Simulation:
 
                 # ///////////////////////////////////////////////////////////////////
                 
-                current_entity.hunger -= hunger_used
+                current_entity.hunger += hunger_used
                 if current_entity.hunger <= 0:
                     self.entity_board.kill_entity(current_entity)
 

@@ -70,12 +70,15 @@ class EntitiesConfig(BaseConf):
     hunger_speed_multiplier: float
     short_term_memory_span: float
     long_term_memory_span: float
+    prey_saturation: float
 
-    def __init__(self, hunger_speed_multiplier : float, short_term_memory_span : float, long_term_memory_span : float) -> None:
+    def __init__(self, hunger_speed_multiplier : float, short_term_memory_span : float, long_term_memory_span : float, prey_saturation: float) -> None:
         super().__init__()
         self.hunger_speed_multiplier = hunger_speed_multiplier
         self.short_term_memory_span = short_term_memory_span
         self.long_term_memory_span = long_term_memory_span
+        self.prey_saturation = prey_saturation
+        
 
 class SpeciesConfig(BaseConf):
 

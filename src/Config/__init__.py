@@ -69,6 +69,7 @@ class ProjectConfigHandler:
                     hunger_speed_multiplier=data["entities"]["hunger_speed_multiplier"],
                     short_term_memory_span=data["entities"]["short_term_memory_span"],
                     long_term_memory_span=data["entities"]["long_term_memory_span"],
+                    prey_saturation=data["entities"]["prey_saturation"],
                 ),
                 spe_conf=ConfigData.SpeciesConfig(
                     species=data["species"]

@@ -1,4 +1,5 @@
 from uuid import UUID, uuid4
+from math import pi, sin
 
 import Common
 import vision
@@ -65,6 +66,9 @@ class Entity:
             "is_alive": self.is_alive,
             "hunger": self.hunger,
         }
+        
+    def calc_max_hunger(self) -> float:
+        return -0.5 * sin(pi * self.genome.speed.value - (pi/2)) + 0.5
 
     def age(self, current_day : int) -> int:
         return current_day - self.__day_born
