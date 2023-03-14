@@ -1,5 +1,5 @@
 [logger.db] # TODO Implement
-uri = "localhost"
+uri = "91.107.192.127"
 port = 3001
 username = "admin"
 password = "admin"
