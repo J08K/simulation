@@ -9,9 +9,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin
     ports:
-      - "0.0.0.0:3001:3001"
-    networks:
-      - MONGO
+      - "3001:3001"
     volumes:
       - type: volume
         source: MONGO_DATA
@@ -31,8 +29,8 @@ services:
       - "3000:3000"
     environment:
       NODE_ENV: development
-    links:
-    - "mongo:mongo"
+    depends_on:
+      - mongo
 networks:
   MONGO:
     name: MONGO

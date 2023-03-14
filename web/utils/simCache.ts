@@ -8,8 +8,11 @@ function round(val : number, num_decimals : number) {
     return Math.round(val * Math.pow(10, num_decimals)) / Math.pow(10, num_decimals);
 }
 
-async function fetcher (url : string, params: RequestInit = {}) : Promise<SimData | null> {
-    return fetch(url, params).then((res) => res.json()).then((data : {sim_data : SimData | null}) => data.sim_data);
+async function fetcher (url : string, params: RequestInit = {}) : Promise<SimData | void | null> {
+    return fetch(url, params).then((res) => res.json()).then((data : {sim_data : SimData | null}) => data.sim_data).catch((e) => {
+        console.log(`Whoops: ${url} | ${params}`);
+        console.error(e);
+    });
 }
 
 export class SimDataCache {
@@ -19,7 +22,7 @@ export class SimDataCache {
     private accuracy : number;
     private time_delta : number;
 
-    private cache : Map<number, Promise<SimData | null>>;
+    private cache : Map<number, Promise<SimData | void | null>>;
 
     constructor (size : number) {
         this.size = size;
@@ -34,7 +37,7 @@ export class SimDataCache {
     }
 
     url(time : number) : string {
-        return `http://localhost:3000/api/database/collections/${this.collection}/${time}`
+        return `/api/database/collections/${this.collection}/${time}`
     }
 
     setAccuracy() {
@@ -70,7 +73,7 @@ export class SimDataCache {
         }
     }
 
-    async get(time : number) : Promise<SimData | null> {
+    async get(time : number) : Promise<SimData | void | null> {
         if (this.collection) {
             if (this.cache.has(time)) {
                 let target = await this.cache.get(time);

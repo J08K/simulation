@@ -33,8 +33,8 @@ export default function Home() {
 
 
   function setSimData(time : number) {
-    CachedSims.get(time).then((result) => {
-      setCurrentSim(result);
+    CachedSims.get(time).then((result) => { 
+      setCurrentSim(!result ? null : result);
     });
   }
 

@@ -1,7 +1,7 @@
 import { MongoClient } from "mongodb";
 import { SimData } from "./types";
 
-const DB_URI = "mongodb://admin:admin@localhost:3001";
+const DB_URI = "mongodb://admin:admin@mongo:3001";
 
 let client = new MongoClient(DB_URI, {});
 let clientPromise = client.connect();
