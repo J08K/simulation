@@ -53,6 +53,12 @@ export type Entity = {
     memory: Memory,
     is_alive: boolean,
     hunger: number,
+    max_hunger: number,
+    is_pregnant: boolean,
+    pregnant_remaining: number,
+    other_parent_genome: Genome | null,
+    // TODO Implement fallback location
+    level: number,
 }
 
 export type EntityLocation = {
@@ -78,59 +84,4 @@ export type SimData = {
     time_zero : number,
     reproduction_count : number,
     board: Board,
-}
-
-export let test_entity_location : EntityLocation = {
-    entity: {
-        uuid: "026e156e-8747-4094-a5f9-2142cfd9c5fa",
-        species: {
-            id: 0,
-            name: "TEST",
-            prey: [1, 2, 3, 4, 5, 6],
-            can_move: true,
-            can_see: false,
-        },
-        genome: {
-            uuid: "a5b7467d-0f1e-4935-b5d2-f3bfb18d6d2c",
-            gender: "FEMALE",
-            genes: [
-                {
-                    uuid: "77ccca7d-3dd0-4325-9ce6-1ae830ecd5bc",
-                    name: "speed",
-                    value: 0.5,
-                    mutability: 0.1,
-                },
-                {
-                    uuid: "844b756a-6ecc-41e9-9516-a36427db5571",
-                    name: "hunger_rate",
-                    value: 0.4,
-                    mutability: 0.1,
-                },
-            ]
-        },
-        memory: {
-            current_time: 2.1,
-            short_term: {
-                memory_length: 3,
-                entity_locations: [{
-                    uuid: "885a88a4-900f-414f-89bf-0c9dbe58b20e",
-                    time_added: 0.1,
-                    x: 1,
-                    y: 1,
-                }],
-            },
-            long_term: {
-                memory_length: 4,
-                static_food_locations: [{
-                    time_added: 0.1,
-                    x: 2,
-                    y: 2,
-                }],
-            }
-        },
-        is_alive: false,
-        hunger: 0.5,
-    },
-    x: 2,
-    y: 2,
 }

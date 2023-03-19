@@ -10,7 +10,7 @@ from Config import ConfigData
 
 class Entity:
     
-    # TODO Track children.
+    level : int
     
     # What the entity is:
     specie : Common.Species.BaseSpecie
@@ -23,7 +23,6 @@ class Entity:
     # State
     __is_alive : bool
     __day_born : float
-    reproductive_urge : float
     hunger : float
     
     # Pregnancy stuff
@@ -41,7 +40,9 @@ class Entity:
     # Metadata
     __uuid : UUID
     
-    def __init__(self, specie: Common.Species.BaseSpecie, genome : Common.Genomes.Genome, hunger : float, cur_day : float, config: ConfigData.Config) -> None:
+    def __init__(self, level : int, specie: Common.Species.BaseSpecie, genome : Common.Genomes.Genome, hunger : float, cur_day : float, config: ConfigData.Config) -> None:
+        self.level = level
+
         self.specie = specie
         self.genome = genome
 
@@ -50,7 +51,6 @@ class Entity:
 
         self.__is_alive = True
         self.__day_born = cur_day # TODO Convert to timestamp of global time, when born.
-        self.reproductive_urge = 0.2
         self.hunger = hunger
         
         self.pregnant_remaining = None
@@ -83,21 +83,27 @@ class Entity:
             "memory": self.memory.export_dict(),
             "is_alive": self.is_alive,
             "hunger": self.hunger,
+            "max_hunger": self.max_hunger,
+            "is_pregant": self.is_pregnant(),
+            "pregant_remaining": self.pregnant_remaining if self.pregnant_remaining else 0.0,
+            "other_parent_genome": self.other_parent_genome.export_dict() if self.other_parent_genome else None,
+            "level": self.level,
         }
     
     def impregnate(self, other_parent_genome : Common.Genomes.Genome) -> None:
         self.other_parent_genome = other_parent_genome
-        self.pregnant_remaining = self.genome.gestation_period.value * 10
+        self.pregnant_remaining = self.genome.gestation_period.value * 5
         
     def birth_children(self, cur_time : float) -> list["Entity"]:
         if self.other_parent_genome != None and self.pregnant_remaining != None:
-            children_init_hunger_percent = self.genome.gestation_period.value
+            children_init_hunger_percent = -self.genome.gestation_period.value + 1
             num_children : int = round(self.config.Evolution.max_children * self.genome.fecundity.value)
             children : list[Entity] = []
             for _ in range(num_children):
                 new_genome = self.genome.combine(self.other_parent_genome, True, 5)
                 initial_hunger = children_init_hunger_percent * -sin(pi * new_genome.speed.value - (pi/2)) + 1
                 children.append(Entity(
+                    level=self.level + 1,
                     specie=self.specie,
                     genome=new_genome,
                     hunger=initial_hunger,
@@ -111,19 +117,22 @@ class Entity:
             raise ValueError(f"Either 'other_parent_genome' [{self.other_parent_genome}] or 'pregnant_remaining' [{self.pregnant_remaining}] are 'None'!")
 
     def is_mate_compatible(self, entity : "Entity") -> bool:
-        if self.is_male() != entity.is_male(): # Test if opposite gender.
+        if self.is_male():
             if not entity.is_male() and not entity.is_pregnant(): # If target is female and not pregnant.
+                return True
+        else:
+            if not self.is_pregnant() and entity.is_male(): # If current entity is not pregnant and target is male.
                 return True
         return False
 
-    def age(self, current_day : int) -> float:
-        return current_day - self.__day_born
+    def age(self, current_time : float) -> float:
+        return current_time - self.__day_born
     
     def kill(self) -> None:
         self.__is_alive = False
     
     def is_male(self) -> bool:
-        return self.genome.gender == Common.Genomes.Gender.MALE
+        return self.genome.gender.value == Common.Genomes.Gender.MALE.value
     
     @property
     def uuid(self) -> str:

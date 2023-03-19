@@ -37,16 +37,14 @@ class Gene:
             raise ValueError(f"Gene names are not the same: ({self.name} <> {other.name})!")
 
         new_value = (self.value + other.value) / 2
-        new_mutability = (self.mutability + other.mutability) / 2
         
         if do_mutate:
-            new_value = calc_mutation(new_value, new_mutability, accuracy)
-            new_mutability = calc_mutation(new_mutability, new_mutability, accuracy)
+            new_value = calc_mutation(new_value, self.mutability, accuracy)
 
         new_gene = Gene(
             name=self.name,
             start_value=new_value,
-            mutability=new_mutability,
+            mutability=self.mutability,
         )
         
         return new_gene

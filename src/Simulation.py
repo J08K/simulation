@@ -16,6 +16,7 @@ def create_new_board(config : ConfigData.Config) -> board.Board:
         for _ in range(num):
             new_board.add_entity(
                 entity=Entity(
+                    level=0,
                     config=config,
                     specie=specie,
                     genome=Genomes.Genome(
@@ -128,13 +129,13 @@ class Simulation:
                         predator_location = self.entity_board.get_entity_location(closest_predator)
                     
                     # Identify potential mates.
-                    if current_entity.is_male() or (not current_entity.is_male() and not current_entity.is_pregnant()):
-                        if identified[Species.SpecieRelationship.CONGENER]:
-                            # Get closest mate
-                            compatible_mates = [idx for idx in identified[Species.SpecieRelationship.CONGENER] if current_entity.is_mate_compatible(idx)]
-                            if compatible_mates:
-                                closest_mate = min(compatible_mates, key=lambda target: calc_distance(cur_x, cur_y, *self.entity_board.get_entity_location(target)))
-                                mate_location = self.entity_board.get_entity_location(closest_mate)
+                    
+                    if identified[Species.SpecieRelationship.CONGENER]:
+                        # Get closest mate
+                        compatible_mates = [idx for idx in identified[Species.SpecieRelationship.CONGENER] if current_entity.is_mate_compatible(idx)]
+                        if compatible_mates:
+                            closest_mate = min(compatible_mates, key=lambda target: calc_distance(cur_x, cur_y, *self.entity_board.get_entity_location(target)))
+                            mate_location = self.entity_board.get_entity_location(closest_mate)
                     
                     # ///////////////////////////////////////////////////////////////////
                     # Notes on decision making:
@@ -168,12 +169,11 @@ class Simulation:
                             direction = Direction.random_direction()
                             
                             diff_x, diff_y = Direction.max_delta_location(fallback_distance, *direction, True)
-                            fall_x, fall_y = cur_x + diff_x, cur_y + diff_y
-                            fall_x, fall_y = clamp(0, self.entity_board.max_x_coord, fall_x), clamp(0, self.entity_board.max_y_coord, fall_y)
+                            fall_x, fall_y = clamp(0, self.entity_board.max_x_coord, cur_x + diff_x), clamp(0, self.entity_board.max_y_coord, cur_y + diff_y)
                             
                             current_entity.fallback_location = fall_x, fall_y
 
-                        fall_x, fall_y= current_entity.fallback_location
+                        fall_x, fall_y = current_entity.fallback_location
 
                         dir_x, dir_y = Direction.calc_direction(cur_x, cur_y, fall_x, fall_y)
 
@@ -187,6 +187,8 @@ class Simulation:
                             current_entity.fallback_location = None
                     
                     else:
+                        current_entity.fallback_location = None
+
                         action, _ = max(priorities.items(), key=lambda val: list(val)[1])
                         match action:
                             case "food":
@@ -199,6 +201,7 @@ class Simulation:
                                             self.entity_board.kill_entity(closest_food)
                                             current_entity.hunger = max(current_entity.hunger - self.config.Entities.prey_saturation, 0.0)
                                         self.entity_board.set_entity_location(current_entity, *new_location)
+                                    
                                     except board.OutOfBoundsError as ex:
                                         print(food_location)
                                         print(cur_x, cur_y)
@@ -211,14 +214,15 @@ class Simulation:
                                     raise ValueError("Variables 'food_location' or 'closest_food' are unbound.")
                             case "reproduce":
                                 if mate_location and closest_mate:
-                                    diff_x, diff_y = Direction.max_delta_location(max_travel_distance, *Direction.calc_direction(cur_x, cur_y, *mate_location))
+                                    diff_x, diff_y = Direction.max_delta_location(max_travel_distance, *Direction.calc_direction(cur_x, cur_y, *mate_location), True)
                                     new_location = cur_x + diff_x, cur_y + diff_y
 
-                                    if calc_distance(cur_x, cur_y, *mate_location) <= max_travel_distance: # TODO Add max interaction range.
+                                    if calc_distance(cur_x, cur_y, *mate_location) <= max_travel_distance * 2: # TODO Add max interaction range.
                                         if current_entity.is_male():
                                             closest_mate.impregnate(current_entity.genome)
                                         else:
                                             current_entity.impregnate(closest_mate.genome)
+                                    
                                     self.entity_board.set_entity_location(current_entity, *new_location)
                                 else:
                                     print(priorities)
@@ -245,9 +249,10 @@ class Simulation:
                         current_entity.pregnant_remaining -= self.time_delta
                         if current_entity.pregnant_remaining <= 0:
                             children = current_entity.birth_children(self.global_time)
-                            cur_x, cur_y = self.entity_board.get_entity_location(current_entity)
+                            child_x = clamp(0, self.entity_board.max_x_coord, cur_x + clamp(-1.0, 1.0, random.random() * (1 if random.random() >= 0.5 else -1)))
+                            child_y = clamp(0, self.entity_board.max_y_coord, cur_y + clamp(-1.0, 1.0, random.random() * (1 if random.random() >= 0.5 else -1)))
                             for child in children:
-                                self.entity_board.add_entity(child, cur_x, cur_y)
+                                self.entity_board.add_entity(child, child_x, child_y)
                                 self.reproduction_count += 1
                         else:
                             # Pregnant entities use more energy.
@@ -272,6 +277,7 @@ class Simulation:
                             random_x, random_y = random.random() * self.entity_board.max_x_coord, random.random() * self.entity_board.max_y_coord
                             self.entity_board.add_entity(
                                 entity=Entity(
+                                    level=0,
                                     config=self.config,
                                     specie=specie,
                                     genome=Genomes.Genome(

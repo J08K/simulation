@@ -72,6 +72,16 @@ const EntitySidebar = (props : {
                 <div>Gender: <span className={styles.Data}>{sel_entity.entity.genome.gender}</span></div>
                 <div className={styles.br}></div>
                 <div>Hunger: <span className={styles.Data}>{round(sel_entity.entity.hunger, 5).toFixed(5)}</span></div>
+                <div className={styles.br}></div>
+                <div>Max hunger: <span className={styles.Data}>{round(sel_entity.entity.max_hunger, 5)}</span></div>
+                <div className={styles.br}></div>
+                <div>Is pregnant: <span className={styles.Data}>{sel_entity.entity.is_pregnant ? "True" : "False"}</span></div>
+                <div className={styles.br}></div>
+                <div>Pregnant remaining: <span className={styles.Data}>{round(sel_entity.entity.pregnant_remaining, 5)}</span></div>
+                <div className={styles.br}></div>
+                <div>Other parent genome: <span className={styles.Data}>TODO</span></div>
+                <div className={styles.br}></div>
+                <div>Level: <span className={styles.Data}>{sel_entity.entity.level}</span></div>
             </div>
             <div className={styles.Header}>Species Information</div>
 

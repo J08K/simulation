@@ -45,6 +45,12 @@ const SimInfo = (props : {
                 <div className={styles.br}></div>
                 <div>Grid size: <DataSpan data={props.sim_data?.board.grid_size}/></div>
             </div>
+            <div className={styles.Header}>Species Statistics</div>
+            <div className={styles.Category}>
+                {props.sim_data?.board.specie_stats.map((val) => {
+                    return <div>{val.specie.name} <DataSpan data={val.count}/></div>
+                })}
+            </div>
             
         </div>
     )

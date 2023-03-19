@@ -247,8 +247,10 @@ class Board:
         
         current_grid_coords = self.entity_registry[entity]
         found_entities = [(new_entity, x, y)for new_entity, x, y in self.get_grid(*current_grid_coords).get_all_entities()]
-        if entity in found_entities: # TODO Expression will always evaluate to False since the types "Entity" and "tuple[Entity, float, float]" have no overlap.
-            found_entities.pop(entity)
+        for idx, (edx, _, _) in enumerate(found_entities):
+            if entity == edx:
+                found_entities.pop(idx)
+                break
         for neighbour in self.get_neighbour_grids(*current_grid_coords):
             found_entities += self.get_grid(*neighbour).get_all_entities()
         return found_entities
