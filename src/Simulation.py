@@ -19,10 +19,9 @@ def create_new_board(config : ConfigData.Config) -> board.Board:
                     specie=specie,
                     genome=Genomes.Genome(
                         speed_gene=Genomes.Gene("speed", 0.5, mut),
-                        hunger_rate_gene=Genomes.Gene("hunger_rate", 0.5, mut),
-                        max_hunger_gene=Genomes.Gene("max_hunger", 0.5, mut),
                         vision_range_gene=Genomes.Gene("vision_range", 0.5, mut),
                         gestation_period_gene=Genomes.Gene("gestation_period", 0.5, mut),
+                        fecundity=Genomes.Gene("fecundity", 0.5, mut),
                         gender=random.choice([Genomes.Gender.FEMALE, Genomes.Gender.MALE])
                     ),
                     hunger=0.0,
@@ -82,6 +81,7 @@ class Simulation:
                 
                 hunger_used = self.config.Entities.hunger_speed_multiplier
                 if current_entity.hunger + self.config.Entities.hunger_speed_multiplier >= current_entity.max_hunger:
+                    # TODO max_travel_distance should not be zero.
                     max_travel_distance = max_travel_distance * ((current_entity.max_hunger - current_entity.hunger) / self.config.Entities.hunger_speed_multiplier)
                     hunger_used = current_entity.max_hunger - current_entity.hunger
 
@@ -98,6 +98,7 @@ class Simulation:
 
                 food_location = None
                 predator_location = None
+                mate_location = None
 
                 # Go to closest food if it exists.
                 if identified[Species.SpecieRelationship.PREY]:
@@ -105,10 +106,29 @@ class Simulation:
                     closest_food = min(identified[Species.SpecieRelationship.PREY], key=lambda target: calc_distance(cur_x, cur_y, *self.entity_board.get_entity_location(target)))
                     food_location = self.entity_board.get_entity_location(closest_food)
 
+                # Identify predators.
                 if identified[Species.SpecieRelationship.PREDATOR]:
                     # Get closest predator
                     closest_predator = min(identified[Species.SpecieRelationship.PREDATOR], key=lambda target: calc_distance(cur_x, cur_y, *self.entity_board.get_entity_location(target)))
                     predator_location = self.entity_board.get_entity_location(closest_predator)
+                
+                if current_entity.is_male() or not (current_entity.is_male() and current_entity.is_pregnant()):
+                    if identified[Species.SpecieRelationship.CONGENER]:
+                        # Get closest mate
+                                      
+                
+                # ///////////////////////////////////////////////////////////////////
+                # Notes on decision making:
+                
+                # If an entity has a low hunger (i.e. 20% of max_hunger) then it should not be important to find food.
+                
+                # An entity should worry more about approaching predators than ones that aren't.
+                
+                # If an entity has a medium hunger (i.e. 60% of max_hunger) then it will prefer food in the opposite direction of a predator.
+                
+                # If an entity has a medium hunger (i.e. 60% of max_hunger) it will try to look for a compatible mate.
+                
+                # If an entity has a high hunger (i.e. ~85% of max_hunger) it will be highly focused on finding food.
                 
                 # ///////////////////////////////////////////////////////////////////
                 # * Figure out where to move.
@@ -173,6 +193,22 @@ class Simulation:
                     if new_x == fall_x and new_y == fall_y:
                         current_entity.fallback_location = None
 
+                # ///////////////////////////////////////////////////////////////////
+                # Pregnancy
+                
+                # ! Technically entities should not be able to give birth if they have reached their maximum hunger, but whatever.
+                if current_entity.is_pregnant():
+                    current_entity.pregnant_remaining -= self.time_delta
+                    if current_entity.pregnant_remaining <= 0:
+                        children = current_entity.birth_children(self.global_time)
+                        cur_x, cur_y = self.entity_board.get_entity_location(current_entity)
+                        for child in children:
+                            self.entity_board.add_entity(child, cur_x, cur_y)
+                    else:
+                        # Pregnant entities use more energy.
+                        # TODO Add multiplier to config.
+                        hunger_used += hunger_used * 1.5
+                
                 # ///////////////////////////////////////////////////////////////////
                 
                 current_entity.hunger += hunger_used

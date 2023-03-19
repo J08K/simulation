@@ -1,5 +1,7 @@
 import toml
 
+# TODO Just import src.Config.defaults for default config.
+
 DEFAULT_CONFIG = {
     "logger": {
         "db": {

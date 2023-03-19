@@ -18,7 +18,8 @@ DEFAULT_CONFIG = {
         "num_steps": 10,
     },
     "evolution": {
-        "mutability": 0.1
+        "mutability": 0.1,
+        "max_children": 8,
     },
     "entities": {
         "hunger_speed_multiplier": 0.1,

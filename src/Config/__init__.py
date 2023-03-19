@@ -64,6 +64,7 @@ class ProjectConfigHandler:
                 ),
                 evo_conf=ConfigData.EvolutionConfig(
                     mutability=data["evolution"]["mutability"],
+                    max_children=data["evolution"]["max_children"],
                 ),
                 ent_conf=ConfigData.EntitiesConfig(
                     hunger_speed_multiplier=data["entities"]["hunger_speed_multiplier"],

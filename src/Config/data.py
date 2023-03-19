@@ -59,10 +59,12 @@ class LoggerConfig(BaseConf):
 class EvolutionConfig(BaseConf):
 
     mutability : str
+    max_children : int
 
-    def __init__(self, mutability : str) -> None:
+    def __init__(self, mutability: str, max_children: int) -> None:
         super().__init__()
         self.mutability = mutability
+        self.max_children = max_children
 
 
 class EntitiesConfig(BaseConf):

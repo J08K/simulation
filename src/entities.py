@@ -9,6 +9,8 @@ from Config import ConfigData
 
 class Entity:
     
+    # TODO Track children.
+    
     # What the entity is:
     specie : Common.Species.BaseSpecie
     genome : Common.Genomes.Genome
@@ -22,12 +24,18 @@ class Entity:
     __day_born : int
     reproductive_urge : float
     hunger : float
+    
+    # Pregnancy stuff
+    pregnant_remaining: float | None
+    other_parent_genome: Common.Genomes.Genome | None
 
     # If entity has no targets
     fallback_location : tuple[float, float] | None
     
     # Static stuff
     max_hunger : float
+
+    config : ConfigData.Config
 
     # Metadata
     __uuid : UUID
@@ -43,10 +51,14 @@ class Entity:
         self.__day_born = cur_day # TODO Convert to timestamp of global time, when born.
         self.reproductive_urge = 0.2
         self.hunger = hunger
+        
+        self.pregnant_remaining = None
+        self.other_parent_genome = None
 
         self.fallback_location = None
         
         self.max_hunger = -sin(pi * self.genome.speed.value - (pi/2)) + 1 # https://www.desmos.com/calculator/ph8iwacdps
+        self.config = config
 
         self.__uuid = uuid4()
     
@@ -71,12 +83,36 @@ class Entity:
             "is_alive": self.is_alive,
             "hunger": self.hunger,
         }
+        
+    def birth_children(self, cur_time : float) -> list["Entity"]:
+        if self.other_parent_genome != None and self.pregnant_remaining != None:
+            children_init_hunger_percent = self.genome.gestation_period
+            num_children : int = round(self.config.Evolution.max_children * self.genome.fecundity)
+            children = []
+            for _ in range(num_children):
+                new_genome = self.genome.combine(self.other_parent_genome, True, 5)
+                initial_hunger = children_init_hunger_percent * -sin(pi * new_genome.speed.value - (pi/2)) + 1
+                children.append(Entity(
+                    specie=self.specie,
+                    genome=new_genome,
+                    hunger=initial_hunger,
+                    cur_day=cur_time,
+                    config=self.config,
+                ))
+            self.other_parent_genome = None
+            self.pregnant_remaining = None
+            return children
+        else:
+            raise ValueError(f"Either 'other_parent_genome' [{self.other_parent_genome}] or 'pregnant_remaining' [{self.pregnant_remaining}] are 'None'!")
 
     def age(self, current_day : int) -> int:
         return current_day - self.__day_born
     
     def kill(self) -> None:
         self.__is_alive = False
+    
+    def is_male(self) -> bool:
+        return self.genome.gender == Common.Genomes.Gender.MALE
     
     @property
     def uuid(self) -> str:
@@ -97,6 +133,9 @@ class Entity:
     @property
     def is_alive(self) -> bool:
         return self.__is_alive
+
+    def is_pregnant(self) -> bool:
+        return self.other_parent_genome != None and self.pregnant_remaining != None
 
     def __repr__(self) -> str:
         return f"Entity; uuid:{str(self.__uuid)}"

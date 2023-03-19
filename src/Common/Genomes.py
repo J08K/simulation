@@ -68,10 +68,9 @@ class Genome:
     # TODO Might want to add memory length.
     
     speed : Gene
-    hunger_rate : Gene
-    max_hunger : Gene
     vision_range : Gene
     gestation_period : Gene
+    fecundity: Gene
     
     gender : Gender
     
@@ -79,38 +78,33 @@ class Genome:
     
     def __init__(self, 
                  speed_gene : Gene, 
-                 hunger_rate_gene : Gene, # TODO Remove this gene.
-                 max_hunger_gene : Gene,
                  vision_range_gene : Gene,
                  gestation_period_gene : Gene, 
-                 # TODO Add 'fecundity'. https://www.khanacademy.org/science/ap-biology/ecology-ap/energy-flow-through-ecosystems/a/life-history-strategies
+                 fecundity: Gene, # https://www.khanacademy.org/science/ap-biology/ecology-ap/energy-flow-through-ecosystems/a/life-history-strategies
                  gender : Gender
                  ) -> None:
         self.speed = speed_gene
-        self.hunger_rate = hunger_rate_gene
-        self.max_hunger = max_hunger_gene
         self.vision_range = vision_range_gene
         self.gestation_period = gestation_period_gene
+        self.fecundity = fecundity
         self.gender = gender
         
         self.__uuid = uuid4()
         
     def combine(self, other : "Genome", do_mutate : bool, accuracy : int) -> "Genome":
         new_speed = self.speed.combine(other.speed, do_mutate, accuracy)
-        new_hunger_rate = self.hunger_rate.combine(other.hunger_rate, do_mutate, accuracy)
-        new_max_hunger = self.max_hunger.combine(other.max_hunger, do_mutate, accuracy)
         new_vision_range = self.vision_range.combine(other.vision_range, do_mutate, accuracy)
 
         new_gestation_period = self.gestation_period.combine(other.gestation_period, do_mutate, accuracy)
+        new_fecundity = self.fecundity.combine(other.fecundity, do_mutate, accuracy)
         
         new_gender = random.choice([Gender.FEMALE, Gender.MALE]) # TODO Research if there are other factors affecting gender.
         
         new_genome = Genome(
             speed_gene=new_speed,
-            hunger_rate_gene=new_hunger_rate,
-            max_hunger_gene=new_max_hunger,
             vision_range_gene=new_vision_range,
             gestation_period_gene=new_gestation_period,
+            fecundity=new_fecundity,
             gender=new_gender
         )
         
@@ -126,10 +120,9 @@ class Genome:
             "gender": self.gender.name,
             "genes": [
                 self.speed.export_dict(),
-                self.hunger_rate.export_dict(),
-                self.max_hunger.export_dict(),
                 self.vision_range.export_dict(),
                 self.gestation_period.export_dict(),
+                self.fecundity.export_dict(),
             ]    
         }
         
