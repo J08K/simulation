@@ -34,6 +34,8 @@ const SimInfo = (props : {
                 <div>Time delta: <DataSpan data={props.sim_data?.time_delta}/></div>
                 <div className={styles.br}></div>
                 <div>Time start: <DataSpan data={props.sim_data?.time_zero}/></div>
+                <div className={styles.br}></div>
+                <div>Reproduction count: <DataSpan data={props.sim_data?.reproduction_count}/></div>
             </div>
             <div className={styles.Header}>Board Information</div>
             <div className={styles.Category}>

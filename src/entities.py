@@ -1,3 +1,4 @@
+from typing import Any
 from uuid import UUID, uuid4
 from math import pi, sin
 
@@ -21,7 +22,7 @@ class Entity:
 
     # State
     __is_alive : bool
-    __day_born : int
+    __day_born : float
     reproductive_urge : float
     hunger : float
     
@@ -40,7 +41,7 @@ class Entity:
     # Metadata
     __uuid : UUID
     
-    def __init__(self, specie: Common.Species.BaseSpecie, genome : Common.Genomes.Genome, hunger : float, cur_day : int, config: ConfigData.Config) -> None:
+    def __init__(self, specie: Common.Species.BaseSpecie, genome : Common.Genomes.Genome, hunger : float, cur_day : float, config: ConfigData.Config) -> None:
         self.specie = specie
         self.genome = genome
 
@@ -63,7 +64,7 @@ class Entity:
         self.__uuid = uuid4()
     
     def identify_multiple_relationships(self, other_entities : list["Entity"]) -> dict[Common.Species.SpecieRelationship, list["Entity"]]:
-        identified = {
+        identified : dict[Common.Species.SpecieRelationship, list[Entity]] = {
             Common.Species.SpecieRelationship.PREDATOR : [],
             Common.Species.SpecieRelationship.NEUTRAL : [],
             Common.Species.SpecieRelationship.PREY : [],
@@ -74,7 +75,7 @@ class Entity:
         return identified
 
 
-    def export_dict(self) -> dict:
+    def export_dict(self) -> dict[str, Any]:
         return {
             "uuid": self.uuid,
             "species": self.specie.export_dict(),
@@ -83,12 +84,16 @@ class Entity:
             "is_alive": self.is_alive,
             "hunger": self.hunger,
         }
+    
+    def impregnate(self, other_parent_genome : Common.Genomes.Genome) -> None:
+        self.other_parent_genome = other_parent_genome
+        self.pregnant_remaining = self.genome.gestation_period.value * 10
         
     def birth_children(self, cur_time : float) -> list["Entity"]:
         if self.other_parent_genome != None and self.pregnant_remaining != None:
-            children_init_hunger_percent = self.genome.gestation_period
-            num_children : int = round(self.config.Evolution.max_children * self.genome.fecundity)
-            children = []
+            children_init_hunger_percent = self.genome.gestation_period.value
+            num_children : int = round(self.config.Evolution.max_children * self.genome.fecundity.value)
+            children : list[Entity] = []
             for _ in range(num_children):
                 new_genome = self.genome.combine(self.other_parent_genome, True, 5)
                 initial_hunger = children_init_hunger_percent * -sin(pi * new_genome.speed.value - (pi/2)) + 1
@@ -105,7 +110,13 @@ class Entity:
         else:
             raise ValueError(f"Either 'other_parent_genome' [{self.other_parent_genome}] or 'pregnant_remaining' [{self.pregnant_remaining}] are 'None'!")
 
-    def age(self, current_day : int) -> int:
+    def is_mate_compatible(self, entity : "Entity") -> bool:
+        if self.is_male() != entity.is_male(): # Test if opposite gender.
+            if not entity.is_male() and not entity.is_pregnant(): # If target is female and not pregnant.
+                return True
+        return False
+
+    def age(self, current_day : int) -> float:
         return current_day - self.__day_born
     
     def kill(self) -> None:
@@ -127,7 +138,7 @@ class Entity:
         return self.specie.can_see
     
     @property
-    def day_born(self) -> int:
+    def day_born(self) -> float:
         return self.__day_born
 
     @property

@@ -1,5 +1,6 @@
 import random
 import enum
+from typing import Any
 
 from uuid import UUID, uuid4
 
@@ -50,7 +51,7 @@ class Gene:
         
         return new_gene
 
-    def export_dict(self) -> dict:
+    def export_dict(self) -> dict[str, float | str]:
         return {
             "uuid": self.uuid,
             "name": self.name,
@@ -114,7 +115,7 @@ class Genome:
     def uuid(self) -> str:
         return str(self.__uuid)
     
-    def export_dict(self) -> dict:
+    def export_dict(self) -> dict[str, Any]:
         return {
             "uuid": self.uuid,
             "gender": self.gender.name,

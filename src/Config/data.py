@@ -6,7 +6,7 @@ class BaseConf:
     def __init__(self) -> None:
         pass
 
-    def export(self) -> dict:
+    def export(self) -> dict[str, Any]:
         keys = [idx for idx in dir(self) if not idx.endswith("__")]
         return {key:self.__getattribute__(key) for key in keys}
 
@@ -17,6 +17,8 @@ class SimulationConfig(BaseConf):
     grid_size : float
     time_delta : float
     num_steps : int
+    static_entity_spawn_rate: int
+    static_entity_spawn_interval: int
 
     def __init__(self, 
                 width : float,
@@ -24,6 +26,8 @@ class SimulationConfig(BaseConf):
                 grid_size : float,
                 time_delta : float,
                 num_steps : int,
+                static_entity_spawn_rate: int,
+                static_entity_spawn_interval: int,
             ) -> None:
         super().__init__()
         self.width = width
@@ -31,6 +35,8 @@ class SimulationConfig(BaseConf):
         self.grid_size = grid_size
         self.time_delta = time_delta
         self.num_steps = num_steps
+        self.static_entity_spawn_rate = static_entity_spawn_rate
+        self.static_entity_spawn_interval = static_entity_spawn_interval
 
 
 class LoggerConfig(BaseConf):
@@ -58,10 +64,10 @@ class LoggerConfig(BaseConf):
 
 class EvolutionConfig(BaseConf):
 
-    mutability : str
+    mutability : float
     max_children : int
 
-    def __init__(self, mutability: str, max_children: int) -> None:
+    def __init__(self, mutability: float, max_children: int) -> None:
         super().__init__()
         self.mutability = mutability
         self.max_children = max_children
@@ -91,7 +97,7 @@ class SpeciesConfig(BaseConf):
         self.species = {Species.BaseSpecie(val["id"], idx, val["prey"], val["can_move"], val["can_see"]): val["start_amount"] for idx, val in species.items()}
 
     def items(self) -> list[tuple[Species.BaseSpecie, int]]:
-        return self.species.items()
+        return list(self.species.items())
 
 class Config:
     
@@ -108,7 +114,7 @@ class Config:
         self.Entities = ent_conf
         self.Species = spe_conf
         
-    def export(self) -> dict:
+    def export(self) -> dict[str, dict[str, Any]]:
         return { # TODO Export it in a way that it would be easily parsed to the TOML config format.
             "simulation": self.Simulation.export(),
             "logger": self.Logger.export(),

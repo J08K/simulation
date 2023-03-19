@@ -1,4 +1,5 @@
 import enum
+from typing import Any
 
 
 class SpecieRelationship(enum.Enum):
@@ -43,7 +44,7 @@ class BaseSpecie:
             return SpecieRelationship.NEUTRAL
 
 
-    def export_dict(self) -> dict:
+    def export_dict(self) -> dict[str, Any]:
         return {
             "id": self.id,
             "name": self.name,

@@ -1,5 +1,6 @@
 import os
 import pathlib
+from typing import Any
 import toml
 from Config import data as ConfigData
 from Config import defaults as ConfigDefaults
@@ -54,6 +55,8 @@ class ProjectConfigHandler:
                     grid_size=data["simulation"]["grid_size"],
                     time_delta=data["simulation"]["time_delta"],
                     num_steps=data["simulation"]["num_steps"],
+                    static_entity_spawn_rate=data["simulation"]["static_entity_spawn_rate"],
+                    static_entity_spawn_interval=data["simulation"]["static_entity_spawn_interval"],
                 ),
                 log_conf=ConfigData.LoggerConfig(
                     db_uri=data["logger"]["db"]["uri"],
@@ -87,7 +90,7 @@ class ProjectConfigHandler:
         if not os.path.exists(self.config_file_path): # Check if the main config file exists.
             ConfigDefaults.genDefaultConfig(self.config_file_path)
         
-    def export(self) -> dict:
+    def export(self) -> dict[str, Any]:
         return {
             "project_owner": self.PROJECT_OWNER,
             "project_name": self.PROJECT_NAME,

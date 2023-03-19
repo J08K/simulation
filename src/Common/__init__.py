@@ -1,3 +1,4 @@
+from typing import Generator
 from Common import Rotation, Species, Genomes
 import math
 
@@ -7,7 +8,7 @@ __all__ = [
     "Genomes",
 ]
 
-__version__ = "0.0.1"
+__version__ = "0.4.0"
 
 
 def calc_distance(x_1: float, y_1: float, x_2: float, y_2: float) -> float:
@@ -23,7 +24,7 @@ def fixed_size_string(input_text: str, str_length: int) -> str:
         return input_text
 
 
-def clamp(min_n: int, max_n: int, n: int) -> int:
+def clamp(min_n: float, max_n: float, n: float) -> float:
     n = max(n, min_n)
     n = min(n, max_n)
     return n
@@ -33,7 +34,7 @@ def avg(values: list[float]) -> float:
     return sum(values) / len(values)
 
 
-def cycle_names(start_name : str, spacer : str, clean_start : bool, start_num : int = 2) -> str:
+def cycle_names(start_name : str, spacer : str, clean_start : bool, start_num : int = 2) -> Generator[str, None, None]:
     if clean_start:
         yield start_name
     idx = start_num

@@ -77,7 +77,7 @@ export default function Home() {
           </div>
           <div className='main'>
             <Board dimensions={board_cache} board_data={current_sim?.board} onEntitySelect={(entity : EntityLocation) => {setSelectedEntity(entity.entity.uuid)}} selected_entity={selected_entity}/>
-            <TimeSelector target_time_setter={setTargetTime} time_limits={{time_delta : current_sim?.time_delta, time_max : time_max}}/>
+            <TimeSelector target_time_setter={setTargetTime} current_time={target_time} time_limits={{time_delta : current_sim?.time_delta, time_max : time_max}}/>
             <EntityList entity_locations={current_sim?.board.entities}/>
           </div>
           <div>

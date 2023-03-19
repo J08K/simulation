@@ -34,5 +34,7 @@ def max_delta_distance(rel_target_locations: list[tuple[float, float]]) -> float
     ]
     return max(traveled_distances)
 
+def entity_is_approaching(single_entity_rel_locations: list[tuple[float, float]]) -> bool:
+    return avg_delta_distance(single_entity_rel_locations) < 0
 
 # TODO Add algorythm that calculates entities best option.

@@ -22,6 +22,12 @@ if __name__ == "__main__":
             ))
             
             sim.step()
+
+            if sim.reproduction_count != 0 and sim.reproduction_count % 1000 == 0:
+                print("1000 (more) entities have been born!")
+            
+            if sim.steps_taken % 1000 == 0:
+                print("1000 (more) steps have been taken!")
             
 
         logger.new_message(Message(

@@ -39,6 +39,7 @@ export async function getLatest(collection_name : string) : Promise<SimData | nu
             time_current: doc.time_current,
             time_delta: doc.time_delta,
             time_zero: doc.time_zero,
+            reproduction_count: doc.reproduction_count,
             board: doc.board,
         }
     }
@@ -56,6 +57,7 @@ export async function getSpecific(collection_name : string, time : number) {
             time_current: doc.time_current,
             time_delta: doc.time_delta,
             time_zero: doc.time_zero,
+            reproduction_count: doc.reproduction_count,
             board: doc.board,
         }
     }

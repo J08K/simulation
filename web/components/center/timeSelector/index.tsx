@@ -11,11 +11,13 @@ function round(val : number, num_decimals : number) {
 
 const TimeSelector = (props : {
     target_time_setter : Function,
+    current_time : number,
     time_limits : {time_max : number, time_delta : number | undefined},
 }) => {
 
+    const throttle_time = 500;
+
     let time_out : NodeJS.Timeout;
-    let [selected_time, setSelectedTime] = useState(0.0);
 
     let delta_step = props.time_limits.time_delta ? props.time_limits.time_delta : 0.1;
     let num_decimals = getNumDecimals(delta_step)
@@ -25,20 +27,20 @@ const TimeSelector = (props : {
         if (range_selector instanceof HTMLInputElement) {
             range_selector.disabled = event.target.checked;
         }
-        selected_time
+        timeChangeThrottle(-1);
     }
 
     function changeTime(time : number) {
-        props.target_time_setter(time)
+        props.target_time_setter(time);
     }
 
     function timeChangeThrottle(time : number) {
-        setSelectedTime(time);
+        //setSelectedTime(time);
         if (!time_out) {
-            time_out = setTimeout(changeTime, 1000, time);
+            time_out = setTimeout(changeTime, throttle_time, time);
         }
         clearTimeout(time_out);
-        time_out = setTimeout(changeTime, 1000, time);
+        time_out = setTimeout(changeTime, throttle_time, time);
     }
 
     function handleTimeChange(event : ChangeEvent<HTMLInputElement>) {
@@ -60,10 +62,10 @@ const TimeSelector = (props : {
             <div className={styles.Control}>
                 <div className={styles.RangeSelector}>
                     <button onClick={() => {handleAddValue(-delta_step)}}>&lt;</button>
-                    <input id="range_selector" type="range" onChange={handleTimeChange} defaultValue={selected_time} max={props.time_limits.time_max} step={delta_step}></input>
+                    <input id="range_selector" type="range" onChange={handleTimeChange} defaultValue={props.current_time} max={props.time_limits.time_max} step={delta_step}></input>
                     <button onClick={() => {handleAddValue(delta_step)}}>&gt;</button>
                 </div>
-                <div>Selected time: <span className={styles.Green}>{selected_time}</span></div>
+                <div>Selected time: <span className={styles.Green}>{props.current_time}</span></div>
                 <div className={styles.LatestSelector}>
                     <input id="select_latest" type="checkbox" onChange={handleSelectLatest}/>
                     <label htmlFor="select_latest" className={styles.CheckboxLabel}>Latest</label>

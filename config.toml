@@ -1,5 +1,5 @@
-[logger.db] # TODO Implement
-uri = "91.107.192.127"
+[logger.db]
+uri = "localhost"
 port = 3001
 username = "admin"
 password = "admin"
@@ -10,7 +10,9 @@ width = 50
 height = 40
 grid_size = 9
 time_delta = 0.01
-num_steps = 1000
+num_steps = 100000
+static_entity_spawn_rate = 1
+static_entity_spawn_interval = 3
 
 # TODO Add some values for entity reference values.
 [evolution]

@@ -1,4 +1,5 @@
 import toml
+import pathlib
 
 DEFAULT_CONFIG = {
     "logger": {
@@ -16,6 +17,8 @@ DEFAULT_CONFIG = {
         "grid_size": 3.0,
         "time_delta": 0.01,
         "num_steps": 10,
+        "static_entity_spawn_rate": 5,
+        "static_entity_spawn_interval": 3
     },
     "evolution": {
         "mutability": 0.1,
@@ -52,7 +55,7 @@ DEFAULT_CONFIG = {
     },
 }
 
-def genDefaultConfig(path : str) -> None:
+def genDefaultConfig(path : str | pathlib.Path) -> None:
     with open(path, "w+") as file:
-        toml.dump(DEFAULT_CONFIG)
+        toml.dump(DEFAULT_CONFIG, file)
         print(f"Wrote default configuration to '{path}'.")

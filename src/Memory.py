@@ -1,5 +1,9 @@
+
+# ! For MVP this module is not used.
+
 # Module responsible for entity memory
 
+from typing import Any
 from uuid import UUID
 
 class ShortTermMemory:
@@ -11,7 +15,7 @@ class ShortTermMemory:
         self.entity_locations = dict()
         self.memory_length = memory_len
 
-    def update(self, current_time) -> None:
+    def update(self, current_time : float) -> None:
         for entity, (time_stamp, _) in self.entity_locations.items():
             if current_time - time_stamp > self.memory_length:
                 self.entity_locations.pop(entity)
@@ -22,7 +26,7 @@ class ShortTermMemory:
     def get_entities(self) -> list[tuple[UUID, tuple[float, float]]]:
         return [(uuid, location) for uuid, (_, location) in self.entity_locations.items()]
 
-    def export_dict(self) -> dict:
+    def export_dict(self) -> dict[str, Any]:
         return {
             "memory_length": self.memory_length,
             "entity_locations": [{
@@ -51,7 +55,7 @@ class LongTermMemory:
     def add_food(self, x: float, y: float, timestamp: float) -> None:
         self.static_food_locations.append((timestamp, (x, y)))
 
-    def export_dict(self) -> dict:
+    def export_dict(self) -> dict[str, Any]:
         return {
             "memory_length": self.memory_length,
             "static_food_locations": [{
@@ -91,8 +95,11 @@ class Memory:
     def remember_food_location(self, x: float, y: float) -> None:
         self.long_term.add_food(x, y, self.current_time)
 
+    # def get_approaching_predators(self) -> list[UUID]:
+    #     for pred, value in self.short_term.entity_locations.items():
+            
 
-    def export_dict(self) -> dict:
+    def export_dict(self) -> dict[str, Any]:
         return {
             "current_time": self.current_time,
             "long_term": self.long_term.export_dict(),

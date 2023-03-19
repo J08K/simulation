@@ -1,8 +1,10 @@
 """New board design, to make looping over entities more efficient."""
 
+from typing import Any, Iterable
 import Common
 import math
 
+from uuid import UUID
 from entities import Entity
 
 import pprint
@@ -74,6 +76,8 @@ class Board:
     
     entity_registry : dict[Entity, tuple[int, int]] # Stores each entity's current grid. Quick and dirty lookup basically.
     
+    specie_stats : dict[Common.Species.BaseSpecie, int]
+
     # TODO Keep track of species and commonalities in the board. And output this is the export.
     
     def __init__(self, width : float, height : float, grid_size : float) -> None:
@@ -82,12 +86,13 @@ class Board:
         self.__grid_size = grid_size
         self.entity_registry = {}
         self.sub_grids = []
-        
+        self.specie_stats = {}
+
         self.new_sub_grids(transfer_data=False)
     
     
-    def export_dict(self) -> None:
-        entities = []
+    def export_dict(self) -> dict[str, Any]:
+        entities : list[dict[str, dict[str, Any] | float]] = []
         for entity in self.all_entities:
             x, y = self.get_entity_location(entity)
             entities.append({
@@ -100,6 +105,7 @@ class Board:
             "width": self.width,
             "height": self.height,
             "grid_size": self.__grid_size,
+            "specie_stats": [{"specie":specie_idx.export_dict(), "count":specie_count} for specie_idx, specie_count in self.specie_stats.items()],
             "entities": entities,
         }
     
@@ -163,7 +169,7 @@ class Board:
 
 
     def get_neighbour_grids(self, grid_x : int, grid_y : int) -> list[tuple[int, int]]:
-        neighbours = []
+        neighbours : list[tuple[int, int]] = []
         for idx in range(8):
             neighbour_x = grid_x + round(math.cos(0.25 * idx * math.pi))
             neighbour_y = grid_y + round(math.sin(0.25 * idx * math.pi))
@@ -186,7 +192,7 @@ class Board:
             raise OutOfBoundsError(f"Grid ({grid_x}, {grid_y}) is not on this board! '{exception}'")
 
 
-    def iter_grids(self) -> tuple[SubGrid, tuple[int, int]]:
+    def iter_grids(self) -> Iterable[tuple[SubGrid, tuple[int, int]]]:
         for x, column in enumerate(self.sub_grids):
             for y, grid in enumerate(column):
                 yield grid, (x, y)
@@ -206,6 +212,11 @@ class Board:
         if not self.in_bounds(x, y):
             raise OutOfBoundsError(f"Location ({x}, {y}) is out of bounds! Maximum is ({self.__width}, {self.__height})!")
         
+        if entity.specie not in self.specie_stats:
+            self.specie_stats[entity.specie] = 1
+        else:
+            self.specie_stats[entity.specie] += 1
+
         grid_location = self.grid_from_entity_loc(x, y)
         target_grid = self.get_grid(*grid_location)
         self.entity_registry[entity] = grid_location
@@ -219,8 +230,6 @@ class Board:
         
         if entity not in self.entity_registry:
             raise EntityNotFoundError(f"Entity '{str(entity)}' is not present in the registry.")
-
-        old_location = self.get_entity_location(entity)
 
         entity_current_grid = self.entity_registry[entity]
         entity_new_grid = self.grid_from_entity_loc(x, y)
@@ -238,7 +247,7 @@ class Board:
         
         current_grid_coords = self.entity_registry[entity]
         found_entities = [(new_entity, x, y)for new_entity, x, y in self.get_grid(*current_grid_coords).get_all_entities()]
-        if entity in found_entities:
+        if entity in found_entities: # TODO Expression will always evaluate to False since the types "Entity" and "tuple[Entity, float, float]" have no overlap.
             found_entities.pop(entity)
         for neighbour in self.get_neighbour_grids(*current_grid_coords):
             found_entities += self.get_grid(*neighbour).get_all_entities()
@@ -257,6 +266,9 @@ class Board:
         current_grid = self.get_grid(*current_grid_coords)
         self.entity_registry.pop(entity)
         entity.kill()
+
+        self.specie_stats[entity.specie] -= 1
+
         return current_grid.pop_entity(entity)
 
 
@@ -271,6 +283,12 @@ class Board:
                 visible[other] = (target_x, target_y)
 
         return visible
+
+    def get_entity_from_UUID(self, uuid: UUID) -> Entity | None:
+        for key in self.entity_registry.keys():
+            if key.uuid == uuid:
+                return key
+        return None
 
     def __contains__(self, entity : Entity) -> bool:
         return entity in self.entity_registry

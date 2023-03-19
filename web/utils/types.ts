@@ -65,6 +65,10 @@ export type Board = {
     height: number,
     width: number,
     grid_size: number,
+    specie_stats: Array<{ // TODO Add this to SimInfo
+        specie: Species,
+        count: number,
+    }>,
     entities: EntityLocation[],
 }
 
@@ -72,6 +76,7 @@ export type SimData = {
     time_current : number,
     time_delta : number,
     time_zero : number,
+    reproduction_count : number,
     board: Board,
 }
 
