@@ -6,6 +6,7 @@ import os
 import io
 import tempfile
 import pymongo
+import sys
 
 from typing import Any
 from rich.progress import track
@@ -15,7 +16,7 @@ from Common import cycle_names
 from Config import ConfigData
 
 from LoggingHandler import LogTypes
-from LoggingHandler.LogTypes import CommandType, LogLevel, Command, Message
+from LoggingHandler.LogTypes import CommandType, LogLevel
 
 __version__ = "0.0.2"
 
@@ -196,6 +197,11 @@ class Logger:
     def is_running(self) -> bool:
         return self.__run_thread
     
+    def approx_size(self) -> int:
+        return self.__queue.qsize()
+    
+    def memory_size(self) -> int:
+        return sys.getsizeof(self.__queue)
 
 class Handler:
 

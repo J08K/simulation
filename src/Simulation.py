@@ -156,7 +156,7 @@ class Simulation:
                     current_hunger_percentage = current_entity.hunger / current_entity.max_hunger
                     priorities : dict[str, float] = {}
                     priorities["food"] = min((400/289)*(current_hunger_percentage**2), 1) if food_location != None else 0.0
-                    priorities["reproduce"] = -current_hunger_percentage + 1 if mate_location != None else 0.0
+                    priorities["reproduce"] = -0.7 * current_hunger_percentage + 1 if mate_location != None else 0.0
                     priorities["escape"] = 0.0
                     if predator_location:
                         priorities["escape"] = 2 * (-calc_distance(cur_x, cur_y, *predator_location) / current_entity.eyes.view_distance + 1) ** 3
@@ -267,25 +267,26 @@ class Simulation:
         if self.steps_taken % self.config.Simulation.static_entity_spawn_interval == 0:
             for specie in self.entity_board.specie_stats:
                 if not specie.can_move and not specie.can_see:
-                    for _ in range(self.config.Simulation.static_entity_spawn_rate):
-                        random_x, random_y = random.random() * self.entity_board.max_x_coord, random.random() * self.entity_board.max_y_coord
-                        self.entity_board.add_entity(
-                            entity=Entity(
-                                config=self.config,
-                                specie=specie,
-                                genome=Genomes.Genome(
-                                    speed_gene=Genomes.Gene("speed", 0.5, mutability),
-                                    vision_range_gene=Genomes.Gene("vision_range", 0.5, mutability),
-                                    gestation_period_gene=Genomes.Gene("gestation_period", 0.5, mutability),
-                                    fecundity=Genomes.Gene("fecundity", 0.5, mutability),
-                                    gender=random.choice([Genomes.Gender.FEMALE, Genomes.Gender.MALE])
+                    if self.entity_board.specie_stats[specie] <= self.config.Simulation.static_entity_max:
+                        for _ in range(self.config.Simulation.static_entity_spawn_rate):
+                            random_x, random_y = random.random() * self.entity_board.max_x_coord, random.random() * self.entity_board.max_y_coord
+                            self.entity_board.add_entity(
+                                entity=Entity(
+                                    config=self.config,
+                                    specie=specie,
+                                    genome=Genomes.Genome(
+                                        speed_gene=Genomes.Gene("speed", 0.5, mutability),
+                                        vision_range_gene=Genomes.Gene("vision_range", 0.5, mutability),
+                                        gestation_period_gene=Genomes.Gene("gestation_period", 0.5, mutability),
+                                        fecundity=Genomes.Gene("fecundity", 0.5, mutability),
+                                        gender=random.choice([Genomes.Gender.FEMALE, Genomes.Gender.MALE])
+                                    ),
+                                    hunger=0.0,
+                                    cur_day=0.0,
                                 ),
-                                hunger=0.0,
-                                cur_day=0.0,
-                            ),
-                            x=random_x,
-                            y=random_y,
-                        )
+                                x=random_x,
+                                y=random_y,
+                            )
 
         # ///////////////////////////////////////////////////////////////////
         self.global_time += self.time_delta

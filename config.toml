@@ -10,9 +10,10 @@ width = 50
 height = 40
 grid_size = 9
 time_delta = 0.01
-num_steps = 100000
+num_steps = 10000
 static_entity_spawn_rate = 1
 static_entity_spawn_interval = 3
+static_entity_max = 500
 
 # TODO Add some values for entity reference values.
 [evolution]

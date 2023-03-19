@@ -57,6 +57,7 @@ class ProjectConfigHandler:
                     num_steps=data["simulation"]["num_steps"],
                     static_entity_spawn_rate=data["simulation"]["static_entity_spawn_rate"],
                     static_entity_spawn_interval=data["simulation"]["static_entity_spawn_interval"],
+                    static_entity_max=data["simulation"]["static_entity_max"],
                 ),
                 log_conf=ConfigData.LoggerConfig(
                     db_uri=data["logger"]["db"]["uri"],

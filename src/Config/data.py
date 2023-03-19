@@ -19,6 +19,7 @@ class SimulationConfig(BaseConf):
     num_steps : int
     static_entity_spawn_rate: int
     static_entity_spawn_interval: int
+    static_entity_max: int
 
     def __init__(self, 
                 width : float,
@@ -28,6 +29,7 @@ class SimulationConfig(BaseConf):
                 num_steps : int,
                 static_entity_spawn_rate: int,
                 static_entity_spawn_interval: int,
+                static_entity_max: int,
             ) -> None:
         super().__init__()
         self.width = width
@@ -37,6 +39,7 @@ class SimulationConfig(BaseConf):
         self.num_steps = num_steps
         self.static_entity_spawn_rate = static_entity_spawn_rate
         self.static_entity_spawn_interval = static_entity_spawn_interval
+        self.static_entity_max = static_entity_max
 
 
 class LoggerConfig(BaseConf):

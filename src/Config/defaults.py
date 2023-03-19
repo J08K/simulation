@@ -18,7 +18,8 @@ DEFAULT_CONFIG = {
         "time_delta": 0.01,
         "num_steps": 10,
         "static_entity_spawn_rate": 5,
-        "static_entity_spawn_interval": 3
+        "static_entity_spawn_interval": 3,
+        "static_entity_max": 500,
     },
     "evolution": {
         "mutability": 0.1,
