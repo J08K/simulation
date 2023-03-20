@@ -215,7 +215,7 @@ class Simulation:
                             case "reproduce":
                                 if mate_location and closest_mate:
                                     diff_x, diff_y = Direction.max_delta_location(max_travel_distance, *Direction.calc_direction(cur_x, cur_y, *mate_location), True)
-                                    new_location = cur_x + diff_x, cur_y + diff_y
+                                    new_location = clamp(0, self.entity_board.max_x_coord, cur_x + diff_x), clamp(0, self.entity_board.max_y_coord, cur_y + diff_y)
 
                                     if calc_distance(cur_x, cur_y, *mate_location) <= max_travel_distance * 2: # TODO Add max interaction range.
                                         if current_entity.is_male():
