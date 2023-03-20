@@ -32,6 +32,17 @@ class Simulation:
             }},
         ]))
         return res
+    
+    def get_species_counts(self) -> list[dict[str, Any]]:
+        res = list(self.client.aggregate([
+            {
+                "$project": {
+                    "_id": "$time_current",
+                    "species": "$board.specie_stats",
+                }
+            }
+        ]))
+        return res
 
 if __name__ == "__main__": 
 
