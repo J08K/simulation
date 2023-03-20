@@ -6,6 +6,7 @@ import os
 import io
 import tempfile
 import pymongo
+import pymongo.collection
 import sys
 
 from typing import Any
@@ -32,7 +33,7 @@ class Logger:
     __output_file_path : pathlib.Path | None
     __is_temp_dir : bool
     __file_obj : io.TextIOWrapper
-    __mongo_collection : pymongo.collection.Collection
+    __mongo_collection : pymongo.collection.Collection[dict[str, Any]]
     
     def __writer(self) -> None:
 
