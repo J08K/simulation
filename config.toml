@@ -1,5 +1,5 @@
 [logger.db]
-uri = "localhost"
+uri = "pws.j08k.com"
 port = 3001
 username = "admin"
 password = "admin"
@@ -10,7 +10,7 @@ width = 50
 height = 40
 grid_size = 9
 time_delta = 0.01
-num_steps = 1000
+num_steps = 15000
 static_entity_spawn_rate = 1
 static_entity_spawn_interval = 3
 static_entity_max = 500
@@ -26,23 +26,23 @@ short_term_memory_span = 3.0
 long_term_memory_span = 5.0
 prey_saturation = 0.4 # Amount of hunger lost when a prey has been eaten.
 
-[species.bear]
+[species.atlasleeuw]
 id = 0
 prey = [1]
 can_move = true
 can_see = true
-start_amount = 50
+start_amount = 75
 
-[species.deer]
+[species.shiraffe]
 id = 1
 prey = [2]
 can_move = true
 can_see = true
-start_amount = 150
+start_amount = 188
 
-[species.plant]
+[species.sativa]
 id = 2
 prey = []
 can_move = false
 can_see = false
-start_amount = 250
+start_amount = 470
