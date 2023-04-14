@@ -31,18 +31,18 @@ id = 0
 prey = [1]
 can_move = true
 can_see = true
-start_amount = 125
+start_amount = 50
 
 [species.deer]
 id = 1
 prey = [2]
 can_move = true
 can_see = true
-start_amount = 250
+start_amount = 150
 
 [species.plant]
 id = 2
 prey = []
 can_move = false
 can_see = false
-start_amount = 500
+start_amount = 250
